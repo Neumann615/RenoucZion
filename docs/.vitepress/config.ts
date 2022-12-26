@@ -137,6 +137,10 @@ export default defineConfig({
                 link: "/framework-analysis/",
             },
             {
+                text:"面试",
+                link:"/interview/"
+            },
+            {
                 text: '配置',
                 link: "/config/"
             },
@@ -208,6 +212,17 @@ export default defineConfig({
                             text:"JavaScript难点",
                             link:"/basic-knowledge/difficulty"
                         }
+                    ]
+                }
+            ],
+            "/interview/":[
+                {
+                    text:"面试相关",
+                    items:[
+                        {
+                            text: 'vue',
+                            link: '/interview/'
+                        }, 
                     ]
                 }
             ],
