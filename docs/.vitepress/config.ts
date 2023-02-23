@@ -1,4 +1,4 @@
-import {defineConfig, DefaultTheme} from 'vitepress'
+import { defineConfig, DefaultTheme } from 'vitepress'
 
 const ogDescription = 'Next Generation Frontend Tooling'
 const ogImage = 'https://vitejs.dev/og-image.png'
@@ -57,15 +57,15 @@ export default defineConfig({
     title: `Bupu`,
     description: '个人博客',
     head: [
-        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
-        ['meta', {property: 'og:type', content: 'website'}],
-        ['meta', {property: 'og:title', content: ogTitle}],
-        ['meta', {property: 'og:image', content: ogImage}],
-        ['meta', {property: 'og:url', content: ogUrl}],
-        ['meta', {property: 'og:description', content: ogDescription}],
-        ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
-        ['meta', {name: 'twitter:site', content: '@vite_js'}],
-        ['meta', {name: 'theme-color', content: '#646cff'}],
+        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+        ['meta', { property: 'og:type', content: 'website' }],
+        ['meta', { property: 'og:title', content: ogTitle }],
+        ['meta', { property: 'og:image', content: ogImage }],
+        ['meta', { property: 'og:url', content: ogUrl }],
+        ['meta', { property: 'og:description', content: ogDescription }],
+        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+        ['meta', { name: 'twitter:site', content: '@vite_js' }],
+        ['meta', { name: 'theme-color', content: '#646cff' }],
         // [
         //     'script',
         //     {
@@ -90,9 +90,9 @@ export default defineConfig({
         },
 
         socialLinks: [
-            {icon: 'twitter', link: 'https://twitter.com/vite_js'},
-            {icon: 'discord', link: 'https://chat.vitejs.dev'},
-            {icon: 'github', link: 'https://github.com/vitejs/vite'}
+            { icon: 'twitter', link: 'https://twitter.com/vite_js' },
+            { icon: 'discord', link: 'https://chat.vitejs.dev' },
+            { icon: 'github', link: 'https://github.com/vitejs/vite' }
         ],
 
         algolia: {
@@ -112,9 +112,9 @@ export default defineConfig({
         localeLinks: {
             text: 'English',
             items: [
-                {text: '简体中文', link: 'https://cn.vitejs.dev'},
-                {text: '日本語', link: 'https://ja.vitejs.dev'},
-                {text: 'Español', link: 'https://es.vitejs.dev'}
+                { text: '简体中文', link: 'https://cn.vitejs.dev' },
+                { text: '日本語', link: 'https://ja.vitejs.dev' },
+                { text: 'Español', link: 'https://es.vitejs.dev' }
             ]
         },
 
@@ -125,20 +125,30 @@ export default defineConfig({
 
         nav: [
             {
-                text: "纸飞机",
-                link: "/demo-case/",
-            },
-            {
                 text: "基础知识",
-                link: "/basic-knowledge/",
+                items: [
+                    {
+                        text: "ES6标准入门",
+                        link: "/ES6标准入门/Javascript简介及发展历史.md"
+                    }
+                ]
             },
             {
                 text: "框架理解",
-                link: "/framework-analysis/",
+                items: [
+                    {
+                        text: "Vue",
+                        link: "/framework-analysis/vue.md"
+                    },
+                    {
+                        text: "React",
+                        link: "/framework-analysis/react.md"
+                    }
+                ]
             },
             {
-                text:"面试",
-                link:"/interview/"
+                text: "面试",
+                link: "/interview/vue"
             },
             {
                 text: '配置',
@@ -185,44 +195,137 @@ export default defineConfig({
         ],
 
         sidebar: {
-            "/demo-case/": [
+            "/ES6标准入门/": [
                 {
-                    text: "纸飞机",
+                    text: "ES6标准入门",
                     items: [
                         {
-                            text: '共享白板',
-                            link: '/demo-case/'
+                            text: "JavaScript简介及发展历史",
+                            link: "/ES6标准入门/JavaScript简介及发展历史"
                         },
                         {
-                            text: 'bupu后台管理',
-                            link: '/demo-case/bupu'
-                        }
+                            text: "let和const命令",
+                            link: "/ES6标准入门/let和const命令"
+                        },
+                        {
+                            text: "变量的解构赋值",
+                            link: "/ES6标准入门/变量的解构赋值"
+                        },
+                        {
+                            text: "字符串的扩展",
+                            link: "/ES6标准入门/字符串的扩展"
+                        },
+                        {
+                            text: "正则的扩展",
+                            link: "/ES6标准入门/正则的扩展"
+                        },
+                        {
+                            text: "数值的扩展",
+                            link: "/ES6标准入门/数值的扩展"
+                        },
+                        {
+                            text: "函数的扩展",
+                            link: "/ES6标准入门/函数的扩展"
+                        },
+                        {
+                            text: "数组的扩展",
+                            link: "/ES6标准入门/数组的扩展"
+                        },
+                        {
+                            text: "对象的扩展",
+                            link: "/ES6标准入门/对象的扩展"
+                        },
+                        {
+                            text: "Symbol",
+                            link: "/ES6标准入门/Symbol"
+                        },
+                        {
+                            text: "Set和Map数据结构",
+                            link: "/ES6标准入门/Set和Map数据结构"
+                        },
+                        {
+                            text: "Proxy",
+                            link: "/ES6标准入门/Proxy"
+                        },
+                        {
+                            text: "Reflect",
+                            link: "/ES6标准入门/Reflect"
+                        },
+                        {
+                            text: "Promise对象",
+                            link: "/ES6标准入门/Promise对象"
+                        },
+                        {
+                            text: "Iterator和for...of循环",
+                            link: "/ES6标准入门/Iterator和for...of循环"
+                        },
+                        {
+                            text: "Generator函数的语法",
+                            link: "/ES6标准入门/Generator函数的语法"
+                        },
+                        {
+                            text: "Generator函数的异步应用",
+                            link: "/ES6标准入门/Generator函数的异步应用"
+                        },
+                        {
+                            text: "async函数",
+                            link: "/ES6标准入门/async函数"
+                        },
+                        {
+                            text: "Class的基本语法",
+                            link: "/ES6标准入门/Class的基本语法"
+                        },
+                        {
+                            text: "Class的继承",
+                            link: "/ES6标准入门/Class的继承"
+                        },
+                        {
+                            text: "修饰器",
+                            link: "/ES6标准入门/修饰器"
+                        },
+                        {
+                            text: "Module的语法",
+                            link: "/ES6标准入门/Module的语法"
+                        },
+                        {
+                            text: "Module的加载实现",
+                            link: "/ES6标准入门/Module的加载实现"
+                        },
+                        {
+                            text: "编程风格",
+                            link: "/ES6标准入门/编程风格"
+                        },
+                        {
+                            text: "读懂ECMAScript规格",
+                            link: "/ES6标准入门/读懂ECMAScript规格"
+                        },
+                        {
+                            text: "ArrayBuffer",
+                            link: "/ES6标准入门/ArrayBuffer"
+                        },
+                        {
+                            text: "TypedArray视图",
+                            link: "/ES6标准入门/TypedArray视图"
+                        },
                     ]
                 }
             ],
-            "/basic-knowledge/":[
+            "/interview/": [
                 {
-                    text:"基础知识",
-                    items:[
-                        {
-                            text:"JavaScript基础",
-                            link:"/basic-knowledge/"
-                        },
-                        {
-                            text:"JavaScript难点",
-                            link:"/basic-knowledge/difficulty"
-                        }
-                    ]
-                }
-            ],
-            "/interview/":[
-                {
-                    text:"面试相关",
-                    items:[
+                    text: "面试相关",
+                    items: [
                         {
                             text: 'vue',
-                            link: '/interview/'
-                        }, 
+                            link: '/interview/vue'
+                        },
+                        {
+                            text: "JavaScript基础",
+                            link: "/interview/JavaScript基础"
+                        },
+                        {
+                            text:"杂项",
+                            link:"/interview/杂项"
+                        }
                     ]
                 }
             ],

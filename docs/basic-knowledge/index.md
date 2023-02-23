@@ -1,7 +1,6 @@
-# JavaScript基础
+# ES6标准入门
 
-本章节主要是描述阅读阮一峰老师的ES6标准入门这本书的思考过程，本章偏基础，着重于基础知识的介绍，
-难点知识诸如闭包、原型链、模块化等我会在JavaScript难点中着重介绍。
+阮一峰老师的ES6标准入门的思考过程
 
 ## JavaScript简介及发展历史
 
@@ -28,3 +27,31 @@
 ## Proxy
 
 ## Reflect
+
+## Promise对象
+
+## Iterator和for...of循环
+
+## Generator函数的语法
+
+## Generator函数的异步应用
+
+## async函数
+
+## Class的基本语法
+
+## Class的继承
+
+## 修饰器
+
+## Module的语法
+
+## Module的加载实现
+
+## 编程风格
+
+## 读懂ECMAScript规格
+
+## ArrayBuffer
+
+## TypedArray视图

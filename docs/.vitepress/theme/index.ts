@@ -1,11 +1,6 @@
-import {h} from 'vue'
+import { h } from 'vue'
 import Theme from 'vitepress/theme'
 import './styles/vars.css'
-import HomeSponsors from './components/HomeSponsors.vue'
-import AsideSponsors from './components/AsideSponsors.vue'
-import WhiteboardDemo from "./components/WhiteboardDemo.vue"
-import SvgImage from './components/SvgImage.vue'
-
 export default {
     ...Theme,
     // Layout() {
@@ -14,8 +9,8 @@ export default {
     //     //'aside-ads-before': () => h(AsideSponsors)
     //   })
     // },
-    enhanceApp({app}) {
+    enhanceApp({ app }) {
         //app.component('SvgImage', SvgImage)
-        app.component("WhiteboardDemo", WhiteboardDemo)
+        //app.component("WhiteboardDemo", WhiteboardDemo)
     }
 }

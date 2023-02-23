@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    function myNew(Func, ...args) {
+      // 1.创建一个新对象
+      const obj = {};
+      // 2.新对象原型指向构造函数原型对象
+      obj.__proto__ = Func.prototype;
+      // 3.将构建函数的this指向新对象
+      let result = Func.apply(obj, args);
+      // 4.根据返回值判断
+      return result instanceof Object ? result : obj;
+    }
+
+    function Person(name, age) {
+      this.name = name;
+      this.age = age;
+    }
+    Person.prototype.sayName = function () {
+      console.log(this.name);
+    };
+    const person1 = myNew(Person, "zym", 22);
+    console.log(person1); // Person {name: "zym", age: 22}
+    person1.sayName(); // 'zym'
+  </script>
+</html>
