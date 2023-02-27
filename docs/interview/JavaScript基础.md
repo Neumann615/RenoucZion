@@ -150,6 +150,10 @@ console.log(say); //输出'2'
 延长外部函数变量对象的生命周期
 使用闭包能够间接的从函数外部访问函数内部的私有变量
 
+闭包的坏处：可能会引起内存泄漏
+
+例子：防抖，节流，react 中的 hooks
+
 ## this 指向
 
 this 是 Javascript 语言的一个关键字，它代表函数运行时,自动生成的一个内部对象，只能在函数内部使用，随着函数使用场合的不同，this 的值会发生变化，但是有一个总的原则，那就是 this 指的是调用函数的那个对象。
@@ -158,6 +162,7 @@ this 是 Javascript 语言的一个关键字，它代表函数运行时,自动�
 ### 全局范围
 
 全局范围的 this 默认指向 window 对象
+严格模式下指向 undefined
 
 ```js
 function a() {
@@ -218,6 +223,24 @@ const obj = {
 };
 obj.x(); //箭头函数中的 this指向父级作用域中声明的变量 c，即为21
 obj.k(); //obj调用函数 k，函数 k中的 this指向 obj中声明的变量 c，即为 42
+```
+
+### 例子
+
+```js
+var length = 1;
+function fn() {
+  console.log(this.length);
+}
+var obj = {
+  length: 100,
+  action: function (callback) {
+    callback(); // 1(fn无调用者)
+    arguments[0](); // 5(调用者是arguments，arguments的长度是5)
+  },
+};
+var arr = [1, 2, 3, 4];
+obj.action(fn, ...arr);
 ```
 
 ### 事件
@@ -533,3 +556,183 @@ JavaScript 堆不需要程序代码来显示地释放，因为堆是由自动的
 - 解除变量的引用不仅可以消除循环引用，而且对垃圾回收也有帮助。
 
 - 为促进内存回收，全局对象、全局对象的属性和循环引用都应该在不需要时解除引用
+
+## 原型和原型链
+
+- 原型链是什么？
+
+  对象共享属性和共享方法
+
+- 谁拥有原型？
+
+  函数拥有：prototype
+
+  对象拥有：**proto**
+
+- 对象查找属性或方法的顺序
+
+  现在对象本身查找 --> 到构造函数上查找 --> 构造函数的原型中查找 --> 当前原型的原型中查找
+
+- 原型链是什么？
+
+  就是把原型串联起来，原型链的最顶端是 null
+
+  ```js
+  class Student {
+    constructor(name, score) {
+      (this.name = name), (this.score = score);
+    }
+    eat() {
+      console.log("eat");
+    }
+  }
+
+  const student = new Student();
+  console.log(student.__proto === Student.prototype); //指向同一个对象，对象的隐试原型等于构造这个类的显示原型
+  ```
+
+## js 中的几种集成方法
+
+- 原型链继承
+
+  优点：父类方法可以复用
+
+  缺点：
+
+       1.父类所有引用类型数据（对象，数组）会被子类共享，更改一个子类的数据其他数据会一起变化
+
+       2.子类实例不能给父类实例传参
+
+```js
+function Person(name) {
+  (this.name = "小花"),
+    (this.eat = ["苹果"]),
+    (this.getName = function () {
+      console.log(this.name);
+    });
+}
+Person.prototype.get = () => {
+  console.log("Person原型上的方法");
+};
+function student() {}
+
+student.prototype = new Person();
+
+const stu1 = new student();
+stu1.name = "小明";
+stu1.eat.push("香蕉");
+
+console.log(stu1.name); // 小明
+console.log(stu1.eat); // ['苹果','香蕉']
+
+const stu2 = new Person();
+console.log(stu2.name); // 小花
+console.log(stu2.eat); // ['苹果','香蕉']
+```
+
+- 构造函数继承
+
+  优点：父类引用类型数据会被子类共享，不会相互影响
+
+  缺点：子类不能访问父类原型属性上的方法和参数
+
+```js
+function Person(name) {
+  (this.name = "小花"),
+    (this.eat = ["苹果"]),
+    (this.getName = function () {
+      console.log(this.name);
+    });
+}
+Person.prototype.get = () => {
+  console.log("Person原型上的方法");
+};
+function student() {
+  Person.call(this);
+}
+
+const stu1 = new student();
+stu1.name = "小明";
+stu1.eat.push("香蕉");
+
+console.log(stu1.name); // 小明
+console.log(stu1.eat); // ['苹果','香蕉']
+
+const stu2 = new Person();
+console.log(stu2.name); // 小花
+console.log(stu2.eat); // ['苹果']
+```
+
+- 组合继承
+
+  优点：父类可以复用，且不会共享
+
+  缺点：会调用两次父类的构造函数，会有两份一样的属性和方法，会影响性能
+
+```js
+function Person(name) {
+  (this.name = "小花"),
+    (this.eat = ["苹果"]),
+    (this.getName = function () {
+      console.log(this.name);
+    });
+}
+Person.prototype.get = () => {
+  console.log("Person原型上的方法");
+};
+function student() {
+  Person.call(this);
+}
+
+student.prototype = new Person();
+
+const stu1 = new student();
+stu1.name = "小明";
+stu1.eat.push("香蕉");
+
+console.log(stu1.name); // 小明
+console.log(stu1.eat); // ['苹果','香蕉']
+
+const stu2 = new Person();
+console.log(stu2.name); // 小花
+console.log(stu2.eat); // ['苹果']
+```
+
+- 寄生继承
+
+  ```js
+  function Person(name) {
+    (this.name = "小花"),
+      (this.eat = ["苹果"]),
+      (this.getName = function () {
+        console.log(this.name);
+      });
+  }
+  Person.prototype.get = () => {
+    console.log("Person原型上的方法");
+  };
+  function student() {
+    Person.call(this);
+  }
+
+  const Fn = function () {
+    Fn.prototype = Person.prototype;
+  };
+
+  student.prototype = new Fn();
+
+  const stu1 = new student();
+  stu1.name = "小明";
+  stu1.eat.push("香蕉");
+
+  console.log(stu1.name); // 小明
+  console.log(stu1.eat); // ['苹果','香蕉']
+
+  const stu2 = new Person();
+  console.log(stu2.name); // 小花
+  console.log(stu2.eat); // ['苹果']
+  ```
+
+```
+
+```

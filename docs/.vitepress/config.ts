@@ -319,8 +319,16 @@ export default defineConfig({
                             link: '/interview/vue'
                         },
                         {
+                            text:"react",
+                            link:"/interview/react"
+                        },
+                        {
                             text: "JavaScript基础",
                             link: "/interview/JavaScript基础"
+                        },
+                        {
+                            text:"浏览器",
+                            link:"/interview/浏览器"
                         },
                         {
                             text:"杂项",
