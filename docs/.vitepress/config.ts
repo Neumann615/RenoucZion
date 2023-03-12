@@ -200,8 +200,8 @@ export default defineConfig({
                     text: "ES6标准入门",
                     items: [
                         {
-                            text: "JavaScript简介及发展历史",
-                            link: "/ES6标准入门/JavaScript简介及发展历史"
+                            text: "ECMAScript简介及发展历史",
+                            link: "/ES6标准入门/ECMAScript简介及发展历史"
                         },
                         {
                             text: "let和const命令",
