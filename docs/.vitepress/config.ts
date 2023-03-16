@@ -1,4 +1,4 @@
-import { defineConfig, DefaultTheme } from 'vitepress'
+import {defineConfig, DefaultTheme} from 'vitepress'
 
 const ogDescription = 'Next Generation Frontend Tooling'
 const ogImage = 'https://vitejs.dev/og-image.png'
@@ -57,15 +57,15 @@ export default defineConfig({
     title: `Bupu`,
     description: '个人博客',
     head: [
-        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-        ['meta', { property: 'og:type', content: 'website' }],
-        ['meta', { property: 'og:title', content: ogTitle }],
-        ['meta', { property: 'og:image', content: ogImage }],
-        ['meta', { property: 'og:url', content: ogUrl }],
-        ['meta', { property: 'og:description', content: ogDescription }],
-        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-        ['meta', { name: 'twitter:site', content: '@vite_js' }],
-        ['meta', { name: 'theme-color', content: '#646cff' }],
+        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
+        ['meta', {property: 'og:type', content: 'website'}],
+        ['meta', {property: 'og:title', content: ogTitle}],
+        ['meta', {property: 'og:image', content: ogImage}],
+        ['meta', {property: 'og:url', content: ogUrl}],
+        ['meta', {property: 'og:description', content: ogDescription}],
+        ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
+        ['meta', {name: 'twitter:site', content: '@vite_js'}],
+        ['meta', {name: 'theme-color', content: '#646cff'}],
         // [
         //     'script',
         //     {
@@ -90,9 +90,9 @@ export default defineConfig({
         },
 
         socialLinks: [
-            { icon: 'twitter', link: 'https://twitter.com/vite_js' },
-            { icon: 'discord', link: 'https://chat.vitejs.dev' },
-            { icon: 'github', link: 'https://github.com/vitejs/vite' }
+            {icon: 'twitter', link: 'https://twitter.com/vite_js'},
+            {icon: 'discord', link: 'https://chat.vitejs.dev'},
+            {icon: 'github', link: 'https://github.com/vitejs/vite'}
         ],
 
         algolia: {
@@ -107,15 +107,6 @@ export default defineConfig({
         carbonAds: {
             code: 'CEBIEK3N',
             placement: 'vitejsdev'
-        },
-
-        localeLinks: {
-            text: 'English',
-            items: [
-                { text: '简体中文', link: 'https://cn.vitejs.dev' },
-                { text: '日本語', link: 'https://ja.vitejs.dev' },
-                { text: 'Español', link: 'https://es.vitejs.dev' }
-            ]
         },
 
         footer: {
@@ -189,6 +180,19 @@ export default defineConfig({
                     {
                         text: 'Vite',
                         link: 'https://chat.vitejs.dev'
+                    }
+                ]
+            },
+            {
+                text: "代码分析",
+                items: [
+                    {
+                        text: 'ast语法解析',
+                        link: 'https://astexplorer.net/'
+                    },
+                    {
+                        text: 'js运行机制可视化',
+                        link: 'https://www.jsv9000.app/'
                     }
                 ]
             }
@@ -319,20 +323,20 @@ export default defineConfig({
                             link: '/interview/vue'
                         },
                         {
-                            text:"react",
-                            link:"/interview/react"
+                            text: "react",
+                            link: "/interview/react"
                         },
                         {
                             text: "JavaScript基础",
                             link: "/interview/JavaScript基础"
                         },
                         {
-                            text:"浏览器",
-                            link:"/interview/浏览器"
+                            text: "浏览器",
+                            link: "/interview/浏览器"
                         },
                         {
-                            text:"杂项",
-                            link:"/interview/杂项"
+                            text: "杂项",
+                            link: "/interview/杂项"
                         }
                     ]
                 }
