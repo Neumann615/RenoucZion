@@ -337,6 +337,10 @@ export default defineConfig({
                         {
                             text: "杂项",
                             link: "/interview/杂项"
+                        },
+                        {
+                            text: "计算机网络",
+                            link: "/interview/计算机网络"
                         }
                     ]
                 }
