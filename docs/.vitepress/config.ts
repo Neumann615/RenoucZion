@@ -5,53 +5,6 @@ const ogImage = 'https://vitejs.dev/og-image.png'
 const ogTitle = 'Vite'
 const ogUrl = 'https://vitejs.dev'
 
-// netlify envs
-const deployURL = process.env.DEPLOY_PRIME_URL || ''
-const commitRef = process.env.COMMIT_REF?.slice(0, 8) || 'dev'
-
-const deployType = (() => {
-    switch (deployURL) {
-        case 'https://main--vite-docs-main.netlify.app':
-            return 'main'
-        case '':
-            return 'local'
-        default:
-            return 'release'
-    }
-})()
-const additionalTitle = ((): string => {
-    switch (deployType) {
-        case 'main':
-            return ' (main branch)'
-        case 'local':
-            return ' (local)'
-        case 'release':
-            return ''
-    }
-})()
-const versionLinks = ((): DefaultTheme.NavItemWithLink[] => {
-    switch (deployType) {
-        case 'main':
-        case 'local':
-            return [
-                {
-                    text: 'Vite 3 Docs (release)',
-                    link: 'https://vitejs.dev'
-                },
-                {
-                    text: 'Vite 2 Docs',
-                    link: 'https://v2.vitejs.dev'
-                }
-            ]
-        case 'release':
-            return [
-                {
-                    text: 'Vite 2 Docs',
-                    link: 'https://v2.vitejs.dev'
-                }
-            ]
-    }
-})()
 
 export default defineConfig({
     title: `Bupu`,
@@ -65,16 +18,7 @@ export default defineConfig({
         ['meta', {property: 'og:description', content: ogDescription}],
         ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
         ['meta', {name: 'twitter:site', content: '@vite_js'}],
-        ['meta', {name: 'theme-color', content: '#646cff'}],
-        // [
-        //     'script',
-        //     {
-        //         src: 'https://cdn.usefathom.com/script.js',
-        //         'data-site': 'CBDFBSLI',
-        //         'data-spa': 'auto',
-        //         defer: ''
-        //     }
-        // ]
+        ['meta', {name: 'theme-color', content: '#646cff'}]
     ],
 
     vue: {
@@ -110,7 +54,7 @@ export default defineConfig({
         },
 
         footer: {
-            message: `Released under the MIT License. (${commitRef})`,
+            message: `Neumann615`,
             copyright: 'Copyright © 2019-present Evan You & Vite Contributors'
         },
 
@@ -120,7 +64,15 @@ export default defineConfig({
                 items: [
                     {
                         text: "ES6标准入门",
-                        link: "/ES6标准入门/Javascript简介及发展历史.md"
+                        link: "/ES6标准入门/ECMAScript简介及发展历史.md"
+                    },
+                    {
+                        text: "数据结构与算法",
+                        link: "/ES6标准入门/ECMAScript简介及发展历史.md"
+                    },
+                    {
+                        text: "计算机网络",
+                        link: "/ES6标准入门/ECMAScript简介及发展历史.md"
                     }
                 ]
             },
@@ -341,6 +293,10 @@ export default defineConfig({
                         {
                             text: "计算机网络",
                             link: "/interview/计算机网络"
+                        },
+                        {
+                            text: "数据结构",
+                            link: "/interview/数据结构"
                         }
                     ]
                 }
