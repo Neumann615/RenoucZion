@@ -127,11 +127,23 @@ export default defineConfig({
                 items: [
                     {
                         text: 'Webpack',
-                        link: 'https://chat.vitejs.dev'
+                        link: 'https://webpack.docschina.org/'
                     },
                     {
                         text: 'Vite',
-                        link: 'https://chat.vitejs.dev'
+                        link: 'http://www.vitejs.net/'
+                    },
+                    {
+                        text: "Rspack",
+                        link: "https://www.rspack.dev/zh/index.html"
+                    },
+                    {
+                        text: "Gulp",
+                        link: "https://www.gulpjs.com.cn/"
+                    },
+                    {
+                        text: "Grunt",
+                        link: "https://www.gruntjs.net/"
                     }
                 ]
             },

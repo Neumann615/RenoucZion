@@ -35,6 +35,44 @@ let bar = 2
 
 ### 暂时性死区
 
+只要块级作用域内存在let命令，它所声明的变量就绑定在这个区域，不再受外部的影响
+
+```javascript
+var tmp = 123;
+if (true) {
+    tmp = "abc" //报错
+    let tmp;
+}
+```
+
+上面的代码中存在全局变量tmp，但是块级作用域内let又声明了一个局部变量tmp，导致后者绑定这个块级作用域，所以在let声明变量前，对tmp赋值会报错。在代码块中，使用let命令声明变量之前，该变量都是不可用的。
+这被称为`暂时性死区`(temporal dead zone,简称TDZ)。
+
+```javascript
+if (true) {
+    //TDZ开始
+    tmp = "wxx"      //报错
+    console.log(tmp) //报错
+
+    let tmp; //TDZ结束
+    console.log(tmp) // undefined
+
+    tmp = 123
+    console.log(tmp) //123
+}
+
+//不安全的typeof
+
+typeof x //只要使用该变量就会报错
+let x
+
+typeof undefined_value //undefined
+
+```
+
+`ES6`规定暂时性死区和`let`、`const`语句不出现`变量提升`，主要是为了减少`运行时错误`，防止变量生命前就使用该变量，暂时性死区的本质是，只要进入当前作用域，所要使用的变量就已经存在，但是不可获取，只有等到该
+变量被声明，才可以获取和使用该变量。
+
 ## 块级作用域
 
 ## const命令
