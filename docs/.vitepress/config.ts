@@ -7,8 +7,8 @@ const ogUrl = 'https://vitejs.dev'
 
 
 export default defineConfig({
-    title: `Bupu`,
-    description: '个人博客',
+    title: `Bupu-admin官方文档`,
+    description: '一款基于react和antd定制的前端开发模板',
     head: [
         ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
         ['meta', {property: 'og:type', content: 'website'}],
@@ -34,19 +34,17 @@ export default defineConfig({
         },
 
         socialLinks: [
-            {icon: 'twitter', link: 'https://twitter.com/vite_js'},
-            {icon: 'discord', link: 'https://chat.vitejs.dev'},
             {icon: 'github', link: 'https://github.com/vitejs/vite'}
         ],
 
-        algolia: {
-            appId: '7H67QR5P0A',
-            apiKey: 'deaab78bcdfe96b599497d25acc6460e',
-            indexName: 'vitejs',
-            searchParameters: {
-                facetFilters: ['tags:en']
-            }
-        },
+        // algolia: {
+        //     appId: '7H67QR5P0A',
+        //     apiKey: 'deaab78bcdfe96b599497d25acc6460e',
+        //     indexName: 'vitejs',
+        //     searchParameters: {
+        //         facetFilters: ['tags:en']
+        //     }
+        // },
 
         carbonAds: {
             code: 'CEBIEK3N',
@@ -54,8 +52,8 @@ export default defineConfig({
         },
 
         footer: {
-            message: `Neumann615`,
-            copyright: 'Copyright © 2019-present Evan You & Vite Contributors'
+            //message: `Neumann615`,
+            copyright: 'Copyright © Bupu-admin'
         },
 
         nav: [
@@ -68,10 +66,6 @@ export default defineConfig({
                     },
                     {
                         text: "数据结构与算法",
-                        link: "/ES6标准入门/ECMAScript简介及发展历史.md"
-                    },
-                    {
-                        text: "计算机网络",
                         link: "/ES6标准入门/ECMAScript简介及发展历史.md"
                     }
                 ]
@@ -90,12 +84,12 @@ export default defineConfig({
                 ]
             },
             {
-                text: "面试",
+                text: "面试相关",
                 link: "/interview/vue"
             },
             {
-                text: '配置',
-                link: "/config/"
+                text: "旅行计划",
+                link: "/旅行计划/云南.md"
             },
             {
                 text: "组件库",
@@ -278,6 +272,21 @@ export default defineConfig({
                     ]
                 }
             ],
+            "旅行计划": [
+                {
+                    text: "旅行计划",
+                    items: [
+                        {
+                            text: "云南",
+                            link: "/旅行计划/云南"
+                        },
+                        // {
+                        //     text: "四川",
+                        //     link: "/旅行计划/四川"
+                        // },
+                    ]
+                }
+            ],
             "/interview/": [
                 {
                     text: "面试相关",
@@ -309,129 +318,6 @@ export default defineConfig({
                         {
                             text: "数据结构",
                             link: "/interview/数据结构"
-                        }
-                    ]
-                }
-            ],
-            '/guide/': [
-                {
-                    text: 'Guide',
-                    items: [
-                        {
-                            text: 'Why Vite',
-                            link: '/guide/why'
-                        },
-                        {
-                            text: 'Getting Started',
-                            link: '/guide/'
-                        },
-                        {
-                            text: 'Features',
-                            link: '/guide/features'
-                        },
-                        {
-                            text: 'Using Plugins',
-                            link: '/guide/using-plugins'
-                        },
-                        {
-                            text: 'Dependency Pre-Bundling',
-                            link: '/guide/dep-pre-bundling'
-                        },
-                        {
-                            text: 'Static Asset Handling',
-                            link: '/guide/assets'
-                        },
-                        {
-                            text: 'Building for Production',
-                            link: '/guide/build'
-                        },
-                        {
-                            text: 'Deploying a Static Site',
-                            link: '/guide/static-deploy'
-                        },
-                        {
-                            text: 'Env Variables and Modes',
-                            link: '/guide/env-and-mode'
-                        },
-                        {
-                            text: 'Server-Side Rendering (SSR)',
-                            link: '/guide/ssr'
-                        },
-                        {
-                            text: 'Backend Integration',
-                            link: '/guide/backend-integration'
-                        },
-                        {
-                            text: 'Comparisons',
-                            link: '/guide/comparisons'
-                        },
-                        {
-                            text: 'Troubleshooting',
-                            link: '/guide/troubleshooting'
-                        },
-                        {
-                            text: 'Migration from v2',
-                            link: '/guide/migration'
-                        }
-                    ]
-                },
-                {
-                    text: 'APIs',
-                    items: [
-                        {
-                            text: 'Plugin API',
-                            link: '/guide/api-plugin'
-                        },
-                        {
-                            text: 'HMR API',
-                            link: '/guide/api-hmr'
-                        },
-                        {
-                            text: 'JavaScript API',
-                            link: '/guide/api-javascript'
-                        },
-                        {
-                            text: 'Config Reference',
-                            link: '/config/'
-                        }
-                    ]
-                }
-            ],
-            '/config/': [
-                {
-                    text: 'Config',
-                    items: [
-                        {
-                            text: 'Configuring Vite',
-                            link: '/config/'
-                        },
-                        {
-                            text: 'Shared Options',
-                            link: '/config/shared-options'
-                        },
-                        {
-                            text: 'Server Options',
-                            link: '/config/server-options'
-                        },
-                        {
-                            text: 'Build Options',
-                            link: '/config/build-options'
-                        },
-                        {
-                            text: 'Preview Options',
-                            link: '/config/preview-options'
-                        },
-                        {
-                            text: 'Dep Optimization Options',
-                            link: '/config/dep-optimization-options'
-                        },
-                        {
-                            text: 'SSR Options',
-                            link: '/config/ssr-options'
-                        },
-                        {
-                            text: 'Worker Options',
-                            link: '/config/worker-options'
                         }
                     ]
                 }
