@@ -1,9 +1,0 @@
-{
-  "routes": [
-    { "handle": "filesystem" },
-    {
-      "src": "/bupu-admin/(.*)",
-      "dest": "https://bupu-admin.vercel.app/$1"
-    }
-  ]
-}
