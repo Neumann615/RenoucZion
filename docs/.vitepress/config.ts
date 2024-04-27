@@ -67,6 +67,10 @@ export default defineConfig({
                     {
                         text: "数据结构与算法",
                         link: "/ES6标准入门/ECMAScript简介及发展历史.md"
+                    },
+                    {
+                        text: "TypeScript",
+                        link: "/TypeScript/基础类型.md"
                     }
                 ]
             },
@@ -269,6 +273,49 @@ export default defineConfig({
                             text: "TypedArray视图",
                             link: "/ES6标准入门/TypedArray视图"
                         },
+                    ]
+                }
+            ],
+            "TypeScript": [
+                {
+                    text: "TypeScript",
+                    items: [
+                        {
+                            text: "基础类型",
+                            link: "/TypeScript/基础类型"
+                        },
+                        {
+                            text: "接口和对象类型",
+                            link: "/TypeScript/接口和对象类型"
+                        },
+                        {
+                            text: "数组类型",
+                            link: "/TypeScript/数组类型"
+                        },
+                        {
+                            text: "函数类型",
+                            link: "/TypeScript/函数类型"
+                        },
+                        {
+                            text: "联合类型&交叉类型&类型断言",
+                            link: "/TypeScript/联合类型&交叉类型&类型断言"
+                        },
+                        {
+                            text: "内置对象",
+                            link: "/TypeScript/内置对象"
+                        },
+                        {
+                            text: "类",
+                            link: "/TypeScript/类"
+                        },
+                        {
+                            text: "元组类型",
+                            link: "/TypeScript/元组类型"
+                        },
+                        {
+                            text: "枚举类型",
+                            link: "/TypeScript/枚举类型"
+                        }
                     ]
                 }
             ],
