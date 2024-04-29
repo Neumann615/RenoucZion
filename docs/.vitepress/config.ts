@@ -35,7 +35,7 @@ export default defineConfig({
         },
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/vitejs/vite'}
+            {icon: 'github', link: 'https://github.com/Neumann615'}
         ],
 
         // algolia: {
@@ -67,11 +67,11 @@ export default defineConfig({
                     },
                     {
                         text: "ES6标准入门",
-                        link: "/ES6标准入门/ECMAScript简介及发展历史.md"
+                        link: "/ES6标准入门/intro"
                     },
                     {
                         text: "TypeScript",
-                        link: "/TypeScript/intro.md"
+                        link: "/TypeScript/intro"
                     }
                 ]
             },
@@ -167,113 +167,133 @@ export default defineConfig({
                     text: "ES6标准入门",
                     items: [
                         {
-                            text: "ECMAScript简介及发展历史",
-                            link: "/ES6标准入门/ECMAScript简介及发展历史"
+                            text: "ECMAScript 6 简介",
+                            link: "ES6标准入门/intro"
                         },
                         {
-                            text: "let和const命令",
-                            link: "/ES6标准入门/let和const命令"
+                            text: "let 和 const 命令",
+                            link: "ES6标准入门/let"
                         },
                         {
                             text: "变量的解构赋值",
-                            link: "/ES6标准入门/变量的解构赋值"
+                            link: "ES6标准入门/destructuring"
                         },
                         {
                             text: "字符串的扩展",
-                            link: "/ES6标准入门/字符串的扩展"
+                            link: "ES6标准入门/string"
+                        },
+                        {
+                            text: "字符串的新增方法",
+                            link: "ES6标准入门/string-methods"
                         },
                         {
                             text: "正则的扩展",
-                            link: "/ES6标准入门/正则的扩展"
+                            link: "ES6标准入门/regex"
                         },
                         {
                             text: "数值的扩展",
-                            link: "/ES6标准入门/数值的扩展"
+                            link: "ES6标准入门/number"
                         },
                         {
                             text: "函数的扩展",
-                            link: "/ES6标准入门/函数的扩展"
+                            link: "ES6标准入门/function"
                         },
                         {
                             text: "数组的扩展",
-                            link: "/ES6标准入门/数组的扩展"
+                            link: "ES6标准入门/array"
                         },
                         {
                             text: "对象的扩展",
-                            link: "/ES6标准入门/对象的扩展"
+                            link: "ES6标准入门/object"
+                        },
+                        {
+                            text: "对象的新增方法",
+                            link: "ES6标准入门/object-methods"
+                        },
+                        {
+                            text: "运算符的扩展",
+                            link: "ES6标准入门/operator"
                         },
                         {
                             text: "Symbol",
-                            link: "/ES6标准入门/Symbol"
+                            link: "ES6标准入门/symbol"
                         },
                         {
-                            text: "Set和Map数据结构",
-                            link: "/ES6标准入门/Set和Map数据结构"
+                            text: "Set 和 Map 数据结构",
+                            link: "ES6标准入门/set-map"
                         },
                         {
                             text: "Proxy",
-                            link: "/ES6标准入门/Proxy"
+                            link: "ES6标准入门/proxy"
                         },
                         {
                             text: "Reflect",
-                            link: "/ES6标准入门/Reflect"
+                            link: "ES6标准入门/reflect"
                         },
                         {
-                            text: "Promise对象",
-                            link: "/ES6标准入门/Promise对象"
+                            text: "Promise 对象",
+                            link: "ES6标准入门/promise"
                         },
                         {
-                            text: "Iterator和for...of循环",
-                            link: "/ES6标准入门/Iterator和for...of循环"
+                            text: "Iterator 和 for...of 循环",
+                            link: "ES6标准入门/iterator"
                         },
                         {
-                            text: "Generator函数的语法",
-                            link: "/ES6标准入门/Generator函数的语法"
+                            text: "Generator 函数的语法",
+                            link: "ES6标准入门/generator"
                         },
                         {
-                            text: "Generator函数的异步应用",
-                            link: "/ES6标准入门/Generator函数的异步应用"
+                            text: "Generator 函数的异步应用",
+                            link: "ES6标准入门/generator-async"
                         },
                         {
-                            text: "async函数",
-                            link: "/ES6标准入门/async函数"
+                            text: "async 函数",
+                            link: "ES6标准入门/async"
                         },
                         {
-                            text: "Class的基本语法",
-                            link: "/ES6标准入门/Class的基本语法"
+                            text: "Class 的基本语法",
+                            link: "ES6标准入门/class"
                         },
                         {
-                            text: "Class的继承",
-                            link: "/ES6标准入门/Class的继承"
+                            text: "Class 的继承",
+                            link: "ES6标准入门/class-extends"
                         },
                         {
-                            text: "修饰器",
-                            link: "/ES6标准入门/修饰器"
+                            text: "Module 的语法",
+                            link: "ES6标准入门/module"
                         },
                         {
-                            text: "Module的语法",
-                            link: "/ES6标准入门/Module的语法"
-                        },
-                        {
-                            text: "Module的加载实现",
-                            link: "/ES6标准入门/Module的加载实现"
+                            text: "Module 的加载实现",
+                            link: "ES6标准入门/module-loader"
                         },
                         {
                             text: "编程风格",
-                            link: "/ES6标准入门/编程风格"
+                            link: "ES6标准入门/style"
                         },
                         {
-                            text: "读懂ECMAScript规格",
-                            link: "/ES6标准入门/读懂ECMAScript规格"
+                            text: "读懂规格",
+                            link: "ES6标准入门/spec"
+                        },
+                        {
+                            text: "异步遍历器",
+                            link: "ES6标准入门/async-iterator"
                         },
                         {
                             text: "ArrayBuffer",
-                            link: "/ES6标准入门/ArrayBuffer"
+                            link: "ES6标准入门/arraybuffer"
                         },
                         {
-                            text: "TypedArray视图",
-                            link: "/ES6标准入门/TypedArray视图"
+                            text: "最新提案",
+                            link: "ES6标准入门/proposals"
                         },
+                        {
+                            text: "Decorator",
+                            link: "ES6标准入门/decorator"
+                        },
+                        {
+                            text: "参考链接",
+                            link: "ES6标准入门/reference"
+                        }
                     ]
                 }
             ],

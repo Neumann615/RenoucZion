@@ -17,7 +17,7 @@ hero:
       link: /interview/vue.html
     - theme: alt
       text: 在github上查看
-      link: https://github.com/vitejs/vite
+      link: https://github.com/Neumann615
 features:
   - icon: 💡
     title: 精悍的知识要点
