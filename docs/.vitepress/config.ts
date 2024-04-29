@@ -736,7 +736,7 @@ export default defineConfig({
                         },
                         {
                             text: "d.ts 类型声明文件",
-                            link: "/TypeScript/d.ts"
+                            link: "/TypeScript/d-ts"
                         },
                         {
                             text: "类型运算符",
@@ -756,7 +756,7 @@ export default defineConfig({
                         },
                         {
                             text: "tsconfig.json文件",
-                            link: "/TypeScript/tsconfig.json"
+                            link: "/TypeScript/tsconfig-json"
                         },
                         {
                             text: "tsc命令",
