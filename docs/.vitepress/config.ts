@@ -2,13 +2,13 @@ import {defineConfig, DefaultTheme} from 'vitepress'
 
 const ogDescription = 'Next Generation Frontend Tooling'
 const ogImage = 'https://vitejs.dev/og-image.png'
-const ogTitle = 'Vite'
-const ogUrl = 'https://vitejs.dev'
+const ogTitle = 'Bupu'
+const ogUrl = 'https://xiaonuo.love'
 
 
 export default defineConfig({
-    title: `Bupu-admin官方文档`,
-    description: '一款基于react和antd定制的前端开发模板',
+    title: `Bupu`,
+    description: '小诺的个人博客',
     head: [
         ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
         ['meta', {property: 'og:type', content: 'website'}],
@@ -25,9 +25,10 @@ export default defineConfig({
         reactivityTransform: true
     },
 
+
     themeConfig: {
         logo: '/logo.svg',
-
+        aside: true,
         editLink: {
             pattern: 'https://github.com/vitejs/vite/edit/main/docs/:path',
             text: 'Suggest changes to this page'
@@ -53,7 +54,7 @@ export default defineConfig({
 
         footer: {
             //message: `Neumann615`,
-            copyright: 'Copyright © Bupu-admin'
+            copyright: 'Copyright © Bupu'
         },
 
         nav: [
@@ -65,12 +66,8 @@ export default defineConfig({
                         link: "/ES6标准入门/ECMAScript简介及发展历史.md"
                     },
                     {
-                        text: "数据结构与算法",
-                        link: "/ES6标准入门/ECMAScript简介及发展历史.md"
-                    },
-                    {
                         text: "TypeScript",
-                        link: "/TypeScript/基础类型.md"
+                        link: "/TypeScript/intro.md"
                     }
                 ]
             },
@@ -276,45 +273,109 @@ export default defineConfig({
                     ]
                 }
             ],
-            "TypeScript": [
+            "/TypeScript/": [
                 {
-                    text: "TypeScript",
+                    text: "TypeScript教程",
                     items: [
                         {
-                            text: "基础类型",
-                            link: "/TypeScript/基础类型"
+                            text: "简介",
+                            link: "/TypeScript/intro"
                         },
                         {
-                            text: "接口和对象类型",
-                            link: "/TypeScript/接口和对象类型"
+                            text: "any类型",
+                            link: "/TypeScript/any"
                         },
                         {
-                            text: "数组类型",
-                            link: "/TypeScript/数组类型"
+                            text: "类型系统",
+                            link: "/TypeScript/types"
                         },
                         {
-                            text: "函数类型",
-                            link: "/TypeScript/函数类型"
+                            text: "数组",
+                            link: "/TypeScript/array"
                         },
                         {
-                            text: "联合类型&交叉类型&类型断言",
-                            link: "/TypeScript/联合类型&交叉类型&类型断言"
+                            text: "元组",
+                            link: "/TypeScript/tuple"
                         },
                         {
-                            text: "内置对象",
-                            link: "/TypeScript/内置对象"
+                            text: "symbol类型",
+                            link: "/TypeScript/symbol"
+                        },
+                        {
+                            text: "函数",
+                            link: "/TypeScript/function"
+                        },
+                        {
+                            text: "对象",
+                            link: "/TypeScript/object"
+                        },
+                        {
+                            text: "interface",
+                            link: "/TypeScript/interface"
                         },
                         {
                             text: "类",
-                            link: "/TypeScript/类"
+                            link: "/TypeScript/class"
                         },
                         {
-                            text: "元组类型",
-                            link: "/TypeScript/元组类型"
+                            text: "泛型",
+                            link: "/TypeScript/generics"
                         },
                         {
-                            text: "枚举类型",
-                            link: "/TypeScript/枚举类型"
+                            text: "Enum类型",
+                            link: "/TypeScript/enum"
+                        },
+                        {
+                            text: "类型断言",
+                            link: "/TypeScript/assert"
+                        },
+                        {
+                            text: "模块",
+                            link: "/TypeScript/module"
+                        },
+                        {
+                            text: "namespace",
+                            link: "/TypeScript/namespace"
+                        },
+                        {
+                            text: "装饰器",
+                            link: "/TypeScript/decorator"
+                        },
+                        {
+                            text: "装饰器(旧)",
+                            link: "/TypeScript/decorator-legacy"
+                        },
+                        {
+                            text: "declare 关键字",
+                            link: "/TypeScript/declare"
+                        },
+                        {
+                            text: "d.ts 类型声明文件",
+                            link: "/TypeScript/d.ts"
+                        },
+                        {
+                            text: "类型运算符",
+                            link: "/TypeScript/operator"
+                        },
+                        {
+                            text: "类型映射",
+                            link: "/TypeScript/mapping"
+                        },
+                        {
+                            text: "类型工具",
+                            link: "/TypeScript/utility"
+                        },
+                        {
+                            text: "注释指令",
+                            link: "/TypeScript/comment"
+                        },
+                        {
+                            text: "tsconfig.json文件",
+                            link: "/TypeScript/tsconfig.json"
+                        },
+                        {
+                            text: "tsc命令",
+                            link: "/TypeScript/tsc"
                         }
                     ]
                 }
