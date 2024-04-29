@@ -1,5 +1,6 @@
 {
-  "name": "bupu",
+  "name": "bupu-blog",
+  "description": "小诺的个人博客",
   "private": true,
   "version": "0.0.0",
   "type": "module",
