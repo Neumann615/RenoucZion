@@ -9,6 +9,7 @@ const ogUrl = 'https://xiaonuo.love'
 export default defineConfig({
     title: `Bupu`,
     description: '小诺的个人博客',
+    assetsInclude: ['**/*.png', '**/*.jpg',"**/*.PNG"],
     head: [
         ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
         ['meta', {property: 'og:type', content: 'website'}],
@@ -20,12 +21,9 @@ export default defineConfig({
         ['meta', {name: 'twitter:site', content: '@vite_js'}],
         ['meta', {name: 'theme-color', content: '#646cff'}]
     ],
-
     vue: {
         reactivityTransform: true
     },
-
-
     themeConfig: {
         logo: '/logo.svg',
         aside: true,
@@ -72,15 +70,10 @@ export default defineConfig({
                     {
                         text: "TypeScript",
                         link: "/TypeScript/intro"
-                    }
-                ]
-            },
-            {
-                text: "框架理解",
-                items: [
+                    },
                     {
                         text: "Vue",
-                        link: "/framework-analysis/vue.md"
+                        link: "/Vue/intro.md"
                     },
                     {
                         text: "React",
@@ -97,72 +90,77 @@ export default defineConfig({
                 link: "/旅行计划/云南.md"
             },
             {
-                text: "组件库",
+                text: "其他资源",
                 items: [
                     {
-                        text: 'ElementPlus',
-                        link: 'https://element-plus.gitee.io/zh-CN/'
+                        text: "组件库",
+                        items: [
+                            {
+                                text: 'ElementPlus',
+                                link: 'https://element-plus.gitee.io/zh-CN/'
+                            },
+                            {
+                                text: 'AntDesign',
+                                link: 'https://ant-design.gitee.io/index-cn'
+                            },
+                            {
+                                text: 'Vant',
+                                link: 'https://vant-contrib.gitee.io/vant/#/zh-CN'
+                            },
+                            {
+                                text: 'Varlet',
+                                link: 'https://varlet.gitee.io/varlet-ui/#/zh-CN/home'
+                            },
+                            {
+                                text: 'NaiveUI',
+                                link: 'https://www.naiveui.com/zh-CN/os-theme'
+                            }
+                        ]
                     },
                     {
-                        text: 'AntDesign',
-                        link: 'https://ant-design.gitee.io/index-cn'
+                        text: "构建工具",
+                        items: [
+                            {
+                                text: 'Webpack',
+                                link: 'https://webpack.docschina.org/'
+                            },
+                            {
+                                text: 'Vite',
+                                link: 'http://www.vitejs.net/'
+                            },
+                            {
+                                text: "Rspack",
+                                link: "https://www.rspack.dev/zh/index.html"
+                            },
+                            {
+                                text: "Gulp",
+                                link: "https://www.gulpjs.com.cn/"
+                            },
+                            {
+                                text: "Grunt",
+                                link: "https://www.gruntjs.net/"
+                            }
+                        ]
                     },
                     {
-                        text: 'Vant',
-                        link: 'https://vant-contrib.gitee.io/vant/#/zh-CN'
-                    },
-                    {
-                        text: 'Varlet',
-                        link: 'https://varlet.gitee.io/varlet-ui/#/zh-CN/home'
-                    },
-                    {
-                        text: 'NaiveUI',
-                        link: 'https://www.naiveui.com/zh-CN/os-theme'
-                    }
-                ]
-            },
-            {
-                text: "构建工具",
-                items: [
-                    {
-                        text: 'Webpack',
-                        link: 'https://webpack.docschina.org/'
-                    },
-                    {
-                        text: 'Vite',
-                        link: 'http://www.vitejs.net/'
-                    },
-                    {
-                        text: "Rspack",
-                        link: "https://www.rspack.dev/zh/index.html"
-                    },
-                    {
-                        text: "Gulp",
-                        link: "https://www.gulpjs.com.cn/"
-                    },
-                    {
-                        text: "Grunt",
-                        link: "https://www.gruntjs.net/"
-                    }
-                ]
-            },
-            {
-                text: "代码分析",
-                items: [
-                    {
-                        text: 'ast语法解析',
-                        link: 'https://astexplorer.net/'
-                    },
-                    {
-                        text: 'js运行机制可视化',
-                        link: 'https://www.jsv9000.app/'
+                        text: "代码分析",
+                        items: [
+                            {
+                                text: 'ast语法解析',
+                                link: 'https://astexplorer.net/'
+                            },
+                            {
+                                text: 'js运行机制可视化',
+                                link: 'https://www.jsv9000.app/'
+                            }
+                        ]
                     }
                 ]
             }
         ],
 
         sidebar: {
-            "/ES6标准入门/": [
+            "ES6标准入门": [
                 {
                     text: "ES6标准入门",
                     items: [
@@ -785,6 +783,120 @@ export default defineConfig({
                     ]
                 }
             ],
+            "Vue": [
+                {
+                    text: '导读',
+                    items: [
+                        {
+                            text: "说明",
+                            link: "/Vue/intro"
+                        }
+                    ]
+                },
+                {
+                    text: "框架设计概览",
+                    items: [
+                        {
+                            text: "权衡的艺术",
+                            link: "/Vue/框架设计概览/权衡的艺术"
+                        },
+                        {
+                            text: "框架设计的核心要素",
+                            link: "/Vue/框架设计概览/框架设计的核心要素"
+                        },
+                        {
+                            text: "Vue.js3的设计思路",
+                            link: "/Vue/框架设计概览/Vue.js3的设计思路"
+                        }
+                    ]
+                },
+                {
+                    text: "响应系统",
+                    items: [
+                        {
+                            text: "响应系统的作用与实现",
+                            link: "/Vue/响应系统/响应系统的作用与实现"
+                        },
+                        {
+                            text: "非原始值的响应式方案",
+                            link: "/Vue/响应系统/非原始值的响应式方案"
+                        },
+                        {
+                            text: "原始值的响应式方案",
+                            link: "/Vue/响应系统/原始值的响应式方案"
+                        }
+                    ]
+                },
+                {
+                    text: "渲染器",
+                    items: [
+                        {
+                            text: "渲染器的设计",
+                            link: "/Vue/渲染器/渲染器的设计"
+                        },
+                        {
+                            text: "挂载与更新",
+                            link: "/Vue/渲染器/挂载与更新"
+                        },
+                        {
+                            text: "简单 Diff 算法",
+                            link: "/Vue/渲染器/简单 Diff 算法"
+                        },
+                        {
+                            text: "双端 Diff 算法",
+                            link: "/Vue/渲染器/双端 Diff 算法"
+                        },
+                        {
+                            text: "快速 Diff 算法",
+                            link: "/Vue/渲染器/快速 Diff 算法"
+                        }
+                    ]
+                },
+                {
+                    text: "组件化",
+                    items: [
+                        {
+                            text: "组件的实现原理",
+                            link: "/Vue/组件化/组件的实现原理"
+                        },
+                        {
+                            text: "异步组件与函数式组件",
+                            link: "/Vue/组件化/异步组件与函数式组件"
+                        },
+                        {
+                            text: "内建组件和模块",
+                            link: "/Vue/组件化/内建组件和模块"
+                        }
+                    ]
+                },
+                {
+                    text: "编译器",
+                    items: [
+                        {
+                            text: "编译器核心技术概览",
+                            link: "/Vue/编译器/编译器核心技术概览"
+                        },
+                        {
+                            text: "解析器",
+                            link: "/Vue/编译器/解析器"
+                        },
+                        {
+                            text: "编译优化",
+                            link: "/Vue/编译器/编译优化"
+                        }
+                    ]
+                },
+                {
+                    text: "服务端渲染",
+                    items: [
+                        {
+                            text: "同构渲染",
+                            link: "/Vue/服务端渲染/同构渲染"
+                        }
+                    ]
+                }
+            ],
+
             "旅行计划": [
                 {
                     text: "旅行计划",

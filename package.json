@@ -13,6 +13,8 @@
     "docs:serve": "vitepress serve docs"
   },
   "dependencies": {
+    "@rollup/plugin-image": "^3.0.3",
+    "fs": "^0.0.1-security",
     "vitepress": "^1.1.4",
     "vue": "^3.2.37"
   },
