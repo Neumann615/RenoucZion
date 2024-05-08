@@ -9,7 +9,6 @@ const ogUrl = 'https://xiaonuo.love'
 export default defineConfig({
     title: `Bupu`,
     description: '小诺的个人博客',
-    assetsInclude: ['**/*.png', '**/*.jpg',"**/*.PNG"],
     head: [
         ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
         ['meta', {property: 'og:type', content: 'website'}],
@@ -21,9 +20,6 @@ export default defineConfig({
         ['meta', {name: 'twitter:site', content: '@vite_js'}],
         ['meta', {name: 'theme-color', content: '#646cff'}]
     ],
-    vue: {
-        reactivityTransform: true
-    },
     themeConfig: {
         logo: '/logo.svg',
         aside: true,
