@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+    import {createApp, createElementVNode} from "./vue.esm-browser.js";
+
+    const set = new Set([1])
+    const newSet = new Set(set)
+    setTimeout(() => {
+        newSet.forEach(item => {
+            set.delete(1)
+            set.add(1)
+            console.log('遍历中')
+        })
+    }, 3000)
+    const A = {
+        render() {
+            return createElementVNode("div", {}, B)
+        }
+    }
+
+    const B = {
+        template: `
+          <div>{{ name }}</div>`,
+        data() {
+            return {
+                name: "wxx"
+            }
+        }
+    }
+
+    createApp({
+        template: `
+          <div>{{ name }}</div>`,
+        data() {
+            return {
+                name: "wxx"
+            }
+        }
+    }).mount("#app")
+</script>
+
+</body>
+</html>
