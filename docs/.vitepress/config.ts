@@ -1,4 +1,4 @@
-import {defineConfig, DefaultTheme} from 'vitepress'
+import { defineConfig, DefaultTheme } from 'vitepress'
 
 const ogDescription = 'Next Generation Frontend Tooling'
 const ogImage = 'https://vitejs.dev/og-image.png'
@@ -10,15 +10,15 @@ export default defineConfig({
     title: `Bupu`,
     description: '小诺的个人博客',
     head: [
-        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
-        ['meta', {property: 'og:type', content: 'website'}],
-        ['meta', {property: 'og:title', content: ogTitle}],
-        ['meta', {property: 'og:image', content: ogImage}],
-        ['meta', {property: 'og:url', content: ogUrl}],
-        ['meta', {property: 'og:description', content: ogDescription}],
-        ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
-        ['meta', {name: 'twitter:site', content: '@vite_js'}],
-        ['meta', {name: 'theme-color', content: '#646cff'}]
+        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+        ['meta', { property: 'og:type', content: 'website' }],
+        ['meta', { property: 'og:title', content: ogTitle }],
+        ['meta', { property: 'og:image', content: ogImage }],
+        ['meta', { property: 'og:url', content: ogUrl }],
+        ['meta', { property: 'og:description', content: ogDescription }],
+        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+        ['meta', { name: 'twitter:site', content: '@vite_js' }],
+        ['meta', { name: 'theme-color', content: '#646cff' }]
     ],
     themeConfig: {
         logo: '/logo.svg',
@@ -29,7 +29,7 @@ export default defineConfig({
         },
 
         socialLinks: [
-            {icon: 'github', link: 'https://github.com/Neumann615'}
+            { icon: 'github', link: 'https://github.com/Neumann615' }
         ],
 
         // algolia: {
@@ -937,8 +937,12 @@ export default defineConfig({
                             link: "/interview/计算机网络"
                         },
                         {
-                            text: "数据结构",
+                            text: "数据结构1",
                             link: "/interview/数据结构"
+                        },
+                        {
+                            text: "ts",
+                            link: "/interview/ts"
                         }
                     ]
                 }

@@ -111,9 +111,88 @@ ReactDOM.render(<RefExample/>,document.getElementById('root'))
 ```
 
 ## 受控组件和非受控组件
+react能否知道当前的状态修改
 - 受控组件：由react空值输入表单元素而改变其值的方式，例如input,textarea,select
-
 - 非受控组件：表单数据由DOM本身处理，不受setState()的控制，例如input输入即显示最新值（使用ref从DOM获取表单值）
+```js
+  //非受控转换成受控组件
+     const App = () => {
+      const [value,setValue] = useState('');
+      return <input value={value} onInput={event => {setValue(event.target.value)}}/>
+     }
+
+```
+
+## react ref
+
+- ref 可以允许用户直接访问DOM元素或者实例
+
+## react为什么要使用hooks
+
+1. 复杂的组件
+   1. 将组件中相关的部分可以放在一起 比如对于事件的监听器 需要在两个生命周期中去进行声明和销毁，而在hooks中可以将他们放在同一块
+
+## 错误边界ERROR Boundary
+
+- 组件可以捕获发生在子组件的js报错，并能降级处理
+   1. static getDervedStateFromError componentDidCatch
+
+## react的代码分割
+
+
+
+## 用户如何通过不同的权限，查看不同的页面
+
+1. js
+   1. ajax role -> menuList json展示有权限的
+2. react-router
+   1. inEnter
+
+```js
+  <Router path='/home' component={App} onEnter={(nextState,replace) => {
+    if(nextState.location.pathname !== '/'){
+      //根据参数判断用户信息
+      const uid = utils.getUrlParams(nextState,'uid')
+      if (!uid){
+        replace('/')
+      }
+      else{
+        //xxx
+      }
+    }
+  }}>
+```
+
+
+## React.createClass 以及extends React.components的区别
+
+React.createClass本质上是一个工厂函数 extends更接近es6中class的写法
+1. 语法使用区别:主要体现在方法的定义和静态属性的定义
+2. propType 和 getDefaultProps
+   1. createClass:propType 和 getDefaultProps去获取和设置对应的props
+   2. React.component:propsTypes defaultProps属性去设置
+3. 设置state初始的值
+   1. createClass:getInitialState()
+   2. component：constructor
+4. mixin
+   1. createClass:mixins 添加属性
+   2. component：不可以使用mixin 需安装库
+
+## React事件和html事件的区别
+- 事件名称 
+  - 原生的事件：全小写
+  - react onClick 小驼峰
+- 事件函数处理
+  - 原生： 字符串
+  - react： onclick={}
+- 阻止事件本省的默认行为
+  - 原生： return false
+  - react preventDefault()
+
+react合成事件是模拟原生DOM的行为 
+1. 兼容所有浏览器 更好的跨平台
+2. react的所有事件存放在一个数组中 避免频繁的新增和删除
+3. 方便react统一管理和事务机制
 
 
 ## React中常用的hooks的用法
@@ -304,3 +383,149 @@ function Demo() {
         </div>
     );
 }
+```
+
+## 代码分割
+- import
+- React.lazy结合suspense
+
+## Fragments
+- React.fragments保证函数有唯一的根节点
+
+## Hoc
+
+
+- 是一个没有副作用的纯函数  入参是一个组件，出参也是一个组件
+1. 抽离重复的代码实现组件的复用性
+2. 控制渲染流程 权限控制
+3. 处理生命周期 检测组件渲染性能的好坏
+
+- 传入一个组件，计算得到组件render期间的耗时
+```js
+
+  function withTime(wrapperComponent){
+    return class extends wrapperComponent() {
+      constructor(props){
+        super(props),
+        start,
+        end,
+      }
+
+      componentDidmount(){
+        if(super.componentDidmount){
+          super.componentDidmount()
+        }
+        end + = new Date()
+        sendLod(start-end)
+      }
+
+      componetWillMount(){
+        if(super.componetWillMount){
+          super.componetWillMount()
+        }
+        start + = new Date()
+      }
+
+      return super.render()
+    }
+  }
+```
+
+
+
+## hooks
+
+## 异步组件
+- 手写一个异步组件
+```js
+const OtherComponent = React.lazy(() => import('./OtherComponent'))
+
+const OtherComponent = lazy(new Promise(resolve=>{
+  setTimeout(() => {
+    resolve:{default:<OtherComponent/>}
+  },3000)
+}))
+
+
+// suspense组件
+<Suspense fallback={<div>loading</div>}>
+<About/>
+</Suspense>
+
+class Suspense extends React.Component{
+  state = {
+    isRender:true
+  }
+  componentDidCatch(e){
+    this.setState({
+      isRender:fasle
+    })
+  }
+
+  render() {
+    const {children,fallback} = this.props
+    const {isRender} = this.state
+    return isRender ? children : fallback
+  }
+}
+```
+
+## react hooks的使用限制
+
+1. 是什么：不要在循环，条件嵌套函数中调用hook，在react的组件中调用hook
+2. 设计出初衷：改进react的开发模式
+3. 问题领域： 1.组件之间难以复用状态逻辑，以前的方式是高阶组件，renderProps,状态管理2.复杂的组件变得难以理解（生命周期函数与业务逻辑耦合太深，）3.人和机器都容易混淆（this值捕获问题，类属性草案）
+4. 方案原理 react中是单链表的形式，通过next按顺序串联所有的hook，将链表中的一个hook与fiber关联，当fiber树更新时，就能从hooks中计算出最终输出的状态和执行相关的副作用。如果在判断逻辑嵌套循环中，就可能导致更新时不能获取到对应的值
+
+
+高阶组件的缺陷
+1. 高阶组件的props都是直接穿透下来，无法确实子组件的props来源
+2. 可能会出现props重复导致报错
+3. 组件的嵌套层级太深
+4. 会导致ref丢失
+
+
+
+
+## useEffect 和 useLayouteffect的区别
+- 他们都是用来处理副作用的两个钩子函数，他们之间的区别主要在触发的时机不同
+- useEffect会在组件渲染完成后异步执行副作用代码，不会阻塞组件的渲染，会在浏览器绘制完成后才执行，这一位置useEffect中的副作用代码会在页面渲染之后执行，他适合处理不需要立即执行副作用，如事件请求，事件绑定等等
+- useLayoutEffect会在组件渲染完成后同步执行副作用代码，他会在浏览器渲染之前执行，可能会阻塞组件的渲染，适合处理需要在页面渲染之前立即执行的副作用，如获取dom元素的尺寸，触发动画等
+
+## useRef的使用场景
+原因
+1. 持久性，useref的返回对象在组件的整个生命周期中都是持久的，而不是每次渲染都重新创建
+2. 不会触发渲染，当useState中的状态改变时，组件会重新渲染，useRef不会
+使用场景
+1. 访问dom元素
+2. 保存状态但是不触发渲染时
+
+## react.memo和useMemo的使用场景
+
+1. usememo是用来缓存计算结果，只有在依赖项发生变化时才能重新计算，可以有效减小不必要的计算开销
+2. 当state发生变化时会重新渲染该组件，如果引入子组件，子组件也会重新渲染，react.memo会浅比较当前组件的props与上一次渲染时的props 如果props没有发生变化，则跳过渲染过程，react.memo通过自定义第二个参数，可以拿到前一个和后一个props，从而比较里面的属性值是否发生变化而决定是否重新渲染组件
+
+## react fiber的工作机制，解决了哪些问题
+
+## useState为什么返回数组
+
+## class和hook的区别
+
+作为组件而言类组件和函数组件在使用与呈现上没有任何不同，性能也不会有明显的差异，他们在开发时的心智模型存在巨大的不同，类组件时基于面向对象编程，核心概念是继承和生命周期，函数组建的内核是函数式编程
+1. 使用场景：在不适用recompose或者hooks的情况下，如需使用生命周期，就用类组件，限定场景时固定的。在recompose或hookd的加持下类组件与函数组建的能力边界完全相同，都可使用类似生命周期等能力
+2. 设计模式：类组件可以实现继承，函数组件缺少继承能力
+3. 性能优化：类组件优化依靠shouldComponentUpdate组件去阻断渲染，函数组件靠react.memo去优化
+4. 类组件的缺点...
+
+
+## 自定义hook什么时候用
+
+## hook的闭包链表
+
+## hook的原理
+
+
+
+
+
+
