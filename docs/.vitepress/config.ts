@@ -86,6 +86,23 @@ export default defineConfig({
                 link: "/旅行计划/云南.md"
             },
             {
+                text:"其他项目",
+                items:[
+                    {
+                        text:"后台管理模板",
+                        link:"https://bupu-admin.xiaonuo.love/"
+                    },
+                    {
+                        text:"截图工具",
+                        link:"https://bupu-board.xiaonuo.love/"
+                    },
+                    {
+                        text:"在线白板",
+                        link:"https://bupu-board.xiaonuo.love?mode=whiteboard"
+                    }
+                ]
+            },
+            {
                 text: "其他资源",
                 items: [
                     {
@@ -152,7 +169,8 @@ export default defineConfig({
                         ]
                     }
                 ]
-            }
+            },
+
         ],
 
         sidebar: {
