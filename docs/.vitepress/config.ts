@@ -2,7 +2,7 @@ import { defineConfig, DefaultTheme } from 'vitepress'
 
 const ogDescription = 'Next Generation Frontend Tooling'
 const ogImage = 'https://vitejs.dev/og-image.png'
-const ogTitle = 'Bupu'
+const ogTitle = 'Bupu-blog'
 const ogUrl = 'https://xiaonuo.love'
 
 
@@ -48,7 +48,7 @@ export default defineConfig({
 
         footer: {
             //message: `Neumann615`,
-            copyright: 'Copyright © Bupu'
+            copyright: 'Copyright © Bupu-blog'
         },
 
         nav: [
@@ -81,10 +81,10 @@ export default defineConfig({
                 text: "面试相关",
                 link: "/interview/vue"
             },
-            {
-                text: "旅行计划",
-                link: "/旅行计划/云南.md"
-            },
+            // {
+            //     text: "旅行计划",
+            //     link: "/旅行计划/云南.md"
+            // },
             {
                 text:"其他项目",
                 items:[
@@ -910,21 +910,21 @@ export default defineConfig({
                     ]
                 }
             ],
-            "旅行计划": [
-                {
-                    text: "旅行计划",
-                    items: [
-                        {
-                            text: "云南",
-                            link: "/旅行计划/云南"
-                        },
-                        // {
-                        //     text: "四川",
-                        //     link: "/旅行计划/四川"
-                        // },
-                    ]
-                }
-            ],
+            // "旅行计划": [
+            //     {
+            //         text: "旅行计划",
+            //         items: [
+            //             {
+            //                 text: "云南",
+            //                 link: "/旅行计划/云南"
+            //             },
+            //             // {
+            //             //     text: "四川",
+            //             //     link: "/旅行计划/四川"
+            //             // },
+            //         ]
+            //     }
+            // ],
             "/interview/": [
                 {
                     text: "面试相关",
