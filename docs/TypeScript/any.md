@@ -1,7 +1,5 @@
 # any 类型，unknown 类型，never 类型
 
-![avatar](/Vue/images/第1页-1.png)
-
 本章介绍 TypeScript 的三种特殊类型，它们可以作为学习 TypeScript 类型系统的起点。
 
 ## any 类型

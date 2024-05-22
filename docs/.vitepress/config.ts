@@ -7,7 +7,7 @@ const ogUrl = 'https://xiaonuo.love'
 
 
 export default defineConfig({
-    title: `Bupu`,
+    title: `Bupu-blog`,
     description: '小诺的个人博客',
     head: [
         ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
@@ -910,7 +910,6 @@ export default defineConfig({
                     ]
                 }
             ],
-
             "旅行计划": [
                 {
                     text: "旅行计划",
@@ -955,12 +954,16 @@ export default defineConfig({
                             link: "/interview/计算机网络"
                         },
                         {
-                            text: "数据结构1",
+                            text: "数据结构",
                             link: "/interview/数据结构"
                         },
                         {
                             text: "ts",
                             link: "/interview/ts"
+                        },
+                        {
+                            text:"面试题合集",
+                            link:"/interview/面试题合集"
                         }
                     ]
                 }
