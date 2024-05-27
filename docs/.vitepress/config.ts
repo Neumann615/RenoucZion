@@ -1,4 +1,4 @@
-import { defineConfig, DefaultTheme } from 'vitepress'
+import {defineConfig, DefaultTheme} from 'vitepress'
 
 const ogDescription = 'Next Generation Frontend Tooling'
 const ogImage = 'https://vitejs.dev/og-image.png'
@@ -10,15 +10,15 @@ export default defineConfig({
     title: `Bupu-blog`,
     description: '小诺的个人博客',
     head: [
-        ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-        ['meta', { property: 'og:type', content: 'website' }],
-        ['meta', { property: 'og:title', content: ogTitle }],
-        ['meta', { property: 'og:image', content: ogImage }],
-        ['meta', { property: 'og:url', content: ogUrl }],
-        ['meta', { property: 'og:description', content: ogDescription }],
-        ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-        ['meta', { name: 'twitter:site', content: '@vite_js' }],
-        ['meta', { name: 'theme-color', content: '#646cff' }]
+        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
+        ['meta', {property: 'og:type', content: 'website'}],
+        ['meta', {property: 'og:title', content: ogTitle}],
+        ['meta', {property: 'og:image', content: ogImage}],
+        ['meta', {property: 'og:url', content: ogUrl}],
+        ['meta', {property: 'og:description', content: ogDescription}],
+        ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
+        ['meta', {name: 'twitter:site', content: '@vite_js'}],
+        ['meta', {name: 'theme-color', content: '#646cff'}]
     ],
     themeConfig: {
         logo: '/logo.svg',
@@ -29,7 +29,7 @@ export default defineConfig({
         },
 
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/Neumann615' }
+            {icon: 'github', link: 'https://github.com/Neumann615'}
         ],
 
         // algolia: {
@@ -86,19 +86,19 @@ export default defineConfig({
             //     link: "/旅行计划/云南.md"
             // },
             {
-                text:"其他项目",
-                items:[
+                text: "其他项目",
+                items: [
                     {
-                        text:"后台管理模板",
-                        link:"https://bupu-admin.xiaonuo.love/"
+                        text: "后台管理模板",
+                        link: "https://bupu-admin.xiaonuo.love/"
                     },
                     {
-                        text:"截图工具",
-                        link:"https://bupu-board.xiaonuo.love/"
+                        text: "截图工具",
+                        link: "https://bupu-board.xiaonuo.love/"
                     },
                     {
-                        text:"在线白板",
-                        link:"https://bupu-board.xiaonuo.love?mode=whiteboard"
+                        text: "在线白板",
+                        link: "https://bupu-board.xiaonuo.love?mode=whiteboard"
                     }
                 ]
             },
@@ -958,12 +958,28 @@ export default defineConfig({
                             link: "/interview/数据结构"
                         },
                         {
-                            text: "ts",
-                            link: "/interview/ts"
+                            text: "TypeScript",
+                            link: "/interview/TypeScript"
                         },
                         {
-                            text:"面试题合集",
-                            link:"/interview/面试题合集"
+                            text: "webpack",
+                            link: "/interview/webpack"
+                        },
+                        {
+                            text: "rollup",
+                            link: "/interview/rollup"
+                        },
+                        {
+                            text: "vite",
+                            link: "/interview/vite"
+                        },
+                        {
+                            text: "WebSocket",
+                            link: "/interview/WebSocket"
+                        },
+                        {
+                            text: "面试题合集",
+                            link: "/interview/面试题合集"
                         }
                     ]
                 }
