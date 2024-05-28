@@ -9,7 +9,7 @@ hero:
   text: 小诺的个人博客
   tagline: 小诺收藏的小笔记
   image:
-    src: /images/home-logo2.webp
+    src: /home-logo2.webp
     alt: 小诺小诺
   actions:
     - theme: brand

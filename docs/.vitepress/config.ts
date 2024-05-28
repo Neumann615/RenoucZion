@@ -5,7 +5,7 @@ export default defineConfig({
     title: `Bupu-blog`,
     description: '小诺的个人博客',
     head: [
-        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/images/logo_small.png'}],
+        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo_small.png'}],
         ['meta', {property: 'og:type', content: 'website'}],
         // ['meta', {property: 'og:title', content: ogTitle}],
         // ['meta', {property: 'og:image', content: ogImage}],
@@ -16,10 +16,10 @@ export default defineConfig({
         ['meta', {name: 'theme-color', content: '#ffd000'}]
     ],
     themeConfig: {
-        logo: '/images/logo_small.png',
+        logo: '/logo_small.png',
         aside: true,
         editLink: {
-            pattern: 'https://github.com/Neumann615/Bupu-blog/docs/:path',
+            pattern: 'https://github.com/Neumann615/Bupu-blog/tree/master/docs/:path',
             text: '修改建议'
         },
         socialLinks: [
