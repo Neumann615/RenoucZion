@@ -2,15 +2,21 @@
  * Colors
  * -------------------------------------------------------------------------- */
 
+/*鸭子头:#ffd000*/
+/*鸭子嘴:#88500A*/
+
 :root {
-    --vp-c-brand: #646cff;
-    --vp-c-brand-light: #747bff;
-    --vp-c-brand-lighter: #9499ff;
-    --vp-c-brand-lightest: #bcc0ff;
-    --vp-c-brand-dark: #535bf2;
-    --vp-c-brand-darker: #454ce1;
-    --vp-c-brand-dimm: rgba(100, 108, 255, 0.08);
+    --vp-c-brand-1: #ffd000;
+    --vp-c-brand: #ffd000;
+    --vp-c-brand-light: #ffdf29;
+    --vp-c-brand-lighter: #ffeb52;
+    --vp-c-brand-lightest: #fff47a;
+    --vp-c-brand-dark: #dcb403;
+    --vp-c-brand-darker: #ad8e07;
+    --vp-c-brand-dimm: #fffaa3;
     --vp-c-text-dark-1: #fff;
+    --shiki-dark: var(--vp-c-brand-dark);
+    --shiki-light: var(--vp-c-brand-light);
 }
 
 /**
@@ -29,6 +35,10 @@
     --vp-button-brand-active-bg: var(--vp-button-brand-bg);
 }
 
+:root[class="dark"] {
+    --vp-button-brand-bg: var(--vp-c-brand-dark);
+}
+
 /**
  * Component: Home
  * -------------------------------------------------------------------------- */
@@ -37,14 +47,14 @@
     --vp-home-hero-name-color: transparent;
     --vp-home-hero-name-background: -webkit-linear-gradient(
             120deg,
-            #bd34fe 30%,
-            #41d1ff
+            #ffd000 30%,
+            #88500A
     );
 
     --vp-home-hero-image-background-image: linear-gradient(
             -45deg,
-            #bd34fe 50%,
-            #47caff 50%
+            #ffd000 50%,
+            #88500A 50%
     );
     --vp-home-hero-image-filter: blur(40px);
 }
@@ -119,3 +129,4 @@
 .VPDocAsideCarbonAds {
     display: none;
 }
+

@@ -1,33 +1,27 @@
 import {defineConfig, DefaultTheme} from 'vitepress'
 
-const ogDescription = 'Next Generation Frontend Tooling'
-const ogImage = 'https://vitejs.dev/og-image.png'
-const ogTitle = 'Bupu-blog'
-const ogUrl = 'https://xiaonuo.love'
-
 
 export default defineConfig({
     title: `Bupu-blog`,
     description: '小诺的个人博客',
     head: [
-        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.svg'}],
+        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/images/logo_small.png'}],
         ['meta', {property: 'og:type', content: 'website'}],
-        ['meta', {property: 'og:title', content: ogTitle}],
-        ['meta', {property: 'og:image', content: ogImage}],
-        ['meta', {property: 'og:url', content: ogUrl}],
-        ['meta', {property: 'og:description', content: ogDescription}],
-        ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
-        ['meta', {name: 'twitter:site', content: '@vite_js'}],
-        ['meta', {name: 'theme-color', content: '#646cff'}]
+        // ['meta', {property: 'og:title', content: ogTitle}],
+        // ['meta', {property: 'og:image', content: ogImage}],
+        ['meta', {property: 'og:url', content: 'https://xiaonuo.love'}],
+        //['meta', {property: 'og:description', content: ogDescription}],
+        // ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
+        // ['meta', {name: 'twitter:site', content: '@vite_js'}],
+        ['meta', {name: 'theme-color', content: '#ffd000'}]
     ],
     themeConfig: {
-        logo: '/logo.svg',
+        logo: '/images/logo_small.png',
         aside: true,
         editLink: {
-            pattern: 'https://github.com/vitejs/vite/edit/main/docs/:path',
-            text: 'Suggest changes to this page'
+            pattern: 'https://github.com/Neumann615/Bupu-blog/docs/:path',
+            text: '修改建议'
         },
-
         socialLinks: [
             {icon: 'github', link: 'https://github.com/Neumann615'}
         ],
@@ -41,13 +35,13 @@ export default defineConfig({
         //     }
         // },
 
-        carbonAds: {
-            code: 'CEBIEK3N',
-            placement: 'vitejsdev'
-        },
+        // carbonAds: {
+        //     code: 'CEBIEK3N',
+        //     placement: 'vitejsdev'
+        // },
 
         footer: {
-            //message: `Neumann615`,
+            message: `小诺小诺`,
             copyright: 'Copyright © Bupu-blog'
         },
 
@@ -79,7 +73,7 @@ export default defineConfig({
             },
             {
                 text: "面试相关",
-                link: "/interview/vue"
+                link: "/interview/面试题/基础面试题"
             },
             // {
             //     text: "旅行计划",
@@ -169,8 +163,7 @@ export default defineConfig({
                         ]
                     }
                 ]
-            },
-
+            }
         ],
 
         sidebar: {
@@ -925,63 +918,112 @@ export default defineConfig({
                     ]
                 }
             ],
-            "/interview/": [
+            "interview": [
                 {
-                    text: "面试相关",
+                    text: "面试题",
                     items: [
                         {
-                            text: 'vue',
-                            link: '/interview/vue'
+                            text: "基础面试题",
+                            link: "/interview/面试题/基础面试题"
                         },
                         {
-                            text: "react",
-                            link: "/interview/react"
+                            text: "进阶面试题",
+                            link: "/interview/面试题/进阶面试题"
                         },
                         {
-                            text: "JavaScript基础",
-                            link: "/interview/JavaScript基础"
+                            text: '热门面试题',
+                            link: '/interview/面试题/热门面试题'
                         },
                         {
-                            text: "浏览器",
-                            link: "/interview/浏览器"
-                        },
-                        {
-                            text: "杂项",
-                            link: "/interview/杂项"
-                        },
-                        {
-                            text: "计算机网络",
-                            link: "/interview/计算机网络"
-                        },
-                        {
-                            text: "数据结构",
-                            link: "/interview/数据结构"
-                        },
-                        {
-                            text: "TypeScript",
-                            link: "/interview/TypeScript"
-                        },
-                        {
-                            text: "webpack",
-                            link: "/interview/webpack"
-                        },
-                        {
-                            text: "rollup",
-                            link: "/interview/rollup"
-                        },
-                        {
-                            text: "vite",
-                            link: "/interview/vite"
-                        },
-                        {
-                            text: "WebSocket",
-                            link: "/interview/WebSocket"
-                        },
-                        {
-                            text: "面试题合集",
-                            link: "/interview/面试题合集"
+                            text: "冷门面试题",
+                            link: "/interview/面试题/冷门面试题"
                         }
                     ]
+                },
+                {
+                    text: "数据结构",
+                    items: [
+                        {
+                            text: '数据结构',
+                            link: '/interview/数据结构/数据结构'
+                        },
+                        {
+                            text: "常见算法",
+                            link: '/interview/数据结构/算法'
+                        },
+                        {
+                            text:"设计模型",
+                            link:"/interview/数据结构/设计模式"
+                        }
+                    ]
+                },
+                {
+                    text: "基础框架",
+                    items: [
+                        {
+                            text: 'Vue',
+                            link: '/interview/基础框架/Vue'
+                        },
+                        {
+                            text: "React",
+                            link: "/interview/基础框架/React"
+                        },
+                    ]
+                },
+                {
+                    text: "语言相关",
+                    items: [
+                        {
+                            text: 'JavaScript',
+                            link: '/interview/语言相关/JavaScript'
+                        },
+                        {
+                            text: 'TypeScript',
+                            link: '/interview/语言相关/TypeScript'
+                        },
+                    ]
+                },
+                {
+                    text: "其他技术",
+                    items: [
+                        {
+                            text: 'WebSocket',
+                            link: '/interview/其他技术/WebSocket'
+                        },
+                        {
+                            text: 'Canvas',
+                            link: '/interview/其他技术/Canvas'
+                        },
+                    ]
+                },
+                {
+                    text: "构建工具",
+                    items: [
+                        {
+                            text: 'Webpack',
+                            link: '/interview/构建工具/Webpack'
+                        },
+                        {
+                            text: 'Rollup',
+                            link: '/interview/构建工具/Rollup'
+                        },
+                        {
+                            text: 'Vite',
+                            link: '/interview/构建工具/Vite'
+                        },
+                    ]
+                },
+                {
+                    text: '浏览器',
+                    link: '/interview/浏览器/浏览器'
+                },
+                {
+                    text: '杂项',
+                    link: '/interview/浏览器/杂项'
+                },
+                {
+                    text: '计算机网络',
+                    link: '/interview/计算机网络/计算机网络'
                 }
             ]
         }

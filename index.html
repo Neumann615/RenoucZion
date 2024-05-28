@@ -27,6 +27,24 @@
     }).then(function (val) {
         console.log(val);
     })
+
+    let testData = [1, 2, 4, 5, 1, 2, 8, 9, 0, 4]
+
+    function test(arr) {
+        if (!arr?.length) return []
+        const result = []
+        const map = new Map()
+        arr.forEach(item => {
+            if (map.has(item)) {
+                result.push(item)
+            } else {
+                map.set(item, 1)
+            }
+        })
+        return result
+    }
+
+    console.log(test(testData))
 </script>
 </body>
 </html>

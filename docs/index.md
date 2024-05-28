@@ -9,7 +9,7 @@ hero:
   text: 小诺的个人博客
   tagline: 小诺收藏的小笔记
   image:
-    src: /logo-with-shadow.png
+    src: /images/home-logo2.webp
     alt: 小诺小诺
   actions:
     - theme: brand
@@ -19,6 +19,9 @@ hero:
       text: 在github上查看
       link: https://github.com/Neumann615
 features:
+  - icon: 🐈
+    title: 噗噗
+    details: 小诺有一只小猫叫噗噗
   - icon: 🦆
     title: 小鸭子
     details: 小诺喜欢小鸭子
@@ -31,4 +34,13 @@ features:
   - icon: 🦞
     title: 大龙虾
     details: 小诺爱吃大龙虾
+  - icon: 🍉
+    title: 大西瓜
+    details: 小诺爱吃大西瓜
+  - icon: 🍈
+    title: 小甜瓜
+    details: 小诺爱吃小甜瓜
+  - icon: 🍒
+    title: 车厘子
+    details: 小诺爱吃车厘子
 ---
