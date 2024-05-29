@@ -296,5 +296,30 @@
         a.resume()
     }, 5000)
 </script>
+<script>
+
+    console.log(Function.prototype === Function, Function, Function.prototype, Object, Object.prototype, Number.prototype)
+
+    console.log(Number.prototype, Number)
+
+    const a = new Function()
+    console.log(a, a.__proto__, Function, Function.prototype, {a: Function.prototype},Object.prototype)
+
+    console.log("-----------------")
+
+
+    console.log({a:Function.prototype,b:Function,c:Function.prototype.constructor},Function === Function.prototype.constructor,Array === Array.prototype.constructor)
+
+    function test1(){
+        console.log(this.name)
+    }
+
+    test1.apply({name:"wxx"})
+    test1.call({name:"wxx"})
+
+    const test2 = test1.bind({name:"zym"})
+
+    test2()
+</script>
 </body>
 </html>

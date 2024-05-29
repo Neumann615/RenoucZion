@@ -7,7 +7,7 @@ export default defineConfig({
     head: [
         ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo_small.png'}],
         ['meta', {property: 'og:type', content: 'website'}],
-        // ['meta', {property: 'og:title', content: ogTitle}],
+        ['meta', {property: 'og:author', content: "wxx"}],
         // ['meta', {property: 'og:image', content: ogImage}],
         ['meta', {property: 'og:url', content: 'https://xiaonuo.love'}],
         //['meta', {property: 'og:description', content: ogDescription}],
