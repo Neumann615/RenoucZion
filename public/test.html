@@ -67,259 +67,354 @@
     <div class="child"></div>
     <div class="child"></div>
 </div>
+<!--<script>-->
+<!--    class WxxMitt {-->
+<!--        list-->
+
+<!--        constructor() {-->
+<!--            this.list = {}-->
+<!--        }-->
+
+<!--        emit(eventName, ...args) {-->
+<!--            let callbackList = this.list[eventName] || []-->
+<!--            if (callbackList?.length) {-->
+<!--                callbackList.forEach(callbackItem => {-->
+<!--                    callbackItem(...args)-->
+<!--                })-->
+<!--            } else {-->
+<!--                throw new Error("该订阅事件不存在")-->
+<!--            }-->
+<!--        }-->
+
+<!--        on(eventName, callback) {-->
+<!--            //注册函数-->
+<!--            this.list[eventName]?.length ? this.list[eventName].push(callback) : this.list[eventName] = [callback]-->
+<!--        }-->
+
+<!--        remove(eventName, callback) {-->
+<!--            let callbackList = this.list[eventName] || []-->
+<!--            if (callbackList?.length) {-->
+<!--                this.list[eventName] = callbackList.filter(callbackItem => callbackItem !== callback)-->
+<!--            } else {-->
+<!--                throw new Error("该订阅事件不存在")-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+
+<!--    let wxxMitt = new WxxMitt()-->
+
+<!--    const xiaonuo = (...args) => {-->
+<!--        console.log("我订阅了小诺说的话", args)-->
+<!--    }-->
+
+<!--    const xiaonuo2 = (...args) => {-->
+<!--        console.log("我订阅了小诺说的第二次话", args)-->
+<!--    }-->
+
+<!--    //订阅-->
+<!--    wxxMitt.on("xiaonuo", xiaonuo)-->
+<!--    wxxMitt.on("xiaonuo", xiaonuo2)-->
+<!--    //触发-->
+<!--    wxxMitt.emit("xiaonuo", "小诺", "你", "今天", "吃了什么")-->
+<!--    wxxMitt.emit("xiaonuo", "小诺", "你", "睡了吗")-->
+<!--    //移除-->
+<!--    wxxMitt.remove("xiaonuo", xiaonuo)-->
+<!--    wxxMitt.remove("xiaonuo", xiaonuo2)-->
+<!--    //再次触发报错-->
+<!--    //wxxMitt.emit("xiaonuo", "小诺", "你", "今天", "吃了什么")-->
+
+
+<!--    function getMaxRevenue(plots, n) {-->
+<!--        //数据拆分-->
+<!--        let oilList = []-->
+<!--        let revenueList = []-->
+<!--        plots.forEach(item => {-->
+<!--            oilList.push(item[0])-->
+<!--            revenueList.push(item[1])-->
+<!--        })-->
+<!--        // 初始化dp数组，大小为n+1，初始值为-1,代表从0开始每一个油的刻度都应该有一个最大收益-->
+<!--        const dp = new Array(n + 1).fill(0);-->
+<!--        dp[0] = 0;-->
+<!--        //循环地块列表-->
+<!--        for (let i = 0; i < oilList.length; i++) {-->
+<!--            //循环耗油量，满足剩余油限制-->
+<!--            console.log("第" + i + "轮地皮循环前收益", dp)-->
+<!--            for (let j = n; j >= oilList[i]; j&#45;&#45;) {-->
+<!--                if (dp[j] < dp[j - oilList[i]] + revenueList[i]) {-->
+<!--                    dp[j] = dp[j - oilList[i]] + revenueList[i]-->
+<!--                }-->
+<!--            }-->
+<!--            console.log("第" + i + "轮地皮循环后收益", dp)-->
+<!--        }-->
+<!--        return dp[n]-->
+<!--    }-->
+
+<!--    const plots = [[1, 1], [2, 4], [3, 5], [7, 9], [6, 10], [6, 10]]-->
+<!--    const n = 10-->
+<!--    console.log(getMaxRevenue(plots, n))-->
+
+
+<!--    function LTS(nums) {-->
+<!--        if (nums.length === 0) return []-->
+<!--        const result = [[nums[0]]]-->
+<!--        for (let i = 0; i < nums.length; i++) {-->
+<!--            const n = nums[i]-->
+<!--            update(n)-->
+<!--        }-->
+
+<!--        function update(n) {-->
+<!--            for (let i = result.length - 1; i >= 0; i&#45;&#45;) {-->
+<!--                const line = result[i]-->
+<!--                const tail = line[line.length - 1]-->
+<!--                if (n > tail) {-->
+<!--                    result[i + 1] = [...line, n]-->
+<!--                    break;-->
+<!--                } else if (n < tail && i === 0) {-->
+<!--                    result[i] = [n]-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+
+<!--        return result[result.length - 1]-->
+<!--    }-->
+
+<!--    console.log(LTS([4, 5, 1, 2, 7, 3, 6, 9]))-->
+
+
+<!--    class TaskScheduler {-->
+
+<!--        constructor() {-->
+<!--            this.tasks = []-->
+<!--            this.isRunning = false-->
+<!--            this.isPaused = false-->
+<!--            this.currentTaskIndex = 0-->
+<!--        }-->
+
+<!--        add(id, callback, delay, retryCount = 0) {-->
+<!--            this.tasks.push({-->
+<!--                id,-->
+<!--                callback,-->
+<!--                delay,-->
+<!--                retryCount-->
+<!--            })-->
+<!--        }-->
+
+<!--        //开始-->
+<!--        start() {-->
+<!--            if (!this.isRunning) {-->
+<!--                console.log("-&#45;&#45;&#45;&#45;开始执行-&#45;&#45;&#45;&#45;")-->
+<!--                this.isRunning = true-->
+<!--                this.isPaused = false-->
+<!--                this.run()-->
+<!--            }-->
+<!--        }-->
+
+<!--        //暂停-->
+<!--        pause() {-->
+<!--            this.isPaused = true-->
+<!--            console.log("-&#45;&#45;&#45;&#45;我暂停啦-&#45;&#45;&#45;&#45;")-->
+<!--        }-->
+
+<!--        //恢复-->
+<!--        resume() {-->
+<!--            if (this.isRunning && this.isPaused) {-->
+<!--                console.log("-&#45;&#45;&#45;&#45;恢复执行-&#45;&#45;&#45;&#45;")-->
+<!--                this.isPaused = false-->
+<!--                this.run()-->
+<!--            }-->
+<!--        }-->
+
+<!--        stop() {-->
+<!--            console.log("-&#45;&#45;&#45;&#45;全部停止-&#45;&#45;&#45;&#45;")-->
+<!--            this.isRunning = false-->
+<!--            this.isPaused = false-->
+<!--            this.tasks = []-->
+<!--        }-->
+
+<!--        async run() {-->
+<!--            if (this.tasks?.length && this.isRunning && !this.isPaused) {-->
+<!--                let _tasks = this.tasks.slice(this.currentTaskIndex)-->
+<!--                console.log("当前待执行的任务列表", _tasks)-->
+<!--                for (let i of _tasks) {-->
+<!--                    if (!(!this.isPaused && this.isRunning)) return-->
+<!--                    await this.runTask(i)-->
+<!--                    this.currentTaskIndex += 1-->
+<!--                    //正常执行完毕-->
+<!--                    if (this.currentTaskIndex === this.tasks.length) {-->
+<!--                        console.log("我正常执行完毕啦")-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        }-->
+
+<!--        runTask(task) {-->
+<!--            return new Promise((resolve, reject) => {-->
+<!--                const _runTask = (retryCount) => {-->
+<!--                    setTimeout(() => {-->
+<!--                        try {-->
+<!--                            task.callback()-->
+<!--                            resolve()-->
+<!--                        } catch (e) {-->
+<!--                            if (retryCount <= 0) {-->
+<!--                                reject(e)-->
+<!--                            } else {-->
+<!--                                _runTask(retryCount - 1)-->
+<!--                            }-->
+<!--                        }-->
+<!--                    }, task.delay)-->
+<!--                }-->
+<!--                _runTask(task.retryCount)-->
+<!--            })-->
+<!--        }-->
+<!--    }-->
+
+<!--    let a = new TaskScheduler()-->
+<!--    a.add("wxx1", () => {-->
+<!--        console.log("小诺1号")-->
+<!--    }, 2000, 2)-->
+<!--    a.add("wxx2", () => {-->
+<!--        console.log("小诺2号")-->
+<!--    }, 2000, 2)-->
+<!--    a.add("wxx3", () => {-->
+<!--        console.log("小诺3号")-->
+<!--    }, 2000, 2)-->
+<!--    a.add("wxx4", () => {-->
+<!--        console.log("小诺4号")-->
+<!--    }, 2000, 2)-->
+<!--    a.add("wxx5", () => {-->
+<!--        console.log("小诺5号")-->
+<!--    }, 3000, 2)-->
+<!--    a.add("wxx6", () => {-->
+<!--        console.log("小诺6号")-->
+<!--    }, 4000, 2)-->
+
+<!--    a.start()-->
+<!--    setTimeout(() => {-->
+<!--        a.pause()-->
+<!--    }, 2000)-->
+<!--    setTimeout(() => {-->
+<!--        a.resume()-->
+<!--    }, 5000)-->
+<!--</script>-->
+<!--<script>-->
+
+<!--    console.log(Function.prototype === Function, Function, Function.prototype, Object, Object.prototype, Number.prototype)-->
+
+<!--    console.log(Number.prototype, Number)-->
+
+<!--    const a = new Function()-->
+<!--    console.log(a, a.__proto__, Function, Function.prototype, {a: Function.prototype}, Object.prototype)-->
+
+<!--    console.log("-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;")-->
+
+
+<!--    console.log({-->
+<!--        a: Function.prototype,-->
+<!--        b: Function,-->
+<!--        c: Function.prototype.constructor-->
+<!--    }, Function === Function.prototype.constructor, Array === Array.prototype.constructor)-->
+
+<!--    function test1() {-->
+<!--        console.log(this.name)-->
+<!--    }-->
+
+<!--    test1.apply({name: "wxx"})-->
+<!--    test1.call({name: "wxx"})-->
+
+<!--    const test2 = test1.bind({name: "zym"})-->
+
+<!--    test2()-->
+<!--</script>-->
+
+<!--<script>-->
+
+<!--    function getData() {-->
+<!--        return fetch("http://192.168.31.6:5173/test.json")-->
+<!--    }-->
+
+<!--    function m1() {-->
+<!--        const user = getData()-->
+<!--        return user-->
+<!--    }-->
+
+<!--    function m2() {-->
+<!--        const user = m1()-->
+<!--        return user-->
+<!--    }-->
+
+<!--    function m3() {-->
+<!--        const user = m2()-->
+<!--        return user-->
+<!--    }-->
+
+<!--    function run(func) {-->
+<!--        const originFetch = window.fetch-->
+<!--        const cache = {-->
+<!--            status: "pedding",-->
+<!--            value: null-->
+<!--        }-->
+<!--        window.fetch = function (...args) {-->
+<!--            if (cache.status === "fulfilled") {-->
+<!--                return cache.value-->
+<!--            } else if (cache.status === "rejected") {-->
+<!--                throw cache.value-->
+<!--            }-->
+<!--            //发送请求-->
+<!--            const promise = originFetch(...args).then(res=>res.json()).then((res) => {-->
+<!--                cache.status = "fulfilled"-->
+<!--                cache.value = res-->
+<!--                alert("我得到结果啦" + JSON.stringify(res))-->
+<!--            }, err => {-->
+<!--                cache.status = "rejected"-->
+<!--                cache.value = err-->
+<!--            })-->
+<!--            //抛出错误 中断执行-->
+<!--            throw promise-->
+<!--        }-->
+<!--        try {-->
+<!--            func()-->
+<!--        } catch (err) {-->
+<!--            if (err instanceof Promise) {-->
+<!--                err.then(func).finally(() => {-->
+<!--                    window.fetch = originFetch-->
+<!--                })-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+
+<!--    //开始调用-->
+<!--    function main() {-->
+<!--        const data = m3()-->
+<!--        console.log(data)-->
+<!--    }-->
+
+<!--    run(main)-->
+<!--</script>-->
+
 <script>
-    class WxxMitt {
-        list
+    console.log('start');
 
-        constructor() {
-            this.list = {}
-        }
+    setTimeout(() => {console.log('setTimeout');
+        Promise.resolve().then(() => { // 微任务
+            console.log('Promise 3');
+            Promise.resolve().then(() => console.log('Promise 4')); // 又一个微任务
+        });}, 0); // 宏任务
 
-        emit(eventName, ...args) {
-            let callbackList = this.list[eventName] || []
-            if (callbackList?.length) {
-                callbackList.forEach(callbackItem => {
-                    callbackItem(...args)
+    Promise.resolve().then(() => { // 微任务
+        console.log('Promise 1');
+        Promise.resolve().then(() =>{
+            console.log('Promise 2')
+            setTimeout(()=>{
+                console.log("setTimeout2")
+                Promise.resolve().then(() => { // 微任务
+                    console.log('Promise 5');
+                    Promise.resolve().then(() => console.log('Promise 6')); // 又一个微任务
                 })
-            } else {
-                throw new Error("该订阅事件不存在")
-            }
-        }
+            },0)
+        }); // 又一个微任务
+    });
 
-        on(eventName, callback) {
-            //注册函数
-            this.list[eventName]?.length ? this.list[eventName].push(callback) : this.list[eventName] = [callback]
-        }
-
-        remove(eventName, callback) {
-            let callbackList = this.list[eventName] || []
-            if (callbackList?.length) {
-                this.list[eventName] = callbackList.filter(callbackItem => callbackItem !== callback)
-            } else {
-                throw new Error("该订阅事件不存在")
-            }
-        }
-    }
-
-    let wxxMitt = new WxxMitt()
-
-    const xiaonuo = (...args) => {
-        console.log("我订阅了小诺说的话", args)
-    }
-
-    const xiaonuo2 = (...args) => {
-        console.log("我订阅了小诺说的第二次话", args)
-    }
-
-    //订阅
-    wxxMitt.on("xiaonuo", xiaonuo)
-    wxxMitt.on("xiaonuo", xiaonuo2)
-    //触发
-    wxxMitt.emit("xiaonuo", "小诺", "你", "今天", "吃了什么")
-    wxxMitt.emit("xiaonuo", "小诺", "你", "睡了吗")
-    //移除
-    wxxMitt.remove("xiaonuo", xiaonuo)
-    wxxMitt.remove("xiaonuo", xiaonuo2)
-    //再次触发报错
-    //wxxMitt.emit("xiaonuo", "小诺", "你", "今天", "吃了什么")
-
-
-    function getMaxRevenue(plots, n) {
-        //数据拆分
-        let oilList = []
-        let revenueList = []
-        plots.forEach(item => {
-            oilList.push(item[0])
-            revenueList.push(item[1])
-        })
-        // 初始化dp数组，大小为n+1，初始值为-1,代表从0开始每一个油的刻度都应该有一个最大收益
-        const dp = new Array(n + 1).fill(0);
-        dp[0] = 0;
-        //循环地块列表
-        for (let i = 0; i < oilList.length; i++) {
-            //循环耗油量，满足剩余油限制
-            console.log("第" + i + "轮地皮循环前收益", dp)
-            for (let j = n; j >= oilList[i]; j--) {
-                if (dp[j] < dp[j - oilList[i]] + revenueList[i]) {
-                    dp[j] = dp[j - oilList[i]] + revenueList[i]
-                }
-            }
-            console.log("第" + i + "轮地皮循环后收益", dp)
-        }
-        return dp[n]
-    }
-
-    const plots = [[1, 1], [2, 4], [3, 5], [7, 9], [6, 10], [6, 10]]
-    const n = 10
-    console.log(getMaxRevenue(plots, n))
-
-
-    function LTS(nums) {
-        if (nums.length === 0) return []
-        const result = [[nums[0]]]
-        for (let i = 0; i < nums.length; i++) {
-            const n = nums[i]
-            update(n)
-        }
-
-        function update(n) {
-            for (let i = result.length - 1; i >= 0; i--) {
-                const line = result[i]
-                const tail = line[line.length - 1]
-                if (n > tail) {
-                    result[i + 1] = [...line, n]
-                    break;
-                } else if (n < tail && i === 0) {
-                    result[i] = [n]
-                }
-            }
-        }
-
-        return result[result.length - 1]
-    }
-
-    console.log(LTS([4, 5, 1, 2, 7, 3, 6, 9]))
-
-
-    class TaskScheduler {
-
-        constructor() {
-            this.tasks = []
-            this.isRunning = false
-            this.isPaused = false
-            this.currentTaskIndex = 0
-        }
-
-        add(id, callback, delay, retryCount = 0) {
-            this.tasks.push({
-                id,
-                callback,
-                delay,
-                retryCount
-            })
-        }
-
-        //开始
-        start() {
-            if (!this.isRunning) {
-                console.log("-----开始执行-----")
-                this.isRunning = true
-                this.isPaused = false
-                this.run()
-            }
-        }
-
-        //暂停
-        pause() {
-            this.isPaused = true
-            console.log("-----我暂停啦-----")
-        }
-
-        //恢复
-        resume() {
-            if (this.isRunning && this.isPaused) {
-                console.log("-----恢复执行-----")
-                this.isPaused = false
-                this.run()
-            }
-        }
-
-        stop() {
-            console.log("-----全部停止-----")
-            this.isRunning = false
-            this.isPaused = false
-            this.tasks = []
-        }
-
-        async run() {
-            if (this.tasks?.length && this.isRunning && !this.isPaused) {
-                let _tasks = this.tasks.slice(this.currentTaskIndex)
-                console.log("当前待执行的任务列表", _tasks)
-                for (let i of _tasks) {
-                    if (!(!this.isPaused && this.isRunning)) return
-                    await this.runTask(i)
-                    this.currentTaskIndex += 1
-                    //正常执行完毕
-                    if (this.currentTaskIndex === this.tasks.length) {
-                        console.log("我正常执行完毕啦")
-                    }
-                }
-            }
-        }
-
-        runTask(task) {
-            return new Promise((resolve, reject) => {
-                const _runTask = (retryCount) => {
-                    setTimeout(() => {
-                        try {
-                            task.callback()
-                            resolve()
-                        } catch (e) {
-                            if (retryCount <= 0) {
-                                reject(e)
-                            } else {
-                                _runTask(retryCount - 1)
-                            }
-                        }
-                    }, task.delay)
-                }
-                _runTask(task.retryCount)
-            })
-        }
-    }
-
-    let a = new TaskScheduler()
-    a.add("wxx1", () => {
-        console.log("小诺1号")
-    }, 2000, 2)
-    a.add("wxx2", () => {
-        console.log("小诺2号")
-    }, 2000, 2)
-    a.add("wxx3", () => {
-        console.log("小诺3号")
-    }, 2000, 2)
-    a.add("wxx4", () => {
-        console.log("小诺4号")
-    }, 2000, 2)
-    a.add("wxx5", () => {
-        console.log("小诺5号")
-    }, 3000, 2)
-    a.add("wxx6", () => {
-        console.log("小诺6号")
-    }, 4000, 2)
-
-    a.start()
-    setTimeout(() => {
-        a.pause()
-    }, 2000)
-    setTimeout(() => {
-        a.resume()
-    }, 5000)
-</script>
-<script>
-
-    console.log(Function.prototype === Function, Function, Function.prototype, Object, Object.prototype, Number.prototype)
-
-    console.log(Number.prototype, Number)
-
-    const a = new Function()
-    console.log(a, a.__proto__, Function, Function.prototype, {a: Function.prototype},Object.prototype)
-
-    console.log("-----------------")
-
-
-    console.log({a:Function.prototype,b:Function,c:Function.prototype.constructor},Function === Function.prototype.constructor,Array === Array.prototype.constructor)
-
-    function test1(){
-        console.log(this.name)
-    }
-
-    test1.apply({name:"wxx"})
-    test1.call({name:"wxx"})
-
-    const test2 = test1.bind({name:"zym"})
-
-    test2()
+    console.log('end');
 </script>
 </body>
 </html>

@@ -937,23 +937,14 @@ export default defineConfig({
                         {
                             text: "冷门面试题",
                             link: "/interview/面试题/冷门面试题"
-                        }
-                    ]
-                },
-                {
-                    text: "数据结构",
-                    items: [
-                        {
-                            text: '数据结构',
-                            link: '/interview/数据结构/数据结构'
                         },
                         {
-                            text: "常见算法",
+                            text: '算法题',
                             link: '/interview/数据结构/算法'
                         },
                         {
-                            text:"设计模型",
-                            link:"/interview/数据结构/设计模式"
+                            text: "编程题",
+                            link: "/interview/数据结构/设计模式"
                         }
                     ]
                 },
@@ -1012,6 +1003,10 @@ export default defineConfig({
                             link: '/interview/构建工具/Vite'
                         },
                     ]
+                },
+                {
+                    text: "数据结构",
+                    link: '/interview/数据结构/数据结构'
                 },
                 {
                     text: '浏览器',

@@ -123,168 +123,10 @@ React Hooks 的实现原理主要围绕着几个核心概念，包括函数组�
 
 综上所述，React Hooks 的实现原理依赖于对函数组件的增强、Hook调用规则的严格遵守、Fiber架构的灵活性以及高效的副作用管理机制。这些设计共同允许React在保持函数式编程简洁性的同时，提供了强大的状态管理和其他高级功能。
 
-## 为什么 react 会引入 jsx
-
-- jsx是React.createElement的语法糖，只要是为了实现声明式，提升可读性。
-  不想引入新的概念
-
-- 工作原理：抽象语法树，以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构，比如
-  var ast = "is tree";通过树形结构表示出来，先分词，进行分类
-
-- babel的工作流程
-  源代码先经过词法分析变成一个token流，经过语法分析变成一个AST语法树，经过转化转成新的语法树重新生成源代码
-
-## react ref的理解，应用场景
-
-- 理解：refs，允许我们访问dom节点或者组件实例
-
-- 使用：1.传入对象，react.createRef()方法创建对象，通过current属性获取对应元素
-  2.回调函数，这个函数会传入一个元素电箱，使用时，直接拿到之前保存的元素对象
-  3.传入hook，通过useRef的方式船舰，通过current属性获取对应元素
-
-- 场景：一把不推荐用refs来更新组件，会使dom结构暴露，违反组件封装的原则。一般用来对dom元素的焦点控制，内容选择，内容设置，媒体播放
-
-```js
-class RefExample extends React.Component {
-    constructor(props) {
-        super(props);
-        this.func = this.func.bind(this)
-    }
-
-    func() {
-        this.dom.style.color = 'green'
-    }
-
-    render() {
-        return (
-            /* 回调函数中的参数为当前绑定的DOM对象，点击触发事件将按键字体颜色改为绿色，就是你头上的那个绿色 */
-            <button ref={(dom) => {
-                this.dom = dom
-            }} onClick={this.func}>Click me!</button>
-        )
-    }
-}
-
-ReactDOM.render(<RefExample/>, document.getElementById('root'))
-
-
-class RefExample extends React.Component {
-    constructor(props) {
-        super(props);
-        this.func = this.func.bind(this)
-        // 1、创建ref对象
-        this.myRef = React.createRef();
-    }
-
-    func() {
-        // 3、获取元素并修改属性
-        this.myRef.style.color = 'green'
-    }
-
-    render() {
-        return (
-            // 2、将ref对象挂载到dom元素上
-            <button ref={this.myRef} onClick={this.func}>Click me!</button>
-        )
-    }
-}
-
-ReactDOM.render(<RefExample/>, document.getElementById('root'))
-```
-
-## 受控组件和非受控组件
-
-react能否知道当前的状态修改
-
-- 受控组件：由react空值输入表单元素而改变其值的方式，例如input,textarea,select
-- 非受控组件：表单数据由DOM本身处理，不受setState()的控制，例如input输入即显示最新值（使用ref从DOM获取表单值）
-
-```js
-  //非受控转换成受控组件
-const App = () => {
-    const [value, setValue] = useState('');
-    return <input value={value} onInput={event => {
-        setValue(event.target.value)
-    }}/>
-}
-
-```
-
-## react ref
-
-- ref 可以允许用户直接访问DOM元素或者实例
-
-## 错误边界ERROR Boundary
-
-- 组件可以捕获发生在子组件的js报错，并能降级处理
-    1. static getDervedStateFromError componentDidCatch
-
-## react的代码分割
-
-## 用户如何通过不同的权限，查看不同的页面
-
-1. js
-    1. ajax role -> menuList json展示有权限的
-2. react-router
-    1. inEnter
-
-```js
-  <Router path='/home' component={App} onEnter={(nextState, replace) => {
-    if (nextState.location.pathname !== '/') {
-        //根据参数判断用户信息
-        const uid = utils.getUrlParams(nextState, 'uid')
-        if (!uid) {
-            replace('/')
-        } else {
-            //xxx
-        }
-    }
-}}>
-```
-
-## React.createClass 以及extends React.components的区别
-
-React.createClass本质上是一个工厂函数 extends更接近es6中class的写法
-
-1. 语法使用区别:主要体现在方法的定义和静态属性的定义
-2. propType 和 getDefaultProps
-    1. createClass:propType 和 getDefaultProps去获取和设置对应的props
-    2. React.component:propsTypes defaultProps属性去设置
-3. 设置state初始的值
-    1. createClass:getInitialState()
-    2. component：constructor
-4. mixin
-    1. createClass:mixins 添加属性
-    2. component：不可以使用mixin 需安装库
-
-## React事件和html事件的区别
-
-- 事件名称
-    - 原生的事件：全小写
-    - react onClick 小驼峰
-- 事件函数处理
-    - 原生： 字符串
-    - react： onclick={}
-- 阻止事件本省的默认行为
-    - 原生： return false
-    - react preventDefault()
-
-react合成事件是模拟原生DOM的行为
-
-1. 兼容所有浏览器 更好的跨平台
-2. react的所有事件存放在一个数组中 避免频繁的新增和删除
-3. 方便react统一管理和事务机制
-
 ## React中常用的hooks的用法
 
-解决的问题：
-
-- this指向的问题，每次生命函数需要手动的去绑定this，代码不够简洁
-- 代码复杂，难以组织，例如componentDidMount和componentWillUnmount写法分散，容易遗漏忘记卸载事件
-- 组件之间状态复用困难，类组件中的状态都是通过state定义在组件内部没办法抽离
-
-1. useState：用来解决函数组件中不能定义自己状态的问题,和useState一样是异步执行的，不是立马生效的，若想每次拿到最新的数据使用useEffect
-2. useEffect：
+1. **useState**：用来解决函数组件中不能定义自己状态的问题,和useState一样是异步执行的，不是立马生效的，若想每次拿到最新的数据使用useEffect
+2. **useEffect**：
    若一个函数中定义了多个useEffect，他们的执行顺序是按照代码中的先后顺序来的
 
 ```js
@@ -295,9 +137,9 @@ useEffect(() => {
 }, [dep1, dep2]);// 依赖数组，若不穿每次渲染都会执行，若传空数组只有第一次会执行
 ```
 
-3. useLayoutEffect
+3. **useLayoutEffect**:
    传递的参数和useEffect完全相同，唯一的区别在于使用useEffect时页面会出现闪烁，应为useEffect是在页面渲染完成之后再去更新数据的，useLayoutEffect没有闪烁，是在页面还没有渲染时就把数据更新了，useLayoutEffect可能会阻塞渲染
-4. useMemo:是为了减少组件重新渲染时不必要的函数计算，用作性能优化
+4. **useMemo**:是为了减少组件重新渲染时不必要的函数计算，用作性能优化
    传入两个参数，第一个参数为函数，用来进行一些计算，第二个参数是依赖关系，只有在第一个参数发生变化时，才会重新执行计算函数进行计算，如果不穿依赖项，每次组件渲染都会重新进行计算
 
 ```js
@@ -306,7 +148,9 @@ const memoizedValue = useMemo(() => {
 }, [a, b]) //计算逻辑
 ```
 
-5. useCallback和useMemo相似，useMemo是把值返回，useCallback是把计算函数返回
+5. **useCallback**:
+
+和useMemo相似，useMemo是把值返回，useCallback是把计算函数返回
 
 ```js
 const memoizedValue = useCallback(() => {
@@ -494,104 +338,110 @@ function Demo() {
 }
 ```
 
-## 代码分割
+## 为什么 react 会引入 jsx
 
-- import
-- React.lazy结合suspense
+- jsx是React.createElement的语法糖，只要是为了实现声明式，提升可读性。
+  不想引入新的概念
 
-## Fragments
+- 工作原理：抽象语法树，以树状的形式表现编程语言的语法结构，树上的每个节点都表示源代码中的一种结构，比如
+  var ast = "is tree";通过树形结构表示出来，先分词，进行分类
 
-- React.fragments保证函数有唯一的根节点
+- babel的工作流程
+  源代码先经过词法分析变成一个token流，经过语法分析变成一个AST语法树，经过转化转成新的语法树重新生成源代码
 
-## Hoc
+## react ref的理解，应用场景
 
-- 是一个没有副作用的纯函数 入参是一个组件，出参也是一个组件
+- 理解：refs，允许我们访问dom节点或者组件实例
 
-1. 抽离重复的代码实现组件的复用性
-2. 控制渲染流程 权限控制
-3. 处理生命周期 检测组件渲染性能的好坏
+- 使用：1.传入对象，react.createRef()方法创建对象，通过current属性获取对应元素
+  2.回调函数，这个函数会传入一个元素电箱，使用时，直接拿到之前保存的元素对象
+  3.传入hook，通过useRef的方式船舰，通过current属性获取对应元素
 
-- 传入一个组件，计算得到组件render期间的耗时
-
-```js
-
-function withTime(wrapperComponent) {
-    return class extends wrapperComponent() {
-        constructor(props) {
-            super(props),
-                start,
-                end,
-        }
-
-        componentDidmount() {
-            if (super.componentDidmount) {
-                super.componentDidmount()
-            }
-            end + = new Date()
-            sendLod(start - end)
-        }
-
-        componetWillMount() {
-            if (super.componetWillMount) {
-                super.componetWillMount()
-            }
-            start + = new Date()
-        }
-
-        return
-        super
-    .
-
-        render()
-    }
-}
-```
-
-## hooks
-
-## 异步组件
-
-- 手写一个异步组件
+- 场景：一把不推荐用refs来更新组件，会使dom结构暴露，违反组件封装的原则。一般用来对dom元素的焦点控制，内容选择，内容设置，媒体播放
 
 ```js
-const OtherComponent = React.lazy(() => import('./OtherComponent'))
-
-const OtherComponent = lazy(new Promise(resolve => {
-        setTimeout(() => {
-            resolve:{default:
-                <OtherComponent/>
-            }
-        }, 3000)
-    }))
-
-
-    // suspense组件
-    < Suspense
-fallback = {
-<div>loading</div>
-}>
-<
-About / >
-< /Suspense>
-
-class Suspense extends React.Component {
-    state = {
-        isRender: true
+class RefExample extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.func.bind(this)
     }
 
-    componentDidCatch(e) {
-        this.setState({
-            isRender: fasle
-        })
+    func() {
+        this.dom.style.color = 'green'
     }
 
     render() {
-        const {children, fallback} = this.props
-        const {isRender} = this.state
-        return isRender ? children : fallback
+        return (
+            /* 回调函数中的参数为当前绑定的DOM对象，点击触发事件将按键字体颜色改为绿色，就是你头上的那个绿色 */
+            <button ref={(dom) => {
+                this.dom = dom
+            }} onClick={this.func}>Click me!</button>
+        )
     }
 }
+
+ReactDOM.render(<RefExample/>, document.getElementById('root'))
+
+
+class RefExample extends React.Component {
+    constructor(props) {
+        super(props);
+        this.func = this.func.bind(this)
+        // 1、创建ref对象
+        this.myRef = React.createRef();
+    }
+
+    func() {
+        // 3、获取元素并修改属性
+        this.myRef.style.color = 'green'
+    }
+
+    render() {
+        return (
+            // 2、将ref对象挂载到dom元素上
+            <button ref={this.myRef} onClick={this.func}>Click me!</button>
+        )
+    }
+}
+
+ReactDOM.render(<RefExample/>, document.getElementById('root'))
 ```
+
+## 受控组件和非受控组件
+
+react能否知道当前的状态修改
+
+- 受控组件：由react空值输入表单元素而改变其值的方式，例如input,textarea,select
+- 非受控组件：表单数据由DOM本身处理，不受setState()的控制，例如input输入即显示最新值（使用ref从DOM获取表单值）
+
+```js
+  //非受控转换成受控组件
+const App = () => {
+    const [value, setValue] = useState('');
+    return <input value={value} onInput={event => {
+        setValue(event.target.value)
+    }}/>
+}
+
+```
+
+## React事件和html事件的区别
+
+- 事件名称
+    - 原生的事件：全小写
+    - react onClick 小驼峰
+- 事件函数处理
+    - 原生： 字符串
+    - react： onclick={}
+- 阻止事件本省的默认行为
+    - 原生： return false
+    - react preventDefault()
+
+react合成事件是模拟原生DOM的行为
+
+1. 兼容所有浏览器 更好的跨平台
+2. react的所有事件存放在一个数组中 避免频繁的新增和删除
+3. 方便react统一管理和事务机制
 
 ## react hooks的使用限制
 
@@ -601,53 +451,55 @@ class Suspense extends React.Component {
 4. 方案原理
    react中是单链表的形式，通过next按顺序串联所有的hook，将链表中的一个hook与fiber关联，当fiber树更新时，就能从hooks中计算出最终输出的状态和执行相关的副作用。如果在判断逻辑嵌套循环中，就可能导致更新时不能获取到对应的值
 
-高阶组件的缺陷
+## useEffect 和 useLayoutEffect的区别
 
-1. 高阶组件的props都是直接穿透下来，无法确实子组件的props来源
-2. 可能会出现props重复导致报错
-3. 组件的嵌套层级太深
-4. 会导致ref丢失
+`useEffect` 和 `useLayoutEffect` 都是 React 中用于在函数组件中执行副作用操作的 Hooks，但它们的主要区别在于执行时机及其对浏览器渲染流程的影响：
 
-## useEffect 和 useLayouteffect的区别
+### useEffect
 
-- 他们都是用来处理副作用的两个钩子函数，他们之间的区别主要在触发的时机不同
-- useEffect会在组件渲染完成后异步执行副作用代码，不会阻塞组件的渲染，会在浏览器绘制完成后才执行，这一位置useEffect中的副作用代码会在页面渲染之后执行，他适合处理不需要立即执行副作用，如事件请求，事件绑定等等
-- useLayoutEffect会在组件渲染完成后同步执行副作用代码，他会在浏览器渲染之前执行，可能会阻塞组件的渲染，适合处理需要在页面渲染之前立即执行的副作用，如获取dom元素的尺寸，触发动画等
+- 执行时机：`useEffect` 会在浏览器完成渲染页面之后异步执行。这意味着它不会阻塞浏览器对页面的绘制，允许用户界面更快地更新，但副作用函数的执行可能会导致界面短暂的不一致状态，因为用户可能看到的是尚未应用副作用结果的界面。
+- 用途：通常用于处理可能引起副作用的操作，如数据获取、订阅或者手动改变DOM等，以及执行清理操作，如取消网络请求或移除事件监听器。
+- 影响：由于是异步执行，不会阻塞浏览器渲染，因此不会影响UI的流畅性，但可能需要考虑潜在的异步问题。
 
-## useRef的使用场景
+### useLayoutEffect
 
-原因
+- 执行时机：`useLayoutEffect`则在浏览器完成DOM更新之后、同步并且在浏览器绘制之前执行。这意味着它会阻塞浏览器的渲染过程，直到其回调函数执行完毕，确保了副作用在浏览器绘制之前完成，可以用来同步DOM操作和组件的视觉状态。
+- 用途：适用于那些需要在渲染结果被提交给浏览器之前进行的 DOM 操作或尺寸测量等场景，以保证没有视觉上的闪烁或不一致。
+- 影响：由于同步执行且会阻塞渲染，应当谨慎使用，避免阻塞时间过长导致页面无响应的感觉。
 
-1. 持久性，useref的返回对象在组件的整个生命周期中都是持久的，而不是每次渲染都重新创建
-2. 不会触发渲染，当useState中的状态改变时，组件会重新渲染，useRef不会
-   使用场景
-1. 访问dom元素
-2. 保存状态但是不触发渲染时
+### 总结
 
-## react.memo和useMemo的使用场景
+选择使用哪个取决于你的具体需求：
 
-1. usememo是用来缓存计算结果，只有在依赖项发生变化时才能重新计算，可以有效减小不必要的计算开销
-2. 当state发生变化时会重新渲染该组件，如果引入子组件，子组件也会重新渲染，react.memo会浅比较当前组件的props与上一次渲染时的props
-   如果props没有发生变化，则跳过渲染过程，react.memo通过自定义第二个参数，可以拿到前一个和后一个props，从而比较里面的属性值是否发生变化而决定是否重新渲染组件
+- 如果你的副作用操作（如数据获取）可以容忍短暂的UI不一致，并且不需要立刻同步到界面显示中，使用 useEffect 较为合适。
+- 如果你希望在界面展示给用户之前确保一切副作用都已经处理完毕，避免任何可能的视觉闪烁或布局跳变，那么应该使用 useLayoutEffect。但需要注意的是，它可能会影响UI的响应速度，特别是在执行时间较长时。
 
 ## react fiber的工作机制，解决了哪些问题
 
-## useState为什么返回数组
+React Fiber的工作机制主要针对React 16及以后版本中对渲染和更新流程的改进，它引入了一种全新的任务调度和执行模型，旨在解决几个关键问题，提升用户体验和应用程序性能。以下是React
+Fiber解决的主要问题及其工作机制的概述：
 
-## class和hook的区别
+### 解决的问题
 
-作为组件而言类组件和函数组件在使用与呈现上没有任何不同，性能也不会有明显的差异，他们在开发时的心智模型存在巨大的不同，类组件时基于面向对象编程，核心概念是继承和生命周期，函数组建的内核是函数式编程
+- **长时间运行任务导致的卡顿**：在React
+  15及以前版本中，如果渲染或更新操作耗时较长，会导致页面无响应，影响用户体验。Fiber通过将更新过程拆分为一系列小任务（称为“工作单元”），并在每个任务完成后检查是否有空闲时间来决定是否继续执行下一个任务，从而避免阻塞主线程。
 
-1. 使用场景：在不适用recompose或者hooks的情况下，如需使用生命周期，就用类组件，限定场景时固定的。在recompose或hookd的加持下类组件与函数组建的能力边界完全相同，都可使用类似生命周期等能力
-2. 设计模式：类组件可以实现继承，函数组件缺少继承能力
-3. 性能优化：类组件优化依靠shouldComponentUpdate组件去阻断渲染，函数组件靠react.memo去优化
-4. 类组件的缺点...
+- **不可中断的更新过程**：老版本React的更新过程是一次性执行到底，无法中断。Fiber通过增量渲染实现了更新过程的可中断和恢复，
+  这意味着即使在复杂的更新序列中，React也能在必要时（如用户交互）暂停当前工作，处理高优先级任务，然后再回来继续之前的更新。
 
-## 自定义hook什么时候用
+- **优先级调度**：Fiber允许React根据任务的紧急程度来安排它们的执行顺序。例如，用户交互相关的更新可以被赋予更高的优先级，确保快速响应，而非紧急的更新（如后景数据加载）则可以延后执行。
 
-## hook的闭包链表
+### 工作机制
 
-## hook的原理
+- **Fiber节点**：React Fiber的核心是Fiber节点，这是一种数据结构，代表了React组件实例及其相关信息。Fiber节点通过链表相连，形成一棵Fiber树，这使得React能更容易地管理和控制更新流程。
+
+- **工作循环**：React Fiber采用基于任务队列的工作循环，每次循环处理一个工作单元（通常是更新一个Fiber节点），然后检查是否还有时间剩余，有则继续处理下一个工作单元，否则交出控制权。
+
+- **时间切片（Time Slicing）**：通过requestIdleCallback API，React Fiber能够在浏览器的空闲时段执行更新任务，实现时间切片，即使在大量更新的情况下也能保证UI的流畅性。
+
+- **可中断和恢复的调和**：Fiber的调和（reconciliation）过程是可中断的，这意味着React可以决定何时停止当前工作，保存进度，之后再从中断的地方恢复，这对于长列表滚动等场景尤为重要。
+
+综上所述，React Fiber通过其灵活的调度机制和细粒度的任务控制，显著提升了React应用的性能和响应能力，特别是在处理大规模和复杂UI更新时，为用户提供更加流畅的交互体验。
 
 
 

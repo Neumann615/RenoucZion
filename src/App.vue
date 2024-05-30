@@ -64,7 +64,6 @@ for (let i = 1; i <= a.length; i++) {
 <template>
   <div style="width:100%;height:100%">
 
-    dqweqweqeqweqwe
   </div>
 </template>
 
