@@ -100,6 +100,15 @@ export default defineConfig({
                 text: "其他资源",
                 items: [
                     {
+                        text: "主流框架",
+                        items: [
+                            {
+                                text: "React",
+                                link: "https://react.nodejs.cn/reference/react"
+                            }
+                        ]
+                    },
+                    {
                         text: "组件库",
                         items: [
                             {
@@ -945,6 +954,10 @@ export default defineConfig({
                         {
                             text: "编程题",
                             link: "/interview/数据结构/设计模式"
+                        },
+                        {
+                            text:"耻辱柱",
+                            link:"/interview/面试题/耻辱柱"
                         }
                     ]
                 },
