@@ -17,34 +17,36 @@
 <div id="app"></div>
 <script type="module" src="/src/main.ts"></script>
 <script>
-    setTimeout(function () {
-        console.log(1);
-    });
-
-    new Promise(function (resolve, reject) {
-        console.log(2)
-        resolve(3)
-    }).then(function (val) {
-        console.log(val);
-    })
-
-    let testData = [1, 2, 4, 5, 1, 2, 8, 9, 0, 4]
-
-    function test(arr) {
-        if (!arr?.length) return []
-        const result = []
-        const map = new Map()
-        arr.forEach(item => {
-            if (map.has(item)) {
-                result.push(item)
-            } else {
-                map.set(item, 1)
-            }
-        })
-        return result
-    }
-
-    console.log(test(testData))
+    // setTimeout(function () {
+    //     console.log(1);
+    // });
+    //
+    // new Promise(function (resolve, reject) {
+    //     console.log(2)
+    //     resolve(3)
+    // }).then(function (val) {
+    //     console.log(val);
+    // })
+    //
+    // let testData = [1, 2, 4, 5, 1, 2, 8, 9, 0, 4]
+    //
+    // function test(arr) {
+    //     if (!arr?.length) return []
+    //     const result = []
+    //     const map = new Map()
+    //     arr.forEach(item => {
+    //         if (map.has(item)) {
+    //             result.push(item)
+    //         } else {
+    //             map.set(item, 1)
+    //         }
+    //     })
+    //     return result
+    // }
+    //
+    // console.log(test(testData))
+    let str = "how are you? i am fine,thank you"
+    console.log(str.match(/\w+/g))
 </script>
 </body>
 </html>

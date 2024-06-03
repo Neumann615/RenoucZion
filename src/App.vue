@@ -55,8 +55,8 @@ function getNumbers(source, count, isPermutation = true) {
 
 
 for (let i = 1; i <= a.length; i++) {
-  console.log(getNumbers(a, i));
-  console.log('\r\n');
+ // console.log(getNumbers(a, i));
+  //console.log('\r\n');
 }
 
 </script>
