@@ -93,6 +93,10 @@ export default defineConfig({
                     {
                         text: "在线白板",
                         link: "https://bupu-board.xiaonuo.love?mode=whiteboard"
+                    },
+                    {
+                        text: "面试todoList",
+                        link: "https://wxx-web-interview.xiaonuo.love"
                     }
                 ]
             },
@@ -105,6 +109,14 @@ export default defineConfig({
                             {
                                 text: "React",
                                 link: "https://react.nodejs.cn/reference/react"
+                            },
+                            {
+                                text: "Vue3",
+                                link: "https://cn.vuejs.org/"
+                            },
+                            {
+                                text: "Vue2",
+                                link: "https://v2.cn.vuejs.org/"
                             }
                         ]
                     },
@@ -956,8 +968,8 @@ export default defineConfig({
                             link: "/interview/数据结构/设计模式"
                         },
                         {
-                            text:"耻辱柱",
-                            link:"/interview/面试题/耻辱柱"
+                            text: "耻辱柱",
+                            link: "/interview/面试题/耻辱柱"
                         }
                     ]
                 },
