@@ -1,4 +1,4 @@
-import {defineConfig, DefaultTheme} from 'vitepress'
+import {defineConfig} from 'vitepress'
 
 
 export default defineConfig({
@@ -74,6 +74,10 @@ export default defineConfig({
             {
                 text: "面试相关",
                 link: "/interview/面试题/基础面试题"
+            },
+            {
+                text: "教资",
+                link: "/教师资格证/教育教学知识与能力/教育基础(上)"
             },
             // {
             //     text: "旅行计划",
@@ -1045,7 +1049,60 @@ export default defineConfig({
                     text: '计算机网络',
                     link: '/interview/计算机网络/计算机网络'
                 }
-            ]
+            ],
+            "教师资格证":
+                [
+                    {
+                        text: "教育教学知识与能力",
+                        items: [
+                            {
+                                text: "教育基础(上)",
+                                link: "/教师资格证/教育教学知识与能力/教育基础(上)"
+                            },
+                            {
+                                text: "教育基础(下)",
+                                link: "/教师资格证/教育教学知识与能力/教育基础(下)"
+                            },
+                            {
+                                text: "学生指导",
+                                link: "/教师资格证/教育教学知识与能力/学生指导"
+                            },
+                            {
+                                text: "学校与班级管理",
+                                link: "/教师资格证/教育教学知识与能力/学校与班级管理"
+                            },
+                            {
+                                text: "教学实施",
+                                link: "/教师资格证/教育教学知识与能力/教学实施"
+                            },
+                            {
+                                text: "教学评价与反思",
+                                link: "/教师资格证/教育教学知识与能力/教学评价与反思"
+                            },
+                            {
+                                text: "学习心理",
+                                link: "/教师资格证/教育教学知识与能力/学习心理"
+                            },
+                            {
+                                text: "常见问题",
+                                link: "/教师资格证/教育教学知识与能力/常见问题"
+                            },
+                        ]
+                    },
+                    {
+                        text: "综合素质",
+                        items:[
+                            {
+                                text: "学习心理",
+                                link: "/教师资格证/综合素质/关键知识点"
+                            },
+                            {
+                                text: "教育教学知识与能力",
+                                link: "/教师资格证/综合素质/优秀作文"
+                            },
+                        ]
+                    },
+                ]
         }
     }
 })
