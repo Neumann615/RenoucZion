@@ -75,6 +75,10 @@ export default defineConfig({
                 text: "面试相关",
                 link: "/interview/面试题/基础面试题"
             },
+            {
+                text: "教资",
+                link: "/interview/面试题/基础面试题"
+            },
             // {
             //     text: "旅行计划",
             //     link: "/旅行计划/云南.md"
