@@ -1,4 +1,4 @@
-import {defineConfig} from 'vitepress'
+import {defineConfig, DefaultTheme} from 'vitepress'
 
 
 export default defineConfig({
