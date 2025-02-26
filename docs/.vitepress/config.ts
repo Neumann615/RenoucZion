@@ -2,10 +2,10 @@ import {defineConfig, DefaultTheme} from 'vitepress'
 
 
 export default defineConfig({
-    title: `Bupu-blog`,
-    description: '小诺的个人博客',
+    title: `Z-docs`,
+    description: 'Z的文档站点',
     head: [
-        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo_small.png'}],
+        ['link', {rel: 'icon', type: 'image/svg+xml', href: '/logo.png'}],
         ['meta', {property: 'og:type', content: 'website'}],
         ['meta', {property: 'og:author', content: "wxx"}],
         // ['meta', {property: 'og:image', content: ogImage}],
@@ -16,12 +16,12 @@ export default defineConfig({
         ['meta', {name: 'theme-color', content: '#ffd000'}]
     ],
     themeConfig: {
-        logo: '/logo_small.png',
+        logo: '/logo.png',
         aside: true,
-        editLink: {
-            pattern: 'https://github.com/Neumann615/Bupu-blog/tree/master/docs/:path',
-            text: '修改建议'
-        },
+        // editLink: {
+        //     pattern: 'https://github.com/Neumann615/Bupu-docs/tree/master/docs/:path',
+        //     text: '修改建议'
+        // },
         socialLinks: [
             {icon: 'github', link: 'https://github.com/Neumann615'}
         ],
@@ -41,8 +41,8 @@ export default defineConfig({
         // },
 
         footer: {
-            message: `小诺小诺`,
-            copyright: 'Copyright © Bupu-blog'
+            message: `Z & pupu`,
+            copyright: 'Copyright © Z-docs'
         },
 
         nav: [
@@ -65,10 +65,10 @@ export default defineConfig({
                         text: "Vue",
                         link: "/Vue/intro.md"
                     },
-                    {
-                        text: "React",
-                        link: "/framework-analysis/react.md"
-                    }
+                    // {
+                    //     text: "React",
+                    //     link: "/framework-analysis/react.md"
+                    // }
                 ]
             },
             {
@@ -83,112 +83,112 @@ export default defineConfig({
             //     text: "旅行计划",
             //     link: "/旅行计划/云南.md"
             // },
-            {
-                text: "其他项目",
-                items: [
-                    {
-                        text: "后台管理模板",
-                        link: "https://bupu-admin.xiaonuo.love/"
-                    },
-                    {
-                        text: "截图工具",
-                        link: "https://bupu-board.xiaonuo.love/"
-                    },
-                    {
-                        text: "在线白板",
-                        link: "https://bupu-board.xiaonuo.love?mode=whiteboard"
-                    },
-                    {
-                        text: "面试todoList",
-                        link: "https://wxx-web-interview.xiaonuo.love"
-                    }
-                ]
-            },
-            {
-                text: "其他资源",
-                items: [
-                    {
-                        text: "主流框架",
-                        items: [
-                            {
-                                text: "React",
-                                link: "https://react.nodejs.cn/reference/react"
-                            },
-                            {
-                                text: "Vue3",
-                                link: "https://cn.vuejs.org/"
-                            },
-                            {
-                                text: "Vue2",
-                                link: "https://v2.cn.vuejs.org/"
-                            }
-                        ]
-                    },
-                    {
-                        text: "组件库",
-                        items: [
-                            {
-                                text: 'ElementPlus',
-                                link: 'https://element-plus.gitee.io/zh-CN/'
-                            },
-                            {
-                                text: 'AntDesign',
-                                link: 'https://ant-design.gitee.io/index-cn'
-                            },
-                            {
-                                text: 'Vant',
-                                link: 'https://vant-contrib.gitee.io/vant/#/zh-CN'
-                            },
-                            {
-                                text: 'Varlet',
-                                link: 'https://varlet.gitee.io/varlet-ui/#/zh-CN/home'
-                            },
-                            {
-                                text: 'NaiveUI',
-                                link: 'https://www.naiveui.com/zh-CN/os-theme'
-                            }
-                        ]
-                    },
-                    {
-                        text: "构建工具",
-                        items: [
-                            {
-                                text: 'Webpack',
-                                link: 'https://webpack.docschina.org/'
-                            },
-                            {
-                                text: 'Vite',
-                                link: 'http://www.vitejs.net/'
-                            },
-                            {
-                                text: "Rspack",
-                                link: "https://www.rspack.dev/zh/index.html"
-                            },
-                            {
-                                text: "Gulp",
-                                link: "https://www.gulpjs.com.cn/"
-                            },
-                            {
-                                text: "Grunt",
-                                link: "https://www.gruntjs.net/"
-                            }
-                        ]
-                    },
-                    {
-                        text: "代码分析",
-                        items: [
-                            {
-                                text: 'ast语法解析',
-                                link: 'https://astexplorer.net/'
-                            },
-                            {
-                                text: 'js运行机制可视化',
-                                link: 'https://www.jsv9000.app/'
-                            }
-                        ]
-                    }
-                ]
-            }
+            // {
+            //     text: "其他项目",
+            //     items: [
+            //         {
+            //             text: "后台管理模板",
+            //             link: "https://bupu-admin.xiaonuo.love/"
+            //         },
+            //         {
+            //             text: "截图工具",
+            //             link: "https://bupu-board.xiaonuo.love/"
+            //         },
+            //         {
+            //             text: "在线白板",
+            //             link: "https://bupu-board.xiaonuo.love?mode=whiteboard"
+            //         },
+            //         {
+            //             text: "面试todoList",
+            //             link: "https://wxx-web-interview.xiaonuo.love"
+            //         }
+            //     ]
+            // },
+            // {
+            //     text: "其他资源",
+            //     items: [
+            //         {
+            //             text: "主流框架",
+            //             items: [
+            //                 {
+            //                     text: "React",
+            //                     link: "https://react.nodejs.cn/reference/react"
+            //                 },
+            //                 {
+            //                     text: "Vue3",
+            //                     link: "https://cn.vuejs.org/"
+            //                 },
+            //                 {
+            //                     text: "Vue2",
+            //                     link: "https://v2.cn.vuejs.org/"
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             text: "组件库",
+            //             items: [
+            //                 {
+            //                     text: 'ElementPlus',
+            //                     link: 'https://element-plus.gitee.io/zh-CN/'
+            //                 },
+            //                 {
+            //                     text: 'AntDesign',
+            //                     link: 'https://ant-design.gitee.io/index-cn'
+            //                 },
+            //                 {
+            //                     text: 'Vant',
+            //                     link: 'https://vant-contrib.gitee.io/vant/#/zh-CN'
+            //                 },
+            //                 {
+            //                     text: 'Varlet',
+            //                     link: 'https://varlet.gitee.io/varlet-ui/#/zh-CN/home'
+            //                 },
+            //                 {
+            //                     text: 'NaiveUI',
+            //                     link: 'https://www.naiveui.com/zh-CN/os-theme'
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             text: "构建工具",
+            //             items: [
+            //                 {
+            //                     text: 'Webpack',
+            //                     link: 'https://webpack.docschina.org/'
+            //                 },
+            //                 {
+            //                     text: 'Vite',
+            //                     link: 'http://www.vitejs.net/'
+            //                 },
+            //                 {
+            //                     text: "Rspack",
+            //                     link: "https://www.rspack.dev/zh/index.html"
+            //                 },
+            //                 {
+            //                     text: "Gulp",
+            //                     link: "https://www.gulpjs.com.cn/"
+            //                 },
+            //                 {
+            //                     text: "Grunt",
+            //                     link: "https://www.gruntjs.net/"
+            //                 }
+            //             ]
+            //         },
+            //         {
+            //             text: "代码分析",
+            //             items: [
+            //                 {
+            //                     text: 'ast语法解析',
+            //                     link: 'https://astexplorer.net/'
+            //                 },
+            //                 {
+            //                     text: 'js运行机制可视化',
+            //                     link: 'https://www.jsv9000.app/'
+            //                 }
+            //             ]
+            //         }
+            //     ]
+            // }
         ],
 
         sidebar: {

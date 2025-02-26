@@ -1,6 +1,6 @@
 {
-  "name": "bupu-blog",
-  "description": "小诺的个人博客",
+  "name": "Z-blog",
+  "description": "Z的个人博客",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "fs": "^0.0.1-security",
-    "vitepress": "^1.1.4",
+    "vitepress": "^1.6.3",
     "vue": "^3.4.27"
   },
   "devDependencies": {
