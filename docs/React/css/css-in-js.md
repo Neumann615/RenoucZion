@@ -27,7 +27,7 @@ css-in-js 库有很多，比如 `styled-components`、`emotion`、等等，因�
 
 [Antd 的 css-in-js 库](https://ant-design.github.io/cssinjs/)
 
-![alt text](./image/antd.png)
+![alt text](./image/Antd.png)
 
 
 ## 案例
