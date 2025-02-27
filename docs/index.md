@@ -6,8 +6,8 @@ titleTemplate: Z-docs
 
 hero:
   name: Z-docs
-  text: 文档站点
-  tagline: 收藏的笔记
+  text:  Z 的个人文档站点
+  tagline: 秉承拿来主义收藏整理了一些知识点
   image:
     src: /logo.png
     alt: z
