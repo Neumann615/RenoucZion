@@ -62,31 +62,6 @@ export default defineConfig({
         link: "/教师资格证/教育教学知识与能力/教育基础(上)",
       },
       // {
-      //     text: "旅行计划",
-      //     link: "/旅行计划/云南.md"
-      // },
-      // {
-      //     text: "其他项目",
-      //     items: [
-      //         {
-      //             text: "后台管理模板",
-      //             link: "https://bupu-admin.xiaonuo.love/"
-      //         },
-      //         {
-      //             text: "截图工具",
-      //             link: "https://bupu-board.xiaonuo.love/"
-      //         },
-      //         {
-      //             text: "在线白板",
-      //             link: "https://bupu-board.xiaonuo.love?mode=whiteboard"
-      //         },
-      //         {
-      //             text: "面试todoList",
-      //             link: "https://wxx-web-interview.xiaonuo.love"
-      //         }
-      //     ]
-      // },
-      // {
       //     text: "其他资源",
       //     items: [
       //         {
