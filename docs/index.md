@@ -30,16 +30,16 @@ features:
     details: 他知道过去是改变不了的，但也无法袖手旁观
   - icon: <img style="width:30px;" src='/shop.png' />
     title: 解忧杂货店
-    details: 没有地图的人生才最精彩
+    details: 人的一生就像一张白纸，本无意义，但你可以让它变成名画，也可以让它变成废纸
   - icon: <img style="width:30px;" src='/time.png' />
     title: 盛夏的方程式
     details: 不管什么问题，都必然存在着答案
   - icon: <img style="width:30px;" src='/musk.png' />
     title: 变身
     details: 别为难自己，活得像你自己就行了
-  - icon: <img style="width:30px;" src='/school.png' />
-    title: 放学后
-    details: 闭上眼睛，好好回想之前的努力，自信会喷涌而出
+  - icon: <img style="width:30px;" src='/star.png' />
+    title: 流星之绊
+    details: 警察先生，您见过凌晨三点的星空吗？那里没有流星，只有我们三兄妹数了十四年的寂寞
   - icon: <img style="width:30px;" src='/deliver.png' />
     title: 恶意
     details: 事发当晚他显得异常兴奋而多话，这是真凶显露面目的典型表现之一
