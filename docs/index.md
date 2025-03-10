@@ -1,16 +1,16 @@
 ---
 layout: home
 
-title: Z-docs
-titleTemplate: Z-docs
+# title:
+# titleTemplate:
 
 hero:
-  name: Z-docs
-  text:  Z 的个人文档站点
+  name: Z和PuPu 的知识库
+  text:  Symbol && undefined
   tagline: 秉承拿来主义收藏整理了一些知识点
   image:
     src: /logo.png
-    alt: z
+    alt: Z
   actions:
     - theme: brand
       text: 开始
@@ -31,12 +31,12 @@ features:
   - icon: <img style="width:30px;" src='/shop.png' />
     title: 解忧杂货店
     details: 人的一生就像一张白纸，本无意义，但你可以让它变成名画，也可以让它变成废纸
-  - icon: <img style="width:30px;" src='/time.png' />
-    title: 盛夏的方程式
-    details: 不管什么问题，都必然存在着答案
-  - icon: <img style="width:30px;" src='/musk.png' />
-    title: 变身
-    details: 别为难自己，活得像你自己就行了
+  # - icon: <img style="width:30px;" src='/time.png' />
+  #   title: 盛夏的方程式
+  #   details: 不管什么问题，都必然存在着答案
+  # - icon: <img style="width:30px;" src='/musk.png' />
+  #   title: 变身
+  #   details: 别为难自己，活得像你自己就行了
   - icon: <img style="width:30px;" src='/star.png' />
     title: 流星之绊
     details: 警察先生，您见过凌晨三点的星空吗？那里没有流星，只有我们三兄妹数了十四年的寂寞
