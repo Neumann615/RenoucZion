@@ -7,7 +7,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
             items: [
                 {
                     text: "ECMAScript 6 简介",
-                    link: "ES6标准入门/intro",
+                    link: "/ES6标准入门/intro",
                 },
                 {
                     text: "let 和 const 命令",
@@ -844,17 +844,6 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
                 {
                     text: "其他",
                     items: [{ text: "自定义hooks", link: "/React/hooks/custom" }],
-                },
-            ],
-        },
-    ],
-    旅行计划: [
-        {
-            text: "旅行计划",
-            items: [
-                {
-                    text: "云南",
-                    link: "/旅行计划/云南",
                 },
             ],
         },

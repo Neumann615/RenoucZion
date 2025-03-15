@@ -1,4 +1,5 @@
 import { DefaultTheme } from "vitepress"
+import { siteName } from "./data"
 import { nav } from './nav'
 import { search } from './search'
 import { sidebar } from "./sidebar"
@@ -25,7 +26,7 @@ export const themeConfig: DefaultTheme.Config = {
     },
     footer: {
         message: '路在脚下',
-        copyright: `Copyright © 2023-${new Date().getFullYear()} Z ❤ PuPu`,
+        copyright: `Copyright © 2023-${new Date().getFullYear()} ❤ ${siteName} 🤓`,
     },
     search,
     nav,

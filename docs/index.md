@@ -1,13 +1,11 @@
 ---
 layout: home
-
-# title:
-# titleTemplate:
+layoutClass: 'home-layout'
 
 hero:
-  name: Z和PuPu 的知识库
-  text:  Symbol && undefined
-  tagline: 秉承拿来主义收藏整理了一些知识点
+  name: ​RenoucZion
+  text:  象征知识库的理想国
+  tagline: ​Renouc源自“更新”（Renew/Re-）与法语词根“nouveau”，象征持续焕新、迭代升级，Zion代表理想之地，隐喻知识的聚合与共享地
   image:
     src: /logo.png
     alt: Z
@@ -44,3 +42,5 @@ features:
     title: 恶意
     details: 事发当晚他显得异常兴奋而多话，这是真凶显露面目的典型表现之一
 ---
+
+<HomePage />
