@@ -7,7 +7,7 @@ export const metaData = {
     locale: 'zh_CN',
     title: 'RenoucZion',
     description: '象征知识库的理想国',
-    image: `/logo.jpg`,
+    image: `/logo.png`,
 };
 
 /** 文本 */

@@ -7,7 +7,7 @@ import { sidebar } from "./sidebar"
 export const themeConfig: DefaultTheme.Config = {
     logo: "/logo.png",
     aside: true,
-    socialLinks: [{ icon: "github", link: "https://github.com/Neumann615" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/Neumann615/RenoucZion" }],
     darkModeSwitchTitle: '切换暗黑模式',
     lightModeSwitchTitle: '切换明亮模式',
     sidebarMenuLabel: '文章',

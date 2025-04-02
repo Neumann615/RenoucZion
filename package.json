@@ -1,8 +1,8 @@
 {
-  "name": "Z-docs",
-  "description": "Z的知识库",
+  "name": "RenoucZion",
+  "description": "象征知识库的理想国",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vitepress dev docs --host",
