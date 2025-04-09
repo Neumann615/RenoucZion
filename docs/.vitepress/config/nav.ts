@@ -28,21 +28,20 @@ export const nav: DefaultTheme.Config['nav'] = [
         ],
     },
     {
-        text: '其他技能',
+        text: '笔记',
         items: [
             {
-                text: "教资",
+                text: "面试题",
+                link: "interview/面试题/基础面试题",
+            },
+            {
+                text: "教资资格证",
                 link: "教师资格证/教育教学知识与能力/教育基础(上)",
             }
         ]
     },
     {
-        text: '笔记',
-        items: [
-            {
-                text: "面试相关",
-                link: "interview/面试题/基础面试题",
-            },
-        ]
+        text: '工作日志',
+        link: '/工作日志/深圳华云信息系统有限公司(招商证券)'
     }
 ]
