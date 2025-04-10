@@ -27,7 +27,7 @@ export const nav: DefaultTheme.Config['nav'] = [
             },
             {
                 text: "前端工程化",
-                link: "前端工程化/rollup"
+                link: "前端工程化/index"
             }
         ],
     },
