@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useData } from "vitepress";
 import DefaultTheme from "vitepress/theme";
-import { nextTick, provide } from "vue";
+import { nextTick, provide, useAttrs } from "vue";
 
 const { isDark } = useData();
+const attrs = useAttrs()
 
 const enableTransitions = () =>
   "startViewTransition" in document &&
@@ -37,10 +38,11 @@ provide("toggle-appearance", async ({ clientX: x, clientY: y }: MouseEvent) => {
     }
   );
 });
+console.log(attrs)
 </script>
 
 <template>
-  <DefaultTheme.Layout />
+  <DefaultTheme.Layout v-bind="{...attrs}" />
 </template>
 
 <style>

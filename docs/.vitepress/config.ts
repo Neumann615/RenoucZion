@@ -3,8 +3,34 @@ import { metaData } from "./config/data";
 import { head } from './config/head';
 import { markdown } from './config/markdown';
 import { themeConfig } from "./config/theme";
+import {
+  GitChangelog,
+  GitChangelogMarkdownSection,
+} from '@nolebase/vitepress-plugin-git-changelog/vite'
 
 export default defineConfig({
+  vite: {
+    plugins: [
+      GitChangelog({
+        repoURL: () => 'https://github.com/Neumann615/RenoucZion',
+      }),
+      GitChangelogMarkdownSection(),
+    ],
+    optimizeDeps: {
+      exclude: [
+        '@nolebase/vitepress-plugin-enhanced-readabilities/client',
+        'vitepress',
+        '@nolebase/ui',
+      ],
+    },
+    ssr: {
+      noExternal: [
+        // 如果还有别的依赖需要添加的话，并排填写和配置到这里即可 //
+        '@nolebase/vitepress-plugin-enhanced-readabilities',
+        '@nolebase/ui',
+      ],
+    },
+  },
   lang: metaData.lang,
   title: metaData.title,
   description: metaData.description,

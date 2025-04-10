@@ -21,6 +21,8 @@
     "vue": "^3.4.27"
   },
   "devDependencies": {
+    "@nolebase/vitepress-plugin-enhanced-readabilities": "^2.16.0",
+    "@nolebase/vitepress-plugin-git-changelog": "^2.16.0",
     "@vitejs/plugin-vue": "^3.1.0",
     "typescript": "^4.6.4",
     "vite": "^3.1.0",
