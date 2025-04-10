@@ -1020,5 +1020,16 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
             text:'深圳华云信息系统有限公司(招商证券)',
             link:'/工作日志/深圳华云信息系统有限公司(招商证券)'
         }
+    ],
+    前端工程化:[
+        {
+            text:'前端工程化',
+            items: [
+                {
+                    text: "rollup",
+                    link: "/前端工程化/rollup",
+                }
+            ]
+        }
     ]
 }
