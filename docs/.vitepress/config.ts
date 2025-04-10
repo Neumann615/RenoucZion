@@ -1,18 +1,25 @@
+import {
+  GitChangelog,
+  GitChangelogMarkdownSection,
+} from '@nolebase/vitepress-plugin-git-changelog/vite';
 import { defineConfig } from "vitepress";
 import { metaData } from "./config/data";
 import { head } from './config/head';
 import { markdown } from './config/markdown';
 import { themeConfig } from "./config/theme";
-import {
-  GitChangelog,
-  GitChangelogMarkdownSection,
-} from '@nolebase/vitepress-plugin-git-changelog/vite'
 
 export default defineConfig({
   vite: {
     plugins: [
       GitChangelog({
         repoURL: () => 'https://github.com/Neumann615/RenoucZion',
+        mapAuthors: [
+          {
+            name: 'Z',
+            username: 'Neumann615',
+            mapByNameAliases: ['wxxFE','wxxFe','Neumann615'],
+          },
+        ]
       }),
       GitChangelogMarkdownSection(),
     ],
