@@ -25,6 +25,10 @@ export const nav: DefaultTheme.Config['nav'] = [
                 text: "React",
                 link: "React/basic/introduce",
             },
+            {
+                text: "前端工程化",
+                link: "前端工程化/index"
+            }
         ],
     },
     {
