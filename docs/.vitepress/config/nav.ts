@@ -40,8 +40,8 @@ export const nav: DefaultTheme.Config['nav'] = [
             }
         ]
     },
-    {
-        text: '工作日志',
-        link: '/工作日志/深圳华云信息系统有限公司(招商证券)'
-    }
+    // {
+    //     text: '工作日志',
+    //     link: '/工作日志/深圳华云信息系统有限公司(招商证券)'
+    // }
 ]
