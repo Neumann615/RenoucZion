@@ -1011,25 +1011,20 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
             ],
         },
     ],
-    工作日志:[
+    前端工程化: [
         {
-            text:'武汉北科天翼科技有限公司',
-            link:'/工作日志/武汉北科天翼科技有限公司'
+            text: '简介',
+            link: '/前端工程化/index'
         },
         {
-            text:'深圳华云信息系统有限公司(招商证券)',
-            link:'/工作日志/深圳华云信息系统有限公司(招商证券)'
+            text: "rollup",
+            link: "/前端工程化/rollup",
         }
     ],
-    前端工程化:[
+    ahooks: [
         {
-            text:'前端工程化',
-            items: [
-                {
-                    text: "rollup",
-                    link: "/前端工程化/rollup",
-                }
-            ]
+            text: '导论',
+            link: '/ahooks/introduction'
         }
     ]
 }

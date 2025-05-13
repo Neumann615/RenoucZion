@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { inBrowser } from "vitepress";
 import { ref } from "vue";
-import type { NavLink } from "../../type";
+import type { NavLink } from "../.vitepress/theme/type";
 import { NAV_DATA } from "./data";
 
-const M_RECENT_LINKS_KEY = "mm-notes-recent-links";
+const RECENT_LINKS_KEY = "rz-recent-links-key";
 
 const getItems = () => {
   if (!inBrowser) {
     return [];
   }
-  const value = localStorage.getItem(M_RECENT_LINKS_KEY);
+  const value = localStorage.getItem(RECENT_LINKS_KEY);
   if (value) {
     try {
       return JSON.parse(value);
@@ -29,7 +29,7 @@ const handleClick = (data: NavLink) => {
   if (newData.length > 4) {
     newData = newData.slice(0, 4);
   }
-  localStorage.setItem(M_RECENT_LINKS_KEY, JSON.stringify(newData));
+  localStorage.setItem(RECENT_LINKS_KEY, JSON.stringify(newData));
   items.value = newData;
 };
 </script>

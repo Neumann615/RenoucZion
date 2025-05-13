@@ -9,6 +9,7 @@ import { markdown } from './config/markdown';
 import { themeConfig } from "./config/theme";
 
 export default defineConfig({
+ 
   vite: {
     plugins: [
       GitChangelog({

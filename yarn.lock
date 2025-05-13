@@ -1999,6 +1999,18 @@ queue-microtask@^1.2.2:
   resolved "https://registry.npmmirror.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
+react-dom@^19.1.0:
+  version "19.1.0"
+  resolved "https://registry.npmmirror.com/react-dom/-/react-dom-19.1.0.tgz#133558deca37fa1d682708df8904b25186793623"
+  integrity sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==
+  dependencies:
+    scheduler "^0.26.0"
+
+react@^19.1.0:
+  version "19.1.0"
+  resolved "https://registry.npmmirror.com/react/-/react-19.1.0.tgz#926864b6c48da7627f004795d6cce50e90793b75"
+  integrity sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==
+
 readdirp@^4.0.1:
   version "4.1.2"
   resolved "https://registry.npmmirror.com/readdirp/-/readdirp-4.1.2.tgz#eb85801435fbf2a7ee58f19e0921b068fc69948d"
@@ -2105,6 +2117,11 @@ sax@^1.2.4:
   version "1.4.1"
   resolved "https://registry.npmmirror.com/sax/-/sax-1.4.1.tgz#44cc8988377f126304d3b3fc1010c733b929ef0f"
   integrity sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==
+
+scheduler@^0.26.0:
+  version "0.26.0"
+  resolved "https://registry.npmmirror.com/scheduler/-/scheduler-0.26.0.tgz#4ce8a8c2a2095f13ea11bf9a445be50c555d6337"
+  integrity sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==
 
 section-matter@^1.0.0:
   version "1.0.0"
@@ -2357,6 +2374,11 @@ vite@^5.4.14:
     rollup "^4.20.0"
   optionalDependencies:
     fsevents "~2.3.3"
+
+vitepress-demo-plugin@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.npmmirror.com/vitepress-demo-plugin/-/vitepress-demo-plugin-1.4.1.tgz#da57887da7bb5d0e1b9a0196f521be6e6bbe929f"
+  integrity sha512-JKz3+HOWLzjdLfuBoFtT11N9WGOEicX+9VwxzTSupj/6hgDlmNqRAJO+sKMOXuMaANGxQtEsGE1EWNBBaTJjPg==
 
 vitepress@^1.6.3:
   version "1.6.3"
