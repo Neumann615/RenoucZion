@@ -12,6 +12,7 @@ dist
 dist-ssr
 docs/.vitepress/cache/deps
 *.local
+yarn.lock
 
 # Editor directories and files
 .vscode/*
