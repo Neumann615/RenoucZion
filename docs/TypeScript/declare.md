@@ -82,7 +82,7 @@ declare function sayHello(
 sayHello('张三');
 ```
 
-上面示例中，declare 命令给出了`sayHello()`的类型描述，因此可以直接使用它。
+上面示例中，declare 命令给出了`sayHello()`的类型描述，表示这个函数是由外部文件定义的，因此这里可以直接使用该函数。
 
 注意，这种单独的函数类型声明语句，只能用于`declare`命令后面。一方面，TypeScript 不支持单独的函数类型声明语句；另一方面，declare 关键字后面也不能带有函数的具体实现。
 
@@ -91,7 +91,10 @@ sayHello('张三');
 function sayHello(
   name:string
 ):void;
-function sayHello(name) {
+
+let foo = 'bar';
+
+function sayHello(name:string) {
   return '你好，' + name;
 }
 ```
@@ -249,6 +252,7 @@ const a:A = { x: 0, y: 0 };
 某些第三方模块，原始作者没有提供接口类型，这时可以在自己的脚本顶部加上下面一行命令。
 
 ```typescript
+// 语法
 declare module "模块名";
 
 // 例子
@@ -367,6 +371,17 @@ declare module "path" {
 ```
 
 上面示例中，`url`和`path`都是单独的模块脚本，但是它们的类型都定义在`node.d.ts`这个文件里面。
+
+另一种情况是，使用`declare module`命令，为模块名指定加载路径。
+
+```typescript
+declare module "lodash" {
+  export * from "../../dependencies/lodash";
+  export default from "../../dependencies/lodash";
+}
+```
+
+上面示例中，`declare module "lodash"`为模块`lodash`，指定具体的加载路径。
 
 使用时，自己的脚本使用三斜杠命令，加载这个类型声明文件。
 

@@ -17,30 +17,23 @@ hero:
       text: 在github上查看
       link: https://github.com/Neumann615
 features:
-  - icon: <img style="width:30px;" src='/pupu.png' />
-    title: 噗噗
-    details: 噗噗是一只英短蓝猫
-  - icon: <img style="width:30px;" src='/cn.png' />
-    title: 教员
-    details: 教育必须为无产阶级政治服务，必须同生产劳动相结合
-  - icon: <img style="width:30px;" src='/time.png' />
-    title: 时生
-    details: 他知道过去是改变不了的，但也无法袖手旁观
-  - icon: <img style="width:30px;" src='/shop.png' />
-    title: 解忧杂货店
-    details: 人的一生就像一张白纸，本无意义，但你可以让它变成名画，也可以让它变成废纸
-  # - icon: <img style="width:30px;" src='/time.png' />
-  #   title: 盛夏的方程式
-  #   details: 不管什么问题，都必然存在着答案
-  # - icon: <img style="width:30px;" src='/musk.png' />
-  #   title: 变身
-  #   details: 别为难自己，活得像你自己就行了
-  - icon: <img style="width:30px;" src='/star.png' />
-    title: 流星之绊
-    details: 警察先生，您见过凌晨三点的星空吗？那里没有流星，只有我们三兄妹数了十四年的寂寞
-  - icon: <img style="width:30px;" src='/deliver.png' />
-    title: 恶意
-    details: 事发当晚他显得异常兴奋而多话，这是真凶显露面目的典型表现之一
+  - icon: 📖
+    title: 语言基础
+    details: 整合一些已经掌握的编程语言相关知识
+    link: /JavaScript/basic/introduction
+    linkText: 编程语言  
+  - icon: 🏠
+    title: 技术框架
+    details: 了解各种库的设计思想及使用技巧
+    link: Vue/框架设计概览/权衡的艺术
+    linkText: 主流框架
+  - icon: 📓
+    title: 笔记
+    details: 不局限于技术，相对广泛自由的信息整合
+    link: 教师资格证/教育教学知识与能力/教育基础(上)
+    linkText: 笔记  
+  - icon: 💪
+    title: Accumulate your strength
 ---
 
 <HomePage />

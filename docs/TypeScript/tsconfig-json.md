@@ -536,7 +536,9 @@ TypeScript 内置的类型描述文件，主要有以下一些，完整的清单
 }
 ```
 
-它还可以使用通配符“*”。
+上面示例中，paths 设置的是执行`require('b')`时，即加载的是`./bar/b`。
+
+它还可以使用通配符“*”，表明模块名与模块位置的对应关系。
 
 ```typescript
 {
@@ -677,27 +679,41 @@ let func:StringOrNumberFunc = fn;
 
 ### strictNullChecks
 
-`strictNullChecks`设置对`null`和`undefined`进行严格类型检查。如果打开`strict`属性，这一项就会自动设为`true`，否则为`false`。
-
-```bash
-let value:string;
-
-// strictNullChecks:false
-// 下面语句不报错
-value = null;
-```
-
-它可以理解成只要打开，就需要显式检查`null`或`undefined`。
+不打开`strictNullChecks`的情况下，一个变量不管类型是什么，都可以赋值为`undefined`或`null`。
 
 ```typescript
-function doSomething(x:string|null) {
-  if (x === null) {
-    // do nothing
-  } else {
-    console.log("Hello, " + x.toUpperCase());
-  }
-}
+// 不打开 strictNullChecks 的情况
+let x:number;
+
+x = undefined; // 不报错
+x = null; // 不报错
 ```
+
+上面示例中，不打开`strictNullChecks`时，变量`x`的类型是`number`，但是赋值为`undefined`或`null`都不会报错。这是为了继承 JavaScript 的设定：当变量没有赋值时，它的值就为`undefined`。
+
+一旦打开`strictNullChecks`，就使用严格类型，禁止变量赋值为`undefined`和`null`，除非变量原本就是这两种类型。它相当于从变量的值里面，排除了`undefined`和`null`。
+
+```typescript
+// 打开 strictNullChecks 的情况
+let x:number;
+
+x = undefined; // 报错
+x = null; // 报错
+```
+
+上面示例中，打开`strictNullChecks`时，变量`x`作为`number`类型，就不能赋值为`undefined`和`null`。
+
+下面是一个例子。
+
+```typescript
+// 打开 strickNullChecks 时，类型 A 为 number
+// 不打开时，类型 A 为 string
+type A = unknown extends {} ? string : number;
+```
+
+上面示例中，`{}`代表了 Object 类型，不打开`strictNullChecks`时，它包括了`undefined`和`null`，就相当于包括了所有类型的值，所以这时`unknown`类型可以赋值给`{}`类型，类型`A`就为`string`。打开`strictNullChecks`时，`{}`就排除掉了`undefined`和`null`，这时`unknown`类型就不能赋值给`{}`类型后，类型`A`就为`number`。
+
+最后，`strict`属性包含了`strictNullChecks`，如果打开`strict`属性，就相当于打开了`strictNullChecks`。
 
 ### strictPropertyInitialization
 
@@ -818,6 +834,12 @@ class User {
 上面的设置表示，默认情况下，只有`./node_modules/@types/node`、`./node_modules/@types/jest`和`./node_modules/@types/express`会自动加入编译，其他`node_modules/@types/`目录下的模块不会加入编译。
 
 如果`"types": []`，就表示不会自动将所有`@types`模块加入编译。
+
+### useDefineForClassFields
+
+`useDefineForClassFields`这个设置针对的是，在类（class）的顶部声明的属性。TypeScript 早先对这一类属性的处理方法，与写入 ES2022 标准的处理方法不一致。这个设置设为`true`，就用来开启 ES2022 的处理方法，设为`false`就是 TypeScript 原有的处理方法。
+
+它的默认值跟`target`属性有关，如果编译目标是`ES2022`或更高，那么`useDefineForClassFields`默认值为`true`，否则为`false`。
 
 ### useUnknownInCatchVariables
 

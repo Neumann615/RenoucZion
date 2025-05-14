@@ -537,6 +537,10 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
                     link: "/TypeScript/intro",
                 },
                 {
+                    text: "基本用法",
+                    link: "/TypeScript/basic"
+                },
+                {
                     text: "any类型",
                     link: "/TypeScript/any",
                 },
@@ -741,112 +745,146 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
     ],
     React: [
         {
-            text: "入门",
+            text: '入门',
             items: [
-                { text: "React基本介绍", link: "/React/basic/introduce" },
-                { text: "React开发环境搭建", link: "/React/basic/development" },
-                { text: "tsx语法入门", link: "/React/basic/tsx" },
-            ],
+                { text: 'React基本介绍', link: '/React/basic/introduce' },
+                { text: 'React开发环境搭建', link: '/React/basic/development' },
+                { text: 'tsx语法入门', link: '/React/basic/tsx' },
+            ]
         },
         {
-            text: "工具",
+            text: '工具',
             items: [
-                { text: "Babel", link: "/React/tools/babel" },
-                { text: "Swc", link: "/React/tools/swc" },
-            ],
+                { text: 'Babel', link: '/React/tools/babel' },
+                { text: 'Swc', link: '/React/tools/swc' },
+            ]
         },
         {
-            text: "原理",
+            text: '原理',
             items: [
-                { text: "vdom fiber diff", link: "/React/principle/vdom" },
-                {
-                    text: "requestidlecallback",
-                    link: "/React/principle/requestidlecallback",
-                },
-            ],
+                { text: 'vdom fiber diff', link: '/React/principle/vdom' },
+                { text: 'requestidlecallback', link: '/React/principle/requestidlecallback' }
+            ]
         },
         {
-            text: "组件",
+            text: '组件',
             items: [
-                { text: "认识组件", link: "/React/components/base" },
-                { text: "组件通信", link: "/React/components/communication" },
-                { text: "受控组件", link: "/React/components/controlled" },
-                { text: "传送组件", link: "/React/components/createPortal" },
-                { text: "异步组件", link: "/React/components/suspense" },
-            ],
+                { text: '认识组件', link: '/React/components/base' },
+                { text: '组件通信', link: '/React/components/communication' },
+                { text: '受控组件', link: '/React/components/controlled' },
+                { text: '传送组件', link: '/React/components/createPortal' },
+                { text: '异步组件', link: '/React/components/suspense' },
+                { text: '组件实战', link: '/React/components/practice' }
+            ]
         },
         {
-            text: "css方案",
+            text: 'css方案',
             items: [
-                { text: "css modules", link: "/React/css/css-modules" },
-                { text: "css in js", link: "/React/css/css-in-js" },
-                { text: "css 原子化", link: "/React/css/css-atomic" },
-            ],
+                { text: 'css modules', link: '/React/css/css-modules' },
+                { text: 'css in js', link: '/React/css/css-in-js' },
+                { text: 'css 原子化', link: '/React/css/css-atomic' }
+            ]
         },
         {
-            text: "Hooks",
+            text: 'Hooks',
             items: [
                 {
-                    text: "数据驱动",
+                    text: '数据驱动',
                     items: [
-                        { text: "useState", link: "/React/hooks/useState" },
-                        { text: "useReducer", link: "/React/hooks/useReducer" },
-                        {
-                            text: "useSyncExternalStore",
-                            link: "/React/hooks/useSyncExternalStore",
-                        },
-                        { text: "useTransition", link: "/React/hooks/useTransition" },
-                        {
-                            text: "useDeferredValue",
-                            link: "/React/hooks/useDeferredValue",
-                        },
+                        { text: 'useState', link: '/React/hooks/useState' },
+                        { text: 'useReducer', link: '/React/hooks/useReducer' },
+                        { text: 'useSyncExternalStore', link: '/React/hooks/useSyncExternalStore' },
+                        { text: 'useTransition', link: '/React/hooks/useTransition' },
+                        { text: 'useDeferredValue', link: '/React/hooks/useDeferredValue' }
+                    ]
+                },
+                {
+                    text: '副作用',
+                    items: [
+                        { text: 'useEffect', link: '/React/hooks/useEffect' },
+                        { text: 'useLayoutEffect', link: '/React/hooks/useLayoutEffect' },
+                        { text: 'useInsertionEffect', link: '/React/hooks/useInsertionEffect' }
+                    ]
+                },
+                {
+                    text: '状态传递',
+                    items: [
+                        { text: 'useRef', link: '/React/hooks/useRef' },
+                        { text: 'useImperativeHandle', link: '/React/hooks/useImperativeHandle' },
+                        { text: 'useContext', link: '/React/hooks/useContext' },
+                    ]
+                },
+                {
+                    text: '状态派生',
+                    items: [
+                        { text: 'useMemo', link: '/React/hooks/useMemo' },
+                        { text: 'useCallback', link: '/React/hooks/useCallback' }
                     ],
                 },
                 {
-                    text: "副作用",
+                    text: '工具Hooks',
                     items: [
-                        { text: "useEffect", link: "/React/hooks/useEffect" },
-                        {
-                            text: "useLayoutEffect",
-                            link: "/React/hooks/useLayoutEffect",
-                        },
-                        {
-                            text: "useInsertionEffect",
-                            link: "/React/hooks/useInsertionEffect",
-                        },
-                    ],
+                        { text: 'useDebugValue', link: '/React/hooks/useDebugValue' },
+                        { text: 'useId', link: '/React/hooks/useId' }
+                    ]
                 },
                 {
-                    text: "状态传递",
+                    text: '其他',
                     items: [
-                        { text: "useRef", link: "/React/hooks/useRef" },
-                        {
-                            text: "useImperativeHandle",
-                            link: "/React/hooks/useImperativeHandle",
-                        },
-                        { text: "useContext", link: "/React/hooks/useContext" },
-                    ],
-                },
-                {
-                    text: "状态派生",
-                    items: [
-                        { text: "useMemo", link: "/React/hooks/useMemo" },
-                        { text: "useCallback", link: "/React/hooks/useCallback" },
-                    ],
-                },
-                {
-                    text: "工具Hooks",
-                    items: [
-                        { text: "useDebugValue", link: "/React/hooks/useDebugValue" },
-                        { text: "useId", link: "/React/hooks/useId" },
-                    ],
-                },
-                {
-                    text: "其他",
-                    items: [{ text: "自定义hooks", link: "/React/hooks/custom" }],
-                },
-            ],
+                        { text: '自定义hooks', link: '/React/hooks/custom' },
+                    ]
+                }
+            ]
         },
+        {
+            text: 'Router',
+            items: [
+                {
+                    text: '基本使用',
+                    items: [
+                        { text: '安装', link: '/React/router/install' },
+                        { text: '模式', link: '/React/router/mode' },
+                        { text: '路由', link: '/React/router/router' },
+                        { text: '传参', link: '/React/router/params' },
+                        { text: '懒加载', link: '/React/router/lazy' },
+                        { text: '操作', link: '/React/router/operation' },
+                        { text: '导航', link: '/React/router/nav' },
+                        { text: '边界处理', link: '/React/router/boundary' },
+                    ]
+                },
+                {
+                    text: 'API',
+                    items: [
+                        { text: 'Await', link: '/React/router/apis/await' },
+                        { text: 'Link', link: '/React/router/apis/link' },
+                        { text: 'Meta', link: '/React/router/apis/meta' },
+                        { text: 'NavLink', link: '/React/router/apis/navlink' },
+                        { text: 'redirect', link: '/React/router/apis/redirect' },
+                        { text: 'ScrollRestoration ', link: '/React/router/apis/scrollRestoration' },
+                    ]
+                },
+                {
+                    text: 'Hooks',
+                    items: [
+                        { text: 'useNavigate', link: '/React/router/hooks/useNavigate' },
+                        { text: 'useNavigation', link: '/React/router/hooks/useNavigation' },
+                        { text: 'useParams', link: '/React/router/hooks/useParams' },
+                        { text: 'useSearchParams', link: '/React/router/hooks/useSearchParams' },
+                        { text: 'useLocation', link: '/React/router/hooks/useLocation' },
+                        { text: 'useLoaderData', link: '/React/router/hooks/useLoaderData' },
+                        { text: 'useActionData', link: '/React/router/hooks/useActionData' },
+                        { text: 'useRouteError', link: '/React/router/hooks/useRouteError' },
+                        { text: 'useSubmit', link: '/React/router/hooks/useSubmit' },
+                    ]
+                }
+            ]
+        },
+        {
+            text: 'Zustand',
+            items: [
+                { text: '安装', link: '/React/zustand/install' },
+            ]
+        }
     ],
     interview: [
         {

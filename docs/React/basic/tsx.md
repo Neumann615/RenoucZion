@@ -11,7 +11,7 @@
 
 答：jsx是js的语法扩展，允许在js中编写html代码。
 
-例如：`const fn = () => <div>小满是谁？没听说过</div>`
+例如：`const fn = () => <div>噗噗是谁？没听说过</div>`
 
 ## 语法编写
 
@@ -65,7 +65,7 @@ function App() {
 
 ```tsx
 function App() {
-  const value: string = '小满'
+  const value: string = '噗噗'
   const clickTap = (params: string) => console.log(params)
   return (
     <>
@@ -81,7 +81,7 @@ function App() {
 
 ```tsx
 function App() {
-  const value: string = '小满'
+  const value: string = '噗噗'
   const clickTap = <T,>(params: T) => console.log(params)
   return (
     <>
@@ -96,7 +96,7 @@ function App() {
 dangerouslySetInnerHTML 的值是一个对象，该对象包含一个名为 __html 的属性，且值为你想要插入的 HTML 字符串
 ```tsx
 function App() {
-  const value: string = '<section style="color:red">小满</section>'
+  const value: string = '<section style="color:red">噗噗</section>'
   return (
     <>
         <div dangerouslySetInnerHTML={{ __html: value }}></div>
@@ -111,7 +111,7 @@ function App() {
 
 ```tsx
 function App() {
-  const arr: string[] = ["小满","中满","大满"]
+  const arr: string[] = ["噗噗","中噗噗","大噗噗"]
   return (
     <>
         {
@@ -150,7 +150,7 @@ function App() {
 ```tsx
 //错误用法
 function App() {
-  const obj = { name: '小满' }
+  const obj = { name: '噗噗' }
   return (
     <>
       {obj}
@@ -159,7 +159,7 @@ function App() {
 }
 //正确用法
 function App() {
-  const obj = { name: '小满' }
+  const obj = { name: '噗噗' }
   return (
     <>
       {obj.name}

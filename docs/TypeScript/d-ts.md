@@ -81,7 +81,7 @@ export const character:Character = {
 
 类型声明文件也可以包括在项目的 tsconfig.json 文件里面，这样的话，编译器打包项目时，会自动将类型声明文件加入编译，而不必在每个脚本里面加载类型声明文件。比如，moment 模块的类型声明文件是`moment.d.ts`，使用 moment 模块的项目可以将其加入项目的 tsconfig.json 文件。
 
-```json
+```typescript
 {
   "compilerOptions": {},
   "files": [
@@ -105,7 +105,7 @@ export const character:Character = {
 
 下面是在`tsconfig.json`文件里面，打开这个选项。
 
-```json
+```typescript
 {
   "compilerOptions": {
     "declaration": true
@@ -142,7 +142,7 @@ $ tsc --declaration
 
 TypeScript 编译器会自动根据编译目标`target`的值，加载对应的内置声明文件，所以不需要特别的配置。但是，可以使用编译选项`lib`，指定加载哪些内置声明文件。
 
-```json
+```javascript
 {
   "compilerOptions": {
     "lib": ["dom", "es2021"]
@@ -178,7 +178,7 @@ $ npm install @types/jquery --save-dev
 
 TypeScript 会自动加载`node_modules/@types`目录下的模块，但可以使用编译选项`typeRoots`改变这种行为。
 
-```json
+```typescript
 {
   "compilerOptions": {
     "typeRoots": ["./typings", "./vendor/types"]
@@ -190,7 +190,7 @@ TypeScript 会自动加载`node_modules/@types`目录下的模块，但可以使
 
 默认情况下，TypeScript 会自动加载`typeRoots`目录里的所有模块，编译选项`types`可以指定加载哪些模块。
 
-```json
+```javascript
 {
   "compilerOptions": {
     "types" : ["jquery"]
@@ -303,7 +303,7 @@ declare var d3: D3.Base;
 
 当前模块如果包含自己的类型声明文件，可以在 package.json 文件里面添加一个`types`字段或`typings`字段，指明类型声明文件的位置。
 
-```json
+```typescript
 {
   "name": "awesome",
   "author": "Vandelay Industries",
@@ -319,7 +319,7 @@ declare var d3: D3.Base;
 
 有时，类型声明文件会单独发布成一个 npm 模块，这时用户就必须同时加载该模块。
 
-```json
+```typescript
 {
   "name": "browserify-typescript-extension",
   "author": "Vandelay Industries",

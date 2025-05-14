@@ -18,7 +18,7 @@ export default defineConfig({
           {
             name: 'Z',
             username: 'Neumann615',
-            mapByNameAliases: ['wxxFE','wxxFe','Neumann615'],
+            mapByNameAliases: ['wxxFE','wxxFe','Neumann615','wxx-FE','zuoyiman'],
           },
         ]
       }),

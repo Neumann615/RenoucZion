@@ -69,7 +69,7 @@ export default App;
 ```tsx
 import React, { useState,useRef } from 'react';
 const App: React.FC = () => {
-  const value = '小满'
+  const value = '噗噗'
   const inputRef = useRef<HTMLInputElement>(null)
   const handleChange = () => {
     console.log(inputRef.current?.value)

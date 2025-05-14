@@ -92,9 +92,9 @@ http://localhost:5173/data.json
     "data":{
         "id":1,
         "address":"北京市房山区住岗子村10086",
-        "name":"小满",
+        "name":"噗噗",
         "age":26,
-        "avatar":"https://api.dicebear.com/7.x/avataaars/svg?seed=小满"
+        "avatar":"https://api.dicebear.com/7.x/avataaars/svg?seed=噗噗"
     }
 }   
 ```

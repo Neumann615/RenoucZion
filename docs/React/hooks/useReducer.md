@@ -38,7 +38,7 @@ function reducer(oldState, action) {
 }
 
 function MyComponent() {
-  const [state, dispatch] = useReducer(reducer, { age: 42,name:'小满' });
+  const [state, dispatch] = useReducer(reducer, { age: 42,name:'噗噗' });
   // ...
 ```
 ## 计数器案例
@@ -92,13 +92,13 @@ export default App;
 1. 初始数据 (initData):
 ```tsx
 const initData = [
-  { name: '小满(只)', price: 100, count: 1, id: 1, isEdit: false },
-  { name: '中满(只)', price: 200, count: 1, id: 2, isEdit: false },
-  { name: '大满(只)', price: 300, count: 1, id: 3, isEdit: false }
+  { name: '噗噗(只)', price: 100, count: 1, id: 1, isEdit: false },
+  { name: '中噗噗(只)', price: 200, count: 1, id: 2, isEdit: false },
+  { name: '大噗噗(只)', price: 300, count: 1, id: 3, isEdit: false }
 ]
 ```
 - initData 是一个数组，表示初始的商品列表。每个商品有以下属性：
-   - name: 商品的名称（例如 "小满(只)"）。
+   - name: 商品的名称（例如 "噗噗(只)"）。
    - price: 单价（例如 100）。
    - count: 数量，默认为 1。
    - id: 商品的唯一标识符。
