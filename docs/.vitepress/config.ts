@@ -9,7 +9,7 @@ import { markdown } from './config/markdown';
 import { themeConfig } from "./config/theme";
 
 export default defineConfig({
- 
+
   vite: {
     plugins: [
       GitChangelog({
@@ -18,8 +18,13 @@ export default defineConfig({
           {
             name: 'Z',
             username: 'Neumann615',
-            mapByNameAliases: ['wxxFE','wxxFe','Neumann615','wxx-FE','zuoyiman'],
+            mapByNameAliases: ['wxxFE', 'wxxFe', 'Neumann615', 'wxx-FE', 'zuoyiman'],
           },
+          {
+            name: "Renouc",
+            username: 'Renouc',
+            mapByNameAliases: ['Renou']
+          }
         ]
       }),
       GitChangelogMarkdownSection(),
