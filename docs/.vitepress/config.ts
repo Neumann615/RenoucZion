@@ -9,7 +9,6 @@ import { markdown } from './config/markdown';
 import { themeConfig } from "./config/theme";
 
 export default defineConfig({
-
   vite: {
     plugins: [
       GitChangelog({
@@ -58,7 +57,7 @@ export default defineConfig({
         isCustomElement: (tag) => customElements.includes(tag),
       },
     },
-  },
+  }
 })
 
 const customElements = [
