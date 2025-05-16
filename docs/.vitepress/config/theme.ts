@@ -30,14 +30,5 @@ export const themeConfig: DefaultTheme.Config = {
     },
     search,
     nav,
-    sidebar,
-    visitor: {
-        badgeId: 'maomao1996.vitepress-nav-template',
-    },
-    comment: {
-        repo: 'maomao1996/vitepress-nav-template',
-        repoId: 'R_kgDOJC09Jg',
-        category: 'Announcements',
-        categoryId: 'DIC_kwDOJC09Js4Cekn0',
-    }
+    sidebar
 }
