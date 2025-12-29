@@ -24,10 +24,10 @@ export const creators: Creator[] = [
         title: `${siteName}作者`,
         desc: '前端开发,目前正朝着全栈和大前端方向发展',
         links: [
-            { type: 'github', icon: 'github', link: 'https://github.com/Neumann615' },
-            { type: 'wechat', icon: 'wechat', link: 'z-wx-qr-code.jpg' },
+            {  icon: 'github', link: 'https://github.com/Neumann615' },
+            {  icon: 'wechat', link: 'z-wx-qr-code.jpg' },
         ],
-        nameAliases: ['Z', 'pupu', 'Neumann615'],
+        nameAliases: ['Z', 'pupu', 'Neumann615','wxxFE'],
         emailAliases: ['2022095028@qq.com'],
     },
     {
@@ -37,8 +37,8 @@ export const creators: Creator[] = [
         title: `${siteName}作者`,
         desc: '前端开发',
         links: [
-            { type: 'github', icon: 'github', link: 'https://github.com/Renouc' },
-            { type: 'wechat', icon: 'wechat', link: 'renouc-wx-qr-code.jpg' },
+            { icon: 'github', link: 'https://github.com/Renouc' },
+            { icon: 'wechat', link: 'renouc-wx-qr-code.jpg' },
         ],
         nameAliases: [],
         emailAliases: [],

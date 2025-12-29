@@ -1037,16 +1037,7 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         },
         {
             text: "综合素质",
-            items: [
-                {
-                    text: "学习心理",
-                    link: "/教师资格证/综合素质/关键知识点",
-                },
-                {
-                    text: "教育教学知识与能力",
-                    link: "/教师资格证/综合素质/优秀作文",
-                },
-            ],
+            items: [],
         },
     ],
     前端工程化: [
@@ -1057,12 +1048,6 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         {
             text: "rollup",
             link: "/前端工程化/rollup",
-        }
-    ],
-    ahooks: [
-        {
-            text: '导论',
-            link: '/ahooks/introduction'
         }
     ]
 }

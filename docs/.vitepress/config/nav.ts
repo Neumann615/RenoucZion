@@ -1,7 +1,7 @@
 import type { DefaultTheme } from 'vitepress';
 
 export const nav: DefaultTheme.Config['nav'] = [
-  /*   { text: '导航', link: '/nav', activeMatch: '^/nav' }, */
+    { text: '导航', link: '/nav', activeMatch: '^/nav' },
     {
         text: "编程语言",
         items: [
@@ -33,15 +33,6 @@ export const nav: DefaultTheme.Config['nav'] = [
         ]
     },
     {
-        text: '源码学习',
-        items: [
-            {
-                text: 'ahooks',
-                link: 'ahooks/introduction'
-            }
-        ]
-    },
-    {
         text: '笔记',
         items: [
             {
@@ -62,6 +53,10 @@ export const nav: DefaultTheme.Config['nav'] = [
             }
         ]
     },
+    {
+        text:'关于我',
+        link:'https://me.zzzpupu.xin/'
+    }
     // {
     //     text: '工作日志',
     //     link: '/工作日志/深圳华云信息系统有限公司(招商证券)'

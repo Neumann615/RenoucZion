@@ -8,6 +8,6 @@ outline: [2, 3, 4]
 import Nav from './Nav/Nav.vue'
 </script>
 
-# 地址导航
+# 导航
 
 <Nav></Nav>
