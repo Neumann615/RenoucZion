@@ -34,6 +34,12 @@ export const NAV_DATA: NavData[] = [
                 desc: "支持多语言的在线转换器",
                 link: "https://transform.tools/json-schema-to-typescript",
             },
+            {
+                icon:"https://www.lddgo.net/img/icon-1732875babb6f45ec2e61eaf37a1c0f0.png",
+                title:"js代码加密",
+                desc:"在线Javascript混淆加密",
+                link:"https://www.lddgo.net/encrypt/js"
+            }
         ],
     },
     {

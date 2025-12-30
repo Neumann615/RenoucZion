@@ -1046,8 +1046,12 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
             link: '/前端工程化/index'
         },
         {
-            text: "rollup",
-            link: "/前端工程化/rollup",
+            text: 'Webpack',
+            link: '/前端工程化/webpack'
+        },
+        {
+            text: "Rollup",
+            link: "/前端工程化/rollup"
         }
     ]
 }

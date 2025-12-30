@@ -22,7 +22,7 @@ export const creators: Creator[] = [
         avatar: '',
         username: 'Neumann615',
         title: `${siteName}作者`,
-        desc: '前端开发,目前正朝着全栈和大前端方向发展',
+        desc: '前端开发',
         links: [
             {  icon: 'github', link: 'https://github.com/Neumann615' },
             {  icon: 'wechat', link: 'z-wx-qr-code.jpg' },
@@ -40,7 +40,7 @@ export const creators: Creator[] = [
             { icon: 'github', link: 'https://github.com/Renouc' },
             { icon: 'wechat', link: 'renouc-wx-qr-code.jpg' },
         ],
-        nameAliases: [],
+        nameAliases: ['Renouc'],
         emailAliases: [],
     },
 ].map<Creator>((c) => {

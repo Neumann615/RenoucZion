@@ -54,8 +54,17 @@ export const nav: DefaultTheme.Config['nav'] = [
         ]
     },
     {
-        text:'关于我',
-        link:'https://me.zzzpupu.xin/'
+        text:'关于',
+        items:[
+            {
+                text:"Z",
+                link:'https://me.zzzpupu.xin/'
+            },
+            {
+                text:'Renouc',
+                link:'https://github.com/Renouc'
+            }
+        ]
     }
     // {
     //     text: '工作日志',
