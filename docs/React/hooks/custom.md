@@ -152,7 +152,7 @@ import React from 'react'
 import { useWatermark } from './hooks/useWatermark';
 const App: React.FC = () => {
    const [updateWatermark, opts] = useWatermark({
-      content: '噗噗马上拨款',
+      content: 'z马上拨款',
    }) // 水印
    const update = () => {
       updateWatermark({

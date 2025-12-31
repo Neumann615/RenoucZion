@@ -28,7 +28,7 @@ const debugValue = useDebugValue(value)
 2. 点击"添加至 Chrome"即可安装
 
 ### 方式二：离线安装
-1. 在微信公众号(`噗噗zs`) 回复 `React/React工具` 获取安装包
+1. 在微信公众号(`z`) 回复 `React/React工具` 获取安装包
 
 ![alt text](./img/wx.png)
 

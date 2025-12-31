@@ -25,7 +25,7 @@ const [state, setState] = useState(initialState)
 ```ts
 const Card = () => {
   let [index, setIndex] = useState(0)
-  let [name, setName] = useState('噗噗')
+  let [name, setName] = useState('z')
   let [arr, setArr] = useState([1, 2, 3])
 }
 ```
@@ -42,7 +42,7 @@ useState 返回一个只包含两个项的数组：
 
 ```ts
 function changeName () {
-    setName('大噗噗')
+    setName('大满')
 }
 ```
 React 会存储新状态，使用新值重新渲染组件，并更新 UI。
@@ -52,9 +52,9 @@ React 会存储新状态，使用新值重新渲染组件，并更新 UI。
 ```tsx
 import { useState } from "react"
 function App() {
-  let [name, setName] = useState('噗噗') //数字 布尔值 null undefined 都可以直接赋值 一样的
+  let [name, setName] = useState('z') //数字 布尔值 null undefined 都可以直接赋值 一样的
   const heandleClick = () => {
-    setName('大噗噗')
+    setName('大满')
   }
   return (
     <>
@@ -215,14 +215,14 @@ function App() {
     const date = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate()
     return {
       date,
-      name: '噗噗',
+      name: 'z',
       age: 25
     }
   })
   const heandleClick = () => {
     setObject({
       ...obj,
-      name: '大噗噗'
+      name: '大满'
     })
     //setObject(Object.assign({}, obj, { age: 26 })) 第二种写法
   }

@@ -23,10 +23,10 @@ console.log(searchParams.get('age')) // 18
 //修改当前 URL 的搜索参数
 <button onClick={() => setSearchParams(prev => {
     prev.set('age','30');
-    prev.set('name','噗噗zs');
+    prev.set('name','z');
     return prev;
 })}>change</button>
-//修改完成之后的 URL 为 `http://localhost:5173/search?age=30&name=噗噗zs`
+//修改完成之后的 URL 为 `http://localhost:5173/search?age=30&name=z`
 ```
 
 

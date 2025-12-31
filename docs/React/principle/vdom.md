@@ -15,7 +15,7 @@ Virtual DOM 就是用JavaScript对象去描述一个DOM结构，虚拟DOM不是�
 ```jsx
 const App = () => {
   return (<div id="2">
-      <span>噗噗zs</span>
+      <span>z</span>
   </div>)
 }
 ```
@@ -25,7 +25,7 @@ const App = () => {
 ```js
 const App = () => {
   return React.createElement('div', { id: 2 }, 
-    React.createElement('span', null, '噗噗zs')
+    React.createElement('span', null, 'z')
   );
 };
 ```
@@ -186,7 +186,7 @@ const React = {
 };
 
 
-// const vdom = React.createElement('div', { id: 1 }, React.createElement('span', null, '噗噗zs'));
+// const vdom = React.createElement('div', { id: 1 }, React.createElement('span', null, 'z'));
 
 // console.log(vdom)
 
@@ -303,7 +303,7 @@ function performUnitOfWork(fiber) {
     //确保每个 Fiber 节点都在内存中有一个对应的 DOM 节点准备好，以便后续在提交阶段更新到实际的 DOM 树中
 
     // 创建子节点的 Fiber
-    // const vdom = React.createElement('div', { id: 1 }, React.createElement('span', null, '噗噗zs'));
+    // const vdom = React.createElement('div', { id: 1 }, React.createElement('span', null, 'z'));
     // 子节点在children中
     const elements = fiber.props.children;
     reconcileChildren(fiber, elements);

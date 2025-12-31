@@ -147,7 +147,7 @@ import react from 'react'
 import { createRoot } from 'react-dom/client'
 
 const App = () => {
-    return <div>噗噗是谁？？？？？</div>
+    return <div>z是谁？？？？？</div>
 }
 
 createRoot(document.getElementById('root')).render(<App />)

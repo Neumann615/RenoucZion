@@ -153,7 +153,7 @@ const InputComponent = styled.input.attrs<DivComponentProps>((props) => ({
 `
 
 const App: React.FC = () => {
-  const defaultValue = '噗噗zs'
+  const defaultValue = 'z'
   return (
     <>
       <InputComponent defaultValue={defaultValue}></InputComponent>

@@ -51,25 +51,25 @@ function calculateDouble(number){
 
 ```ts
 //------------副作用函数--------------
-let obj = {name:'噗噗'}
+let obj = {name:'z'}
 const changeObj = (obj) => {
-    obj.name = '大噗噗'
+    obj.name = '大满'
     return obj
 }
-//噗噗
+//z
 changeObj(obj) //修改了外部变量属于副作用函数
-//大噗噗
+//大满
 //------------修改成纯函数--------------
 //也就是不会改变外部传入的变量
-let obj = {name:'噗噗'}
+let obj = {name:'z'}
 const changeObj = (obj) => {
    const newObj = window.structuredClone(obj) //深拷贝
-   newObj.name = '大噗噗'
+   newObj.name = '大满'
    return newObj
 }
-console.log(obj,'before') //obj 噗噗
+console.log(obj,'before') //obj z
 let newobj = changeObj(obj)
-console.log(obj,'after',newobj) //obj 噗噗 newobj 大噗噗
+console.log(obj,'after',newobj) //obj z newobj 大满
 ```
 
 了解了副作用函数之后我们可以正式开始了解`useEffect`
@@ -107,9 +107,9 @@ function App() {
   console.log(dom) //null
   useEffect(() => {
     const data = document.getElementById('data')
-    console.log(data) //<div id='data'>噗噗zs</div>
+    console.log(data) //<div id='data'>z</div>
   }, [])
-  return <div id='data'>噗噗zs</div>
+  return <div id='data'>z</div>
 }
 ```
 
@@ -117,7 +117,7 @@ function App() {
 
 ```tsx
 useEffect(() => {
-  fetch('http://localhost:5174/?name=噗噗')
+  fetch('http://localhost:5174/?name=z')
 }, [])
 ```
 

@@ -78,9 +78,6 @@ export const App = () => {
 }
 ```
 
-:::tip
-zustand的set函数会帮我们合并第一层状态，回想一下`useState`
-
 ```ts
 import { useState } from 'react'
 
@@ -95,7 +92,6 @@ setState((state) => ({
     price: state.price + 1, // 更新状态
 }))
 ```
-:::
 
 
 效果展示

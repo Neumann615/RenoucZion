@@ -40,7 +40,7 @@ export const creators: Creator[] = [
             { icon: 'github', link: 'https://github.com/Renouc' },
             { icon: 'wechat', link: 'renouc-wx-qr-code.jpg' },
         ],
-        nameAliases: ['Renouc'],
+        nameAliases: ['Renouc','Renou'],
         emailAliases: [],
     },
 ].map<Creator>((c) => {

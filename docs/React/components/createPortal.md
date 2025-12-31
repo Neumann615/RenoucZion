@@ -8,7 +8,7 @@
 import { createPortal } from 'react-dom';
 
 const App = () => {
-  return createPortal(<div>噗噗zs</div>, document.body);
+  return createPortal(<div>z</div>, document.body);
 };
 
 export default App;
@@ -121,7 +121,7 @@ export const Modal = () => {
 
 基本的html + css 比较简单就不多说了，先看一下效果
 
-![alt text](./images/Modal.png)
+![alt text](./images/mod.png)
 
 
 如果外层有position: relative 的样式，那么弹框会相对于外层进行定位，如果外层没有position: relative 的样式，那么弹框会相对于body进行定位,故此这个Modal不稳定，所以需要使用createPortal来将Modal挂载到body上，或者直接将定位改成position: fixed,两种方案。
@@ -174,6 +174,6 @@ export const Modal = () => {
 
 这样的话，Modal 组件就稳定了，无论外层是否有 position: relative 的样式，Modal 组件都会相对于 body 进行定位。
 
-## 总结
+## z箴言
 
 我更推荐使用`createPortal`因为他更灵活，可以挂载到任意位置，而`position: fixed`,会有很多问题，在默认的情况下他是根据浏览器视口进行定位的，但是如果父级设置了`transform、perspective、filter 或 backdrop-filter` 属性非 none 时，他就会相对于父级进行定位，这样就会导致Modal组件定位不准确`(他不是一定按照浏览器视口进行定位)`，所以不推荐使用。

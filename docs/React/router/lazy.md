@@ -58,7 +58,7 @@ export default function Content() {
     const isLoading = navigation.state === 'loading';
     return <div>
         {isLoading ? <Spin size='large' tip='loading...'  >
-            <Alert description="噗噗zs噗噗zs噗噗zs噗噗zs噗噗zs噗噗zs噗噗zs噗噗zsv"   message="加载中" type='info' />
+            <Alert description="zzzzzzzzv"   message="加载中" type='info' />
         </Spin> : <Outlet />
         }
     </div>

@@ -882,7 +882,11 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
         {
             text: 'Zustand',
             items: [
-                { text: '安装', link: '/React/zustand/install' },
+                { text: '安装', link: '/react/zustand/install' },
+                { text: '状态处理', link: '/react/zustand/state' },
+                { text: '状态简化', link: '/react/zustand/simplify' },
+                { text: '中间件', link: '/react/zustand/middleware' },
+                { text: '订阅', link: '/react/zustand/subscribe' },
             ]
         }
     ],

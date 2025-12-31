@@ -107,7 +107,7 @@ const App: React.FC = () => {
     <>
       <div className="bg-gradient-to-r from-pink-600 to-purple-600 h-screen w-screen flex justify-center items-center">
           <div className='text-white text-4xl font-bold hover:text-gray-300'>
-             大家好我是噗噗zs,欢迎来到我的博客
+             大家好我是z,欢迎来到我的博客
           </div>
       </div>
     </>
@@ -144,7 +144,7 @@ export default App;
 ```tsx
 <div className="blob-bg">
     <div className="blob-text">
-        大家好我是噗噗zs,欢迎来到我的博客
+        大家好我是z,欢迎来到我的博客
     </div>
 </div>
 ```

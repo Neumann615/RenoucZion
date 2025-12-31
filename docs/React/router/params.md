@@ -8,7 +8,7 @@ Query的方式就是使用 ? 来传递参数，例如：
 
 ```bash
 #多个参数用 & 连接
-/user?name=噗噗zs&age=18
+/user?name=z&age=18
 ```
 跳转方式：
 
@@ -77,11 +77,11 @@ state在URL中不显示，但是可以传递参数，例如：
 跳转方式：
 
 ```tsx
-<Link to="/user" state={{ name: '噗噗zs', age: 18 }}>User</Link> //1. Link 跳转
-<NavLink to="/user" state={{ name: '噗噗zs', age: 18 }}>User</NavLink> //2. NavLink 跳转
+<Link to="/user" state={{ name: 'z', age: 18 }}>User</Link> //1. Link 跳转
+<NavLink to="/user" state={{ name: 'z', age: 18 }}>User</NavLink> //2. NavLink 跳转
 import { useNavigate } from 'react-router'
 const navigate = useNavigate()
-navigate('/user', { state: { name: '噗噗zs', age: 18 } }) //3. useNavigate 跳转
+navigate('/user', { state: { name: 'z', age: 18 } }) //3. useNavigate 跳转
 ```
 
 获取参数：

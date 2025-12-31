@@ -15,7 +15,7 @@ hero:
       link: /JavaScript/basic/introduction.html
     - theme: alt
       text: 在github上查看
-      link: https://github.com/Neumann615
+      link: https://github.com/Neumann615/RenoucZion
 features:
   - icon: 📖
     title: 语言基础

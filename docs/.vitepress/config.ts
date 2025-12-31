@@ -22,7 +22,7 @@ export default defineConfig({
           {
             name: "Renouc",
             username: 'Renouc',
-            mapByNameAliases: ['Renou']
+            mapByNameAliases: ['Renou','Renouc']
           }
         ]
       }),
