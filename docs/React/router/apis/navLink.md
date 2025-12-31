@@ -134,7 +134,9 @@ a.transitioning {
 如果不喜欢写样式也可以直接用style属性来设置
 
 ```tsx
-<NavLink  viewTransition  style={({isActive,isPending,isTransitioning})=>{
+<NavLink  
+    viewTransition  
+    style={({isActive,isPending,isTransitioning})=>{
     return {
         marginRight:'10px',
         color:isActive?'red':'blue',
