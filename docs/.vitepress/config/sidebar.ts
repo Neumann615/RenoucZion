@@ -687,15 +687,15 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
                 },
                 {
                     text: "简单 Diff 算法",
-                    link: "/Vue/渲染器/简单 Diff 算法",
+                    link: "/Vue/渲染器/简单Diff算法",
                 },
                 {
                     text: "双端 Diff 算法",
-                    link: "/Vue/渲染器/双端 Diff 算法",
+                    link: "/Vue/渲染器/双端Diff算法",
                 },
                 {
                     text: "快速 Diff 算法",
-                    link: "/Vue/渲染器/快速 Diff 算法",
+                    link: "/Vue/渲染器/快速Diff算法",
                 },
             ],
         },
