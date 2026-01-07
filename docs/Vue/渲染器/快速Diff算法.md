@@ -5,7 +5,8 @@
 
 ![avatar](/Vue/images/第367页-98.png)
 
-上图来自 js-framework-benchmark，从中可以看出，在 DOM 操作的各个方面，ivi 和 inferno 所采用的快速 Diff 算法的性能都要稍优于 Vue.js 2 所采用的双端 Diff 算法。
+上图来自 js-framework-benchmark，从中可以看出，在 DOM 操作的各个方面，ivi 和 inferno 所采用的快速 Diff 算法的性能都要稍优于
+Vue.js 2 所采用的双端 Diff 算法。
 既然快速 Diff 算法如此高效，我们有必要了解它的思路。接下来，我们就着重讨论快速 Diff 算法的实现原理。
 
 ## 相同的前置元素和后置元素
@@ -28,7 +29,8 @@ TEXT2: I use react for app development
 
 ![avatar](/Vue/images/第368页-99.png)
 
-上图突出显示了 TEXT1 和 TEXT2 中相同的内容。对于内容相同的问题，是不需要进行核心 Diff 操作的。因此，对于 TEXT1 和 TEXT2 来说，真正需要进行 Diff 操作的部分是：
+上图突出显示了 TEXT1 和 TEXT2 中相同的内容。对于内容相同的问题，是不需要进行核心 Diff 操作的。因此，对于 TEXT1 和 TEXT2
+来说，真正需要进行 Diff 操作的部分是：
 
 ```text
 TEXT1: vue
@@ -88,25 +90,25 @@ TEXT2:
 然后开启一个 while 循环，让索引 j 递增，直到遇到不相同的节点为止，如下面 patchKeyedChildren 函数的代码所示：
 
 ```javascript
-01 function patchKeyedChildren(n1, n2, container) {
-02 const newChildren = n2.children
-03 const oldChildren = n1.children
-04 // 处理相同的前置节点
-05 // 索引 j 指向新旧两组子节点的开头
-06 let j = 0
-07 let oldVNode = oldChildren[j]
-08 let newVNode = newChildren[j]
-09 // while 循环向后遍历，直到遇到拥有不同 key 值的节点为止
-10 while (oldVNode.key === newVNode.key) {
-11 // 调用 patch 函数进行更新
-12 patch(oldVNode, newVNode, container)
-13 // 更新索引 j，让其递增
-14 j++
-15 oldVNode = oldChildren[j]
-16 newVNode = newChildren[j]
-17 }
-18
-19 }
+function patchKeyedChildren(n1, n2, container) {
+    const newChildren = n2.children
+    const oldChildren = n1.children
+// 处理相同的前置节点
+// 索引 j 指向新旧两组子节点的开头
+    let j = 0
+    let oldVNode = oldChildren[j]
+    let newVNode = newChildren[j]
+// while 循环向后遍历，直到遇到拥有不同 key 值的节点为止
+    while (oldVNode.key === newVNode.key) {
+// 调用 patch 函数进行更新
+        patch(oldVNode, newVNode, container)
+// 更新索引 j，让其递增
+        j++
+        oldVNode = oldChildren[j]
+        newVNode = newChildren[j]
+    }
+
+}
 ```
 
 在上面这段代码中，我们使用 while 循环查找所有相同的前置节点，并调用 patch 函数进行打补丁，直到遇到 key 值不同的节点为止。
@@ -122,41 +124,40 @@ TEXT2:
 然后，再开启一个 while 循环，并从后向前遍历这两组子节点，直到遇到 key 值不同的节点为止，如下面的代码所示：
 
 ```javascript
-01 function patchKeyedChildren(n1, n2, container) {
-02 const newChildren = n2.children
-03 const oldChildren = n1.children
-04 // 更新相同的前置节点
-05 let j = 0
-06 let oldVNode = oldChildren[j]
-07 let newVNode = newChildren[j]
-08 while (oldVNode.key === newVNode.key) {
-09 patch(oldVNode, newVNode, container)
-10 j++
-11 oldVNode = oldChildren[j]
-12 newVNode = newChildren[j]
-13 }
-14
-15 // 更新相同的后置节点
-16 // 索引 oldEnd 指向旧的一组子节点的最后一个节点
-17 let oldEnd = oldChildren.length - 1
-18 // 索引 newEnd 指向新的一组子节点的最后一个节点
-19 let newEnd = newChildren.length - 1
-20
-21 oldVNode = oldChildren[oldEnd]
-22 newVNode = newChildren[newEnd]
-23
-24 // while 循环从后向前遍历，直到遇到拥有不同 key 值的节点为止
-25 while (oldVNode.key === newVNode.key) {
-26 // 调用 patch 函数进行更新
-27 patch(oldVNode, newVNode, container)
-28 // 递减 oldEnd 和 nextEnd
-29 oldEnd--
-30 newEnd--
-31 oldVNode = oldChildren[oldEnd]
-32 newVNode = newChildren[newEnd]
-33 }
-34
-35 }
+function patchKeyedChildren(n1, n2, container) {
+    const newChildren = n2.children
+    const oldChildren = n1.children
+// 更新相同的前置节点
+    let j = 0
+    let oldVNode = oldChildren[j]
+    let newVNode = newChildren[j]
+    while (oldVNode.key === newVNode.key) {
+        patch(oldVNode, newVNode, container)
+        j++
+        oldVNode = oldChildren[j]
+        newVNode = newChildren[j]
+    }
+
+// 更新相同的后置节点
+// 索引 oldEnd 指向旧的一组子节点的最后一个节点
+    let oldEnd = oldChildren.length - 1
+// 索引 newEnd 指向新的一组子节点的最后一个节点
+    let newEnd = newChildren.length - 1
+
+    oldVNode = oldChildren[oldEnd]
+    newVNode = newChildren[newEnd]
+// while 循环从后向前遍历，直到遇到拥有不同 key 值的节点为止
+    while (oldVNode.key === newVNode.key) {
+// 调用 patch 函数进行更新
+        patch(oldVNode, newVNode, container)
+// 递减 oldEnd 和 nextEnd
+        oldEnd--
+        newEnd--
+        oldVNode = oldChildren[oldEnd]
+        newVNode = newChildren[newEnd]
+    }
+
+}
 ```
 
 与处理相同的前置节点一样，在 while 循环内，需要调用 patch 函数进行打补丁，然后递减两个索引 oldEnd、newEnd 的值。
@@ -164,8 +165,10 @@ TEXT2:
 
 ![avatar](/Vue/images/第374页-105.png)
 
-由上图可知，当相同的前置节点和后置节点被处理完毕后，旧的一组子节点已经全部被处理了，而在新的一组子节点中，还遗留了一个未被处理的节点 p-4。
-其实不难发现，节点 p-4 是一个新增节点。那么，如何用程序得出“节点 p-4 是新增节点”这个结论呢？这需要我们观察三个索引 j、newEnd 和 oldEnd 之间的关系。
+由上图可知，当相同的前置节点和后置节点被处理完毕后，旧的一组子节点已经全部被处理了，而在新的一组子节点中，还遗留了一个未被处理的节点
+p-4。
+其实不难发现，节点 p-4 是一个新增节点。那么，如何用程序得出“节点 p-4 是新增节点”这个结论呢？这需要我们观察三个索引 j、newEnd
+和 oldEnd 之间的关系。
 
 - 条件一 oldEnd < j 成立：说明在预处理过程中，所有旧子节点都处理完毕了。
 
@@ -181,32 +184,31 @@ TEXT2:
 所以，节点 p-2 对应的真实 DOM 节点就是挂载操作的锚点元素。有了这些信息，我们就可以给出具体的代码实现了，如下所示：
 
 ```javascript
-01 function patchKeyedChildren(n1, n2, container) {
-02 const newChildren = n2.children
-03 const oldChildren = n1.children
-04 // 更新相同的前置节点
-05 // 省略部分代码
-06
-07 // 更新相同的后置节点
-08 // 省略部分代码
-09
-10 // 预处理完毕后，如果满足如下条件，则说明从 j --> newEnd 之间的节点应作为新节点插入
-11 if (j > oldEnd && j <= newEnd) {
-12 // 锚点的索引
-13 const anchorIndex = newEnd + 1
-14 // 锚点元素
-15 const anchor = anchorIndex < newChildren.length ? newChildren[anchorIndex].el : null
-16 // 采用 while 循环，调用 patch 函数逐个挂载新增节点
-17 while (j <= newEnd) {
-18 patch(null, newChildren[j++], container, anchor)
-19 }
-20 }
-21
-22 }
+function patchKeyedChildren(n1, n2, container) {
+    const newChildren = n2.children
+    const oldChildren = n1.children
+// 更新相同的前置节点
+// 省略部分代码
+// 更新相同的后置节点
+// 省略部分代码
+// 预处理完毕后，如果满足如下条件，则说明从 j --> newEnd 之间的节点应作为新节点插入
+    if (j > oldEnd && j <= newEnd) {
+// 锚点的索引
+        const anchorIndex = newEnd + 1
+// 锚点元素
+        const anchor = anchorIndex < newChildren.length ? newChildren[anchorIndex].el : null
+// 采用 while 循环，调用 patch 函数逐个挂载新增节点
+        while (j <= newEnd) {
+            patch(null, newChildren[j++], container, anchor)
+        }
+    }
+}
 ```
 
-在上面这段代码中，首先计算锚点的索引值（即 anchorIndex）为 newEnd + 1。如果小于新的一组子节点的数量，则说明锚点元素在新的一组子节点中，所以直接使用 newChildren[anchorIndex].el 作为锚点元素；
-否则说明索引newEnd 对应的节点已经是尾部节点了，这时无须提供锚点元素。有了锚点元素之后，我们开启了一个 while 循环，用来遍历索引 j 和索引 newEnd 之间的节点，并调用 patch 函数挂载它们。
+在上面这段代码中，首先计算锚点的索引值（即 anchorIndex）为 newEnd + 1。如果小于新的一组子节点的数量，则说明锚点元素在新的一组子节点中，所以直接使用
+newChildren[anchorIndex].el 作为锚点元素；
+否则说明索引newEnd 对应的节点已经是尾部节点了，这时无须提供锚点元素。有了锚点元素之后，我们开启了一个 while 循环，用来遍历索引
+j 和索引 newEnd 之间的节点，并调用 patch 函数挂载它们。
 
 上面的案例展示了新增节点的情况，我们再来看看删除节点的情况，如下图所示。
 
@@ -230,7 +232,8 @@ TEXT2:
 
 ![avatar](/Vue/images/第378页-109.png)
 
-由上图可知，当相同的前置节点和后置节点全部被处理完毕后，新的一组子节点已经全部被处理完毕了，而旧的一组子节点中遗留了一个节点 p-2。
+由上图可知，当相同的前置节点和后置节点全部被处理完毕后，新的一组子节点已经全部被处理完毕了，而旧的一组子节点中遗留了一个节点
+p-2。
 这说明，应该卸载节点 p-2。实际上，遗留的节点可能有多个，如下图所示。
 
 ![avatar](/Vue/images/第379页-111.png)
@@ -238,28 +241,26 @@ TEXT2:
 索引 j 和索引 oldEnd 之间的任何节点都应该被卸载，具体实现如下：
 
 ```javascript
-01 function patchKeyedChildren(n1, n2, container) {
-02 const newChildren = n2.children
-03 const oldChildren = n1.children
-04 // 更新相同的前置节点
-05 // 省略部分代码
-06
-07 // 更新相同的后置节点
-08 // 省略部分代码
-09
-10 if (j > oldEnd && j <= newEnd) {
-11 // 省略部分代码
-12 } else if (j > newEnd && j <= oldEnd) {
-13 // j -> oldEnd 之间的节点应该被卸载
-14 while (j <= oldEnd) {
-15 unmount(oldChildren[j++])
-16 }
-17 }
-18
-19 }
+function patchKeyedChildren(n1, n2, container) {
+    const newChildren = n2.children
+    const oldChildren = n1.children
+// 更新相同的前置节点
+// 省略部分代码
+// 更新相同的后置节点
+// 省略部分代码
+    if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+    } else if (j > newEnd && j <= oldEnd) {
+// j -> oldEnd 之间的节点应该被卸载
+        while (j <= oldEnd) {
+            unmount(oldChildren[j++])
+        }
+    }
+}
 ```
 
-在上面这段代码中，我们新增了一个 else...if 分支。当满足条件 j > newEnd && j <= oldEnd 时，则开启一个 while 循环，并调用 unmount 函数逐个卸载这些遗留节点。
+在上面这段代码中，我们新增了一个 else...if 分支。当满足条件 j > newEnd && j <= oldEnd 时，则开启一个 while 循环，并调用
+unmount 函数逐个卸载这些遗留节点。
 
 ## 判断是否需要进行 DOM 移动操作
 
@@ -302,50 +303,50 @@ TEXT2:
 因此，我们需要增加新的 else 分支来处理图上所示的情况，如下面的代码所示：
 
 ```javascript
-01 function patchKeyedChildren(n1, n2, container) {
-02 const newChildren = n2.children
-03 const oldChildren = n1.children
-04 // 更新相同的前置节点
-05 // 省略部分代码
-06
-07 // 更新相同的后置节点
-08 // 省略部分代码
-09
-10 if (j > oldEnd && j <= newEnd) {
-11 // 省略部分代码
-12 } else if (j > newEnd && j <= oldEnd) {
-13 // 省略部分代码
-14 } else {
-15 // 增加 else 分支来处理非理想情况
-16 }
-17
-18 }
+function patchKeyedChildren(n1, n2, container) {
+    const newChildren = n2.children
+    const oldChildren = n1.children
+// 更新相同的前置节点
+// 省略部分代码
+// 更新相同的后置节点
+// 省略部分代码
+    if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+    } else if (j > newEnd && j <= oldEnd) {
+// 省略部分代码
+    } else {
+// 增加 else 分支来处理非理想情况
+    }
+}
 ```
 
 后续的处理逻辑将会编写在这个 else 分支内。知道了在哪里编写处理代码，接下来我们讲解具体的处理思路。
-首先，我们需要构造一个数组 source，它的长度等于新的一组子节点在经过预处理之后剩余未处理节点的数量，并且 source 中每个元素的初始值都是 -1，如下图所示。
+首先，我们需要构造一个数组 source，它的长度等于新的一组子节点在经过预处理之后剩余未处理节点的数量，并且 source 中每个元素的初始值都是
+-1，如下图所示。
 
 ![avatar](/Vue/images/第383页-115.png)
 
 我们可以通过下面的代码完成 source 数组的构造：
 
 ```javascript
-01 if (j > oldEnd && j <= newEnd) {
-02 // 省略部分代码
-03 } else if (j > newEnd && j <= oldEnd) {
-04 // 省略部分代码
-05 } else {
-06 // 构造 source 数组
-07 // 新的一组子节点中剩余未处理节点的数量
-08 const count = newEnd - j + 1
-09 const source = new Array(count)
-10 source.fill(-1)
-11 }
+if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+} else if (j > newEnd && j <= oldEnd) {
+// 省略部分代码
+} else {
+// 构造 source 数组
+// 新的一组子节点中剩余未处理节点的数量
+    const count = newEnd - j + 1
+    const source = new Array(count)
+    source.fill(-1)
+}
 ```
 
-如上面的代码所示。首先，我们需要计算新的一组子节点中剩余未处理节点的数量，即 newEnd - j + 1，然后创建一个长度与之相同的数组 source，最后使用 fill 函数完成数组的填充。
+如上面的代码所示。首先，我们需要计算新的一组子节点中剩余未处理节点的数量，即 newEnd - j + 1，然后创建一个长度与之相同的数组
+source，最后使用 fill 函数完成数组的填充。
 那么，数组source 的作用是什么呢？观察上图可以发现，数组 source 中的每一个元素分别与新的一组子节点中剩余未处理节点对应。
-实际上，**source 数组将用来存储新的一组子节点中的节点在旧的一组子节点中的位置索引，后面将会使用它计算出一个最长递增子序列，并用于辅助完成 DOM 移动的操作**，如下图所示。
+实际上，**source 数组将用来存储新的一组子节点中的节点在旧的一组子节点中的位置索引，后面将会使用它计算出一个最长递增子序列，并用于辅助完成
+DOM 移动的操作**，如下图所示。
 
 ![avatar](/Vue/images/第384页-116.png)
 
@@ -357,196 +358,472 @@ TEXT2:
 
 - 新的一组子节点中的节点 p-2 在旧的一组子节点中的索引为 1，因此 source 数组的第三个元素值为 1；
 
-- 新的一组子节点中的节点 p-7 比较特殊，因为在旧的一组子节点中没有与其 key 值相等的节点，所以 source 数组的第四个元素值保留原来的 -1。
+- 新的一组子节点中的节点 p-7 比较特殊，因为在旧的一组子节点中没有与其 key 值相等的节点，所以 source 数组的第四个元素值保留原来的
+  -1。
 
 我们可以通过两层 for 循环来完成 source 数组的填充工作，外层循环用于遍历旧的一组子节点，内层循环用于遍历新的一组子节点：
 
 ```javascript
-01 if (j > oldEnd && j <= newEnd) {
-02 // 省略部分代码
-03 } else if (j > newEnd && j <= oldEnd) {
-04 // 省略部分代码
-05 } else {
-06 const count = newEnd - j + 1
-07 const source = new Array(count)
-08 source.fill(-1)
-09
-10 // oldStart 和 newStart 分别为起始索引，即 j
-11 const oldStart = j
-12 const newStart = j
-13 // 遍历旧的一组子节点
-14 for (let i = oldStart; i <= oldEnd; i++) {
-15 const oldVNode = oldChildren[i]
-16 // 遍历新的一组子节点
-17 for (let k = newStart; k <= newEnd; k++) {
-18 const newVNode = newChildren[k]
-19 // 找到拥有相同 key 值的可复用节点
-20 if (oldVNode.key === newVNode.key) {
-21 // 调用 patch 进行更新
-22 patch(oldVNode, newVNode, container)
-23 // 最后填充 source 数组
-24 source[k - newStart] = i
-25 }
-26 }
-27 }
-28 }
+if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+} else if (j > newEnd && j <= oldEnd) {
+// 省略部分代码
+} else {
+    const count = newEnd - j + 1
+    const source = new Array(count)
+    source.fill(-1)
+// oldStart 和 newStart 分别为起始索引，即 j
+    const oldStart = j
+    const newStart = j
+// 遍历旧的一组子节点
+    for (let i = oldStart; i <= oldEnd; i++) {
+        const oldVNode = oldChildren[i]
+// 遍历新的一组子节点
+        for (let k = newStart; k <= newEnd; k++) {
+            const newVNode = newChildren[k]
+// 找到拥有相同 key 值的可复用节点
+            if (oldVNode.key === newVNode.key) {
+// 调用 patch 进行更新
+                patch(oldVNode, newVNode, container)
+// 最后填充 source 数组
+                source[k - newStart] = i
+            }
+        }
+    }
+}
 ```
 
-这里需要注意的是，由于数组 source 的索引是从 0 开始的，而未处理节点的索引未必从 0 开始，所以在填充数组时需要使用表达式 k - newStart 的值作为数组的索引值。
+这里需要注意的是，由于数组 source 的索引是从 0 开始的，而未处理节点的索引未必从 0 开始，所以在填充数组时需要使用表达式 k -
+newStart 的值作为数组的索引值。
 外层循环的变量 i 就是当前节点在旧的一组子节点中的位置索引，因此直接将变量 i 的值赋给 source [k - newStart] 即可。
 
-现在，source 数组已经填充完毕，我们后面会用到它。不过在进一步讲解之前，我们需要回头思考一下上面那段用于填充 source 数组的代码存在怎样的问题。
-这段代码中我们采用了两层嵌套的循环，其时间复杂度为 O(n1 * n2)，其中 n1 和 n2 为新旧两组子节点的数量，我们也可以使用 O(n^2) 来表示。
-当新旧两组子节点的数量较多时，两层嵌套的循环会带来性能问题。出于优化的目的，我们可以为新的一组子节点构建一张索引表，用来存储节点的 key 和节点位置索引之间的映射，如下图所示。
+现在，source 数组已经填充完毕，我们后面会用到它。不过在进一步讲解之前，我们需要回头思考一下上面那段用于填充 source
+数组的代码存在怎样的问题。
+这段代码中我们采用了两层嵌套的循环，其时间复杂度为 O(n1 * n2)，其中 n1 和 n2 为新旧两组子节点的数量，我们也可以使用 O(n^2)
+来表示。
+当新旧两组子节点的数量较多时，两层嵌套的循环会带来性能问题。出于优化的目的，我们可以为新的一组子节点构建一张索引表，用来存储节点的
+key 和节点位置索引之间的映射，如下图所示。
 
 ![avatar](/Vue/images/第386页-117.png)
 
 有了索引表，我们就可以利用它快速地填充 source 数组，如下面的代码所示：
 
 ```javascript
-01 if (j > oldEnd && j <= newEnd) {
-02 // 省略部分代码
-03 } else if (j > newEnd && j <= oldEnd) {
-04 // 省略部分代码
-05 } else {
-06 const count = newEnd - j + 1
-07 const source = new Array(count)
-08 source.fill(-1)
-09
-10 // oldStart 和 newStart 分别为起始索引，即 j
-11 const oldStart = j
-12 const newStart = j
-13 // 构建索引表
-14 const keyIndex = {}
-15 for(let i = newStart; i <= newEnd; i++) {
-16 keyIndex[newChildren[i].key] = i
-17 }
-18 // 遍历旧的一组子节点中剩余未处理的节点
-19 for(let i = oldStart; i <= oldEnd; i++) {
-20 oldVNode = oldChildren[i]
-21 // 通过索引表快速找到新的一组子节点中具有相同 key 值的节点位置
-22 const k = keyIndex[oldVNode.key]
-23
-24 if (typeof k !== 'undefined') {
-25 newVNode = newChildren[k]
-26 // 调用 patch 函数完成更新
-27 patch(oldVNode, newVNode, container)
-28 // 填充 source 数组
-29 source[k - newStart] = i
-30 } else {
-31 // 没找到
-32 unmount(oldVNode)
-33 }
-34 }
-35 }
+if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+} else if (j > newEnd && j <= oldEnd) {
+// 省略部分代码
+} else {
+    const count = newEnd - j + 1
+    const source = new Array(count)
+    source.fill(-1)
+// oldStart 和 newStart 分别为起始索引，即 j
+    const oldStart = j
+    const newStart = j
+// 构建索引表
+    const keyIndex = {}
+    for (let i = newStart; i <= newEnd; i++) {
+        keyIndex[newChildren[i].key] = i
+    }
+// 遍历旧的一组子节点中剩余未处理的节点
+    for (let i = oldStart; i <= oldEnd; i++) {
+        oldVNode = oldChildren[i]
+// 通过索引表快速找到新的一组子节点中具有相同 key 值的节点位置
+        const k = keyIndex[oldVNode.key]
+        if (typeof k !== 'undefined') {
+            newVNode = newChildren[k]
+// 调用 patch 函数完成更新
+            patch(oldVNode, newVNode, container)
+// 填充 source 数组
+            source[k - newStart] = i
+        } else {
+// 没找到
+            unmount(oldVNode)
+        }
+    }
+}
 ```
 
 在上面这段代码中，同样使用了两个 for 循环，不过它们不再是嵌套的关系，所以能够将代码的时间复杂度降至 O(n)。
-其中，第一个 for 循环用来构建索引表，索引表存储的是节点的 key 值与节点在新的一组子节点中位置索引之间的映射，第二个 for 循环用来遍历旧的一组子节点。
+其中，第一个 for 循环用来构建索引表，索引表存储的是节点的 key 值与节点在新的一组子节点中位置索引之间的映射，第二个 for
+循环用来遍历旧的一组子节点。
 可以看到，我们拿旧子节点的 key 值去索引表 keyIndex 中查找该节点在新的一组子节点中的位置，并将查找结果存储到变量 k 中。
-如果 k 存在，说明该节点是可复用的，所以我们调用 patch 函数进行打补丁，并填充 source 数组；否则说明该节点已经不存在于新的一组子节点中了，这时我们需要调用 unmount 函数卸载它。
+如果 k 存在，说明该节点是可复用的，所以我们调用 patch 函数进行打补丁，并填充 source 数组；否则说明该节点已经不存在于新的一组子节点中了，这时我们需要调用
+unmount 函数卸载它。
 
 上述流程执行完毕后，source 数组已经填充完毕了。接下来我们应该思考的是，如何判断节点是否需要移动。
 实际上，快速 Diff 算法 判断节点是否需要移动的方法与简单 Diff 算法类似，如下面的代码所示：
 
 ```javascript
-01 if (j > oldEnd && j <= newEnd) {
-02 // 省略部分代码
-03 } else if (j > newEnd && j <= oldEnd) {
-04 // 省略部分代码
-05 } else {
-06 // 构造 source 数组
-07 const count = newEnd - j + 1 // 新的一组子节点中剩余未处理节点的数量
-08 const source = new Array(count)
-09 source.fill(-1)
-10
-11 const oldStart = j
-12 const newStart = j
-13 // 新增两个变量，moved 和 pos
-14 let moved = false
-15 let pos = 0
-16
-17 const keyIndex = {}
-18 for(let i = newStart; i <= newEnd; i++) {
-19 keyIndex[newChildren[i].key] = i
-20 }
-21 for(let i = oldStart; i <= oldEnd; i++) {
-22 oldVNode = oldChildren[i]
-23 const k = keyIndex[oldVNode.key]
-24
-25 if (typeof k !== 'undefined') {
-26 newVNode = newChildren[k]
-27 patch(oldVNode, newVNode, container)
-28 source[k - newStart] = i
-29 // 判断节点是否需要移动
-30 if (k < pos) {
-31 moved = true
-32 } else {
-33 pos = k
-34 }
-35 } else {
-36 unmount(oldVNode)
-37 }
-38 }
-39 }
+if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+} else if (j > newEnd && j <= oldEnd) {
+// 省略部分代码
+} else {
+// 构造 source 数组
+    const count = newEnd - j + 1 // 新的一组子节点中剩余未处理节点的数量
+    const source = new Array(count)
+    source.fill(-1)
+    const oldStart = j
+    const newStart = j
+// 新增两个变量，moved 和 pos
+    let moved = false
+    let pos = 0
+    const keyIndex = {}
+    for (let i = newStart; i <= newEnd; i++) {
+        keyIndex[newChildren[i].key] = i
+    }
+    for (let i = oldStart; i <= oldEnd; i++) {
+        oldVNode = oldChildren[i]
+        const k = keyIndex[oldVNode.key]
+        if (typeof k !== 'undefined') {
+            newVNode = newChildren[k]
+            patch(oldVNode, newVNode, container)
+            source[k - newStart] = i
+// 判断节点是否需要移动
+            if (k < pos) {
+                moved = true
+            } else {
+                pos = k
+            }
+        } else {
+            unmount(oldVNode)
+        }
+    }
+}
 ```
 
-在上面这段代码中，我们新增了两个变量 moved 和 pos。前者的初始值为 false，代表是否需要移动节点，后者的初始值为 0，代表遍历旧的一组子节点的过程中遇到的最大索引值 k。
-我们在讲解简单 Diff 算法时曾提到，如果在遍历过程中遇到的索引值呈现递增趋势，则说明不需要移动节点，反之则需要。所以在第二个 for 循环内，我们通过比较变量 k 与变量 pos 的值来判断是否需要移动节点。
+在上面这段代码中，我们新增了两个变量 moved 和 pos。前者的初始值为 false，代表是否需要移动节点，后者的初始值为
+0，代表遍历旧的一组子节点的过程中遇到的最大索引值 k。
+我们在讲解简单 Diff 算法时曾提到，如果在遍历过程中遇到的索引值呈现递增趋势，则说明不需要移动节点，反之则需要。所以在第二个
+for 循环内，我们通过比较变量 k 与变量 pos 的值来判断是否需要移动节点。
 
 除此之外，我们还需要一个数量标识，代表已经更新过的节点数量。
 我们知道，已经更新过的节点数量应该小于新的一组子节点中需要更新的节点数量。一旦前者超过后者，则说明有多余的节点，我们应该将它们卸载，如下面的代码所示：
 
 ```javascript
-01 if (j > oldEnd && j <= newEnd) {
-02 // 省略部分代码
-03 } else if (j > newEnd && j <= oldEnd) {
-04 // 省略部分代码
-05 } else {
-06 // 构造 source 数组
-07 const count = newEnd - j + 1
-08 const source = new Array(count)
-09 source.fill(-1)
-10
-11 const oldStart = j
-12 const newStart = j
-13 let moved = false
-14 let pos = 0
-15 const keyIndex = {}
-16 for(let i = newStart; i <= newEnd; i++) {
-17 keyIndex[newChildren[i].key] = i
-18 }
-19 // 新增 patched 变量，代表更新过的节点数量
-20 let patched = 0
-21 for(let i = oldStart; i <= oldEnd; i++) {
-22 oldVNode = oldChildren[i]
-23 // 如果更新过的节点数量小于等于需要更新的节点数量，则执行更新
-24 if (patched <= count) {
-25 const k = keyIndex[oldVNode.key]
-26 if (typeof k !== 'undefined') {
-27 newVNode = newChildren[k]
-28 patch(oldVNode, newVNode, container)
-29 // 每更新一个节点，都将 patched 变量 +1
-30 patched++
-31 source[k - newStart] = i
-32 if (k < pos) {
-33 moved = true
-34 } else {
-35 pos = k
-36 }
-37 } else {
-38 // 没找到
-39 unmount(oldVNode)
-40 }
-41 } else {
-42 // 如果更新过的节点数量大于需要更新的节点数量，则卸载多余的节点
-43 unmount(oldVNode)
-44 }
-45 }
-46 }
+if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+} else if (j > newEnd && j <= oldEnd) {
+// 省略部分代码
+} else {
+// 构造 source 数组
+    const count = newEnd - j + 1
+    const source = new Array(count)
+    source.fill(-1)
+    const oldStart = j
+    const newStart = j
+    let moved = false
+    let pos = 0
+    const keyIndex = {}
+    for (let i = newStart; i <= newEnd; i++) {
+        keyIndex[newChildren[i].key] = i
+    }
+// 新增 patched 变量，代表更新过的节点数量
+    let patched = 0
+    for (let i = oldStart; i <= oldEnd; i++) {
+        oldVNode = oldChildren[i]
+// 如果更新过的节点数量小于等于需要更新的节点数量，则执行更新
+        if (patched <= count) {
+            const k = keyIndex[oldVNode.key]
+            if (typeof k !== 'undefined') {
+                newVNode = newChildren[k]
+                patch(oldVNode, newVNode, container)
+// 每更新一个节点，都将 patched 变量 +1
+                patched++
+                source[k - newStart] = i
+                if (k < pos) {
+                    moved = true
+                } else {
+                    pos = k
+                }
+            } else {
+// 没找到
+                unmount(oldVNode)
+            }
+        } else {// 如果更新过的节点数量大于需要更新的节点数量，则卸载多余的节点
+            unmount(oldVNode)
+        }
+    }
+}
 ```
 
 在上面这段代码中，我们增加了 patched 变量，其初始值为 0，代表更新过的节点数量。
-接着，在第二个 for 循环中增加了判断patched <= count，如果此条件成立，则正常执行更新，并且每次更新后都让变量 patched 自增；否则说明剩余的节点都是多余的，于是调用 unmount 函数将它们卸载。
+接着，在第二个 for 循环中增加了判断patched <= count，如果此条件成立，则正常执行更新，并且每次更新后都让变量 patched
+自增；否则说明剩余的节点都是多余的，于是调用 unmount 函数将它们卸载。
 
 现在，我们通过判断变量 moved 的值，已经能够知道是否需要移动节点，同时也处理了很多边界条件。接下来我们讨论如何移动节点。
+
+## 如何移动元素
+
+在上一节中，我们实现了两个目标。
+
+- 判断是否需要进行 DOM 移动操作。我们创建了变量 moved 作为标识，当它的值为 true 时，说明需要进行 DOM 移动操作。
+
+- 构建 source 数组。该数组的长度等于新的一组子节点去掉相同的前置/后置节点后，剩余未处理节点的数量。source
+  数组中存储着新的一组子节点中的节点在旧的一组子节点中的位置，后面我们会根据 source 数组计算出一个最长递增子序列，用于 DOM
+  移动操作。
+
+接下来，我们讨论如何进行 DOM 移动操作，如下面的代码所示：
+
+```javascript
+if (j > oldEnd && j <= newEnd) {
+// 省略部分代码
+} else if (j > newEnd && j <= oldEnd) {
+// 省略部分代码
+} else {
+// 省略部分代码
+    for (let i = oldStart; i <= oldEnd; i++) {
+// 省略部分代码
+    }
+    if (moved) {
+// 如果 moved 为真，则需要进行 DOM 移动操作
+    }
+}
+```
+
+在上面这段代码中，我们在 for 循环后增加了一个 if 判断分支。如果变量 moved 的值为 true，则说明需要进行 DOM 移动操作，所以用于
+DOM 移动操作的逻辑将编写在该 if 语句块内。
+
+为了进行 DOM 移动操作，我们首先要根据 source 数组计算出它的最长递增子序列。source 数组仍然取用在上节中给出的例子，如下图所示。
+
+![avatar](/Vue/images/第391页-118.png)
+
+在这个例子中，我们计算出 source 数组为 [2, 3, 1, -1]。那么，该数组的最长递增子序列是什么呢？这就需要我们了解最长递增子序列的概念。
+为此，我们先要搞清楚什么是一个序列的递增子序列。简单来说，给定一个数值序列，找到它的一个子序列，并且该子序列中的值是递增的，子序列中的元素在原序列中不一定连续。
+一个序列可能有很多个递增子序列，其中最长的那一个就称为最长递增子序列。
+举个例子，假设给定数值序列 [ 0, 8, 4, ]，那么它的最长递增子序列就是 [0, 8, 12]。
+当然，对于同一个数值序列来说，它的最长递增子序列可能有多个，例如 [0, 4, 12] 也是本例的答案之一。
+
+理解了什么是最长递增子序列，接下来我们就可以求解 source 数组的最长递增子序列了，如下面的代码所示：
+
+```javascript
+if (moved) {
+// 计算最长递增子序列
+    const seq = lis(sources) // [ 0, 1 ]
+}
+```
+
+在上面这段代码中，我们使用 lis 函数计算一个数组的最长递增子序列。lis 函数接收 source 数组作为参数，并返回 source
+数组的最长递增子序列之一。
+在上例中，你可能疑惑为什么通过 lis 函数计算得到的是 [0, 1]？
+实际上，source 数组 [2, 3, 1, -1] 的 最长递增子序列应该是 [2, 3]，但我们得到的结果是 [0, 1]，这是
+为什么呢？这是因为 lis 函数的返回结果是最长递增子序列中的元素在 source 数组中的位置索引，如下图所示。
+
+![avatar](/Vue/images/第392页-120.png)
+
+因为 source 数组的最长递增子序列为 [2, 3]，其中元素 2 在该数组中的索引为 0，而数组 3 在该数组中的索引为
+1，所以最终结果为 [0, 1]。
+
+有了最长递增子序列的索引信息后，下一步要重新对节点进行编号，如下图所示。
+
+![avatar](/Vue/images/第392页-119.png)
+
+观察上图，在编号时，我们忽略了经过预处理的节点 p-1 和 p-5。所以，索引为 0 的节点是 p-2，而索引为 1 节点是 p-3，以此类推。
+重新编号是为了让子序列 seq 与新的索引值产生对应关系。其实，最长递增子序列 seq 拥有一个非常重要的意义。
+以上例来说，子序列 seq 的值为 [0, 1]，它的含义是：在新的一组子节点中，**重新编号后索引值为 0 和 1 的这两个节点在更新前后顺序没有发生变化
+**。
+换句话说，重新编号后，索引值为 0 和 1 的节点不需要移动。在新的一组子节点中，节点 p-3 的索引为 0，节点 p-4 的索引为 1，所以节点
+p-3 和 p-4 所对应的真实 DOM 不需要移动。
+换句话说，只有节点 p-2 和 p-7 可能需要移动。
+
+为了完成节点的移动，我们还需要创建两个索引值 i 和 s：
+
+- 用索引 i 指向新的一组子节点中的最后一个节点；
+
+- 用索引 s 指向最长递增子序列中的最后一个元素。
+
+![avatar](/Vue/images/第393页-121.png)
+
+观察上图，为了简化图示，我们在去掉了旧的一组子节点以及无关的线条和变量。接下来，我们将开启一个 for 循环，让变量 i 和 s
+按照上图中箭头的方向移动，如下面的代码所示：
+
+```javascript
+if (moved) {
+    const seq = lis(sources)
+// s 指向最长递增子序列的最后一个元素
+    let s = seq.length - 1
+// i 指向新的一组子节点的最后一个元素
+    let i = count - 1
+// for 循环使得 i 递减，即按照图 11-中箭头的方向移动
+    for (i; i >= 0; i--) {
+        if (i !== seq[s]) {
+// 如果节点的索引 i 不等于 seq[s] 的值，说明该节点需要移动
+        } else {
+// 当 i === seq[s] 时，说明该位置的节点不需要移动
+// 只需要让 s 指向下一个位置
+            s--
+        }
+    }
+}
+```
+
+其中，for 循环的目的是让变量 i 按照上图中箭头的方向移动，以便能够逐个访问新的一组子节点中的节点，这里的变量 i 就是节点的索引。
+在 for 循环内，判断条件 i !== seq[s]，如果节点的索引i 不等于 seq[s] 的值，则说明该节点对应的真实 DOM
+需要移动，否则说明当前访问的节点不需要移动，但这时变量 s 需要按照上图中箭头的方向移动，即让变量 s 递减。
+
+接下来我们就按照上述思路执行更新。初始时索引 i 指向节点 p-7。
+由于节点 p-7 对应的 source 数组中相同位置的元素值为 -1，所以我们应该将节点 p-7 作为全新的节点进行挂载，如下面的代码所示：
+
+```javascript
+if (moved) {
+    const seq = lis(sources)
+// s 指向最长递增子序列的最后一个元素
+    let s = seq.length - 1
+// i 指向新的一组子节点的最后一个元素
+    let i = count - 1
+// for 循环使得 i 递减，即按照图 11-中箭头的方向移动
+    for (i; i >= 0; i--) {
+        if (source[i] === -1) {
+// 说明索引为 i 的节点是全新的节点，应该将其挂载
+// 该节点在新 children 中的真实位置索引
+            const pos = i + newStart
+            const newVNode = newChildren[pos]
+// 该节点的下一个节点的位置索引
+            const nextPos = pos + 1
+// 锚点
+            const anchor = nextPos < newChildren.length ? newChildren[nextPos].el : null
+// 挂载
+            patch(null, newVNode, container, anchor)
+
+        } else if (i !== seq[s]) {
+// 如果节点的索引 i 不等于 seq[s] 的值，说明该节点需要移动
+        } else {
+// 当 i === seq[s] 时，说明该位置的节点不需要移动
+// 只需要让 s 指向下一个位置
+            s--
+        }
+    }
+}
+```
+
+如果 source[i] 的值为 -1，则说明索引为 i 的节点是全新的节点，于是我们调用 patch 函数将其挂载到容器中。
+这里需要注意的是，由于索引 i 是重新编号后的，因此为了得到真实索引值，我们需要计算表达式 i + newStart 的值。
+
+新节点创建完毕后，for 循环已经执行了一次，此时索引 i 向上移动一步，指向了节点 p-2，如下图所示。
+
+![avatar](/Vue/images/第396页-122.png)
+
+接着，进行下一轮 for 循环，步骤如下。
+
+- 第一步：source[i] 是否等于 -1？很明显，此时索引 i 的值为 2，source[2] 的值等于 1，因此节点 p-2 不是全新的节点，不需要挂载它，进行下一步的判断。
+
+- 第二步：i !== seq[s] 是否成立？此时索引 i 的值为 2，索引 s 的值为 1。因此 2 !== seq[1] 成立，节点 p-2 所对应的真实 DOM
+  需要移动。
+
+在第二步中，我们知道了节点 p-2 所对应的真实 DOM 应该移动。实现代码如下：
+
+```javascript
+if (moved) {
+    const seq = lis(sources)
+// s 指向最长递增子序列的最后一个元素
+    let s = seq.length - 1
+    let i = count - 1
+    for (i; i >= 0; i--) {
+        if (source[i] === -1) {
+// 省略部分代码
+        } else if (i !== seq[s]) {
+// 说明该节点需要移动
+// 该节点在新的一组子节点中的真实位置索引
+            const pos = i + newStart
+            const newVNode = newChildren[pos]
+// 该节点的下一个节点的位置索引
+            const nextPos = pos + 1
+// 锚点
+            const anchor = nextPos < newChildren.length ? newChildren[nextPos].el : null
+// 移动
+            insert(newVNode.el, container, anchor)
+        } else {
+// 当 i === seq[s] 时，说明该位置的节点不需要移动
+// 并让 s 指向下一个位置
+            s--
+        }
+    }
+}
+```
+
+可以看到，移动节点的实现思路类似于挂载全新的节点。不同点在于，移动节点是通过 insert 函数来完成的。
+
+接着，进行下一轮的循环。此时索引 i 指向节点 p-4，如下图所示。
+
+![avatar](/Vue/images/第397页-123.png)
+
+更新过程仍然分为三个步骤。
+
+- 第一步：判断表达式 source[i] 的值是否等于 -1？很明显，此时索引 i 的值为 1，表达式 source[1] 的值等于 3，条件不成立。所以节点
+  p-4 不是全新的节点，不需要挂载它。接着进行下一步判断。
+
+- 第二步：判断表达式 i !== seq[s] 是否成立？此时索引 i 的值为 1，索引 s 的值为 1。这时表达式 1 === seq[1] 为真，所以条件
+  i !== seq[s] 也不成立。
+
+- 第三步：由于第一步和第二步中的条件都不成立，所以代码会执行最终的 else 分支。这意味着，节点 p-4 所对应的真实 DOM
+  不需要移动，但我们仍然需要让索引 s 的值递减，即 s--。
+
+经过三步判断之后，我们得出结论：节点 p-4 不需要移动。于是进行下一轮循环，此时的状态如下图所示。
+
+![avatar](/Vue/images/第398页-124.png)
+
+由上图可知，此时索引 i 指向节点 p-3。我们继续进行三个步骤的判断。
+
+- 第一步：判断表达式 source[i] 的值是否等于 -1？很明显，此时索引 i 的值为 0，表达式 source[0] 的值等于 2，所以节点 p-3
+  不是全新的节点，不需要挂载它，接着进行下一步判断。
+
+- 第二步：判断表达式 i !== seq[s] 是否成立？此时索引 i 的值为 0，索引 s 的值也为 0。这时表达式 0 === seq[0]
+  为真，因此条件也不成立，最终将执行 else 分支的代码，也就是第三步。
+
+- 第三步：到了这里，意味着节点 p-3 所对应的真实 DOM 也不需要移动。
+
+在这一轮更新完成之后，循环将会停止，更新完成。
+
+需要强调的是，关于给定序列的递增子序列的求法不在本书的讲解范围内，网络上有大量文章讲解了这方面的内容，读者可以自行查阅。如下是用于求解给定序列的最长递增子序列的代码，取自
+Vue.js 3：
+
+```javascript
+function getSequence(arr) {
+    const p = arr.slice()
+    const result = [0]
+    let i, j, u, v, c
+    const len = arr.length
+    for (i = 0; i < len; i++) {
+        const arrI = arr[i]
+        if (arrI !== 0) {
+            j = result[result.length - 1]
+            if (arr[j] < arrI) {
+                p[i] = j
+                result.push(i)
+                continue
+            }
+            u = 0
+            v = result.length - 1
+            while (u < v) {
+                c = ((u + v) / 2) | 0
+                if (arr[result[c]] < arrI) {
+                    u = c + 1
+                } else {
+                    v = c
+                }
+            }
+            if (arrI < arr[result[u]]) {
+                if (u > 0) {
+                    p[i] = result[u - 1]
+                }
+                result[u] = i
+            }
+        }
+    }
+    u = result.length
+    v = result[u - 1]
+    while (u-- > 0) {
+        result[u] = v
+        v = p[v]
+    }
+    return result
+
+}
+```
+
+## 总结
+
+快速 Diff 算法在实测中性能最优。它借鉴了文本 Diff 中的预处理 思路，先处理新旧两组子节点中相同的前置节点和相同的后置节点。
+当前置节点和后置节点全部处理完毕后，如果无法简单地通过挂载新节点或者卸载已经不存在的节点来完成更新，则需要根据节点的索引关系，构造出一个最长递增子序列。
+最长递增子序列所指向的节点即为不需要移动的节点。
