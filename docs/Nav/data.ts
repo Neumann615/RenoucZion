@@ -170,10 +170,10 @@ export const NAV_DATA: NavData[] = [
         title: '工具库',
         items: [
             {
-                icon: "https://fakerjs.dev/logo.svg",
+                icon: "https://faker.nodejs.cn/logo.svg",
                 title: "Faker",
                 desc: "快速生成模拟数据的工具",
-                link: "https://fakerjs.dev/",
+                link: "https://faker.nodejs.cn/",
             },
             {
                 icon: 'https://day.js.org/img/logo.png',
