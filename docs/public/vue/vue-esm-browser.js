@@ -16302,6 +16302,12 @@ function generate(ast, options = {}) {
     }
     deindent();
     push(`}`);
+    console.log('编译结果',{
+        ast,
+        code: context.code,
+        preamble: ``,
+        map: context.map ? context.map.toJSON() : void 0
+    })
     return {
         ast,
         code: context.code,
@@ -18471,6 +18477,7 @@ function getBaseTransformPreset(prefixIdentifiers) {
 }
 
 function baseCompile(source, options = {}) {
+    console.log('调用编译',source,options)
     const onError = options.onError || defaultOnError;
     const isModuleMode = options.mode === "module";
     {
