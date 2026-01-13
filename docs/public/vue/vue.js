@@ -1,13 +1,14 @@
 /**
- * vue v3.5.13
+ * vue v3.5.26
  * (c) 2018-present Yuxi (Evan) You and Vue contributors
  * @license MIT
  **/
 import * as runtimeDom from './runtime-dom.js';
-import { initCustomFormatter, registerRuntimeCompiler, warn } from './runtime-dom.js';
+import {initCustomFormatter, registerRuntimeCompiler, warn} from './runtime-dom.js';
+
 export * from './runtime-dom.js';
-import { compile } from './compiler-dom.js';
-import { isString, NOOP, genCacheKey, extend, generateCodeFrame } from './shared.js';
+import {compile} from './compiler-dom.js';
+import {isString, NOOP, genCacheKey, extend, generateCodeFrame} from './shared.js';
 
 function initDev() {
     {
@@ -15,16 +16,17 @@ function initDev() {
     }
 }
 
-if (!!('wxx' !== 'wxx')) {
+if (!!('production' !== 'production')) {
     initDev();
 }
 const compileCache = /* @__PURE__ */ Object.create(null);
+
 function compileToFunction(template, options) {
     if (!isString(template)) {
         if (template.nodeType) {
             template = template.innerHTML;
         } else {
-            !!('wxx' !== 'wxx') && warn(`invalid template option: `, template);
+            !!('production' !== 'production') && warn(`invalid template option: `, template);
             return NOOP;
         }
     }
@@ -35,7 +37,7 @@ function compileToFunction(template, options) {
     }
     if (template[0] === "#") {
         const el = document.querySelector(template);
-        if (!!('wxx' !== 'wxx') && !el) {
+        if (!!('production' !== 'production') && !el) {
             warn(`Template element not found or is empty: ${template}`);
         }
         template = el ? el.innerHTML : ``;
@@ -43,15 +45,16 @@ function compileToFunction(template, options) {
     const opts = extend(
         {
             hoistStatic: true,
-            onError: !!('wxx' !== 'wxx') ? onError : void 0,
-            onWarn: !!('wxx' !== 'wxx') ? (e) => onError(e, true) : NOOP
+            onError: !!('production' !== 'production') ? onError : void 0,
+            onWarn: !!('production' !== 'production') ? (e) => onError(e, true) : NOOP
         },
         options
     );
     if (!opts.isCustomElement && typeof customElements !== "undefined") {
         opts.isCustomElement = (tag) => !!customElements.get(tag);
     }
-    const { code } = compile(template, opts);
+    const {code} = compile(template, opts);
+
     function onError(err, asWarning = false) {
         const message = asWarning ? err.message : `Template compilation error: ${err.message}`;
         const codeFrame = err.loc && generateCodeFrame(
@@ -62,10 +65,12 @@ function compileToFunction(template, options) {
         warn(codeFrame ? `${message}
 ${codeFrame}` : message);
     }
+
     const render = new Function("Vue", code)(runtimeDom);
     render._rc = true;
     return compileCache[key] = render;
 }
+
 registerRuntimeCompiler(compileToFunction);
 
-export { compileToFunction as compile };
+export {compileToFunction as compile};

@@ -1,27 +1,27 @@
 /**
- * @vue/reactivity v3.5.13
+ * @vue/reactivity v3.5.26
  * (c) 2018-present Yuxi (Evan) You and Vue contributors
  * @license MIT
  **/
 import {
-    hasChanged,
     extend,
+    hasChanged,
     isArray,
     isIntegerKey,
     isSymbol,
     isMap,
     hasOwn,
-    isObject,
     makeMap,
-    toRawType,
+    isObject,
     capitalize,
+    toRawType,
     def,
     isFunction,
     EMPTY_OBJ,
     isSet,
     isPlainObject,
-    NOOP,
-    remove
+    remove,
+    NOOP
 } from './shared.js';
 
 function warn(msg, ...args) {
@@ -32,21 +32,33 @@ let activeEffectScope;
 
 class EffectScope {
     constructor(detached = false) {
+        // 是否为独立的作用域
         this.detached = detached;
         /**
          * @internal
          */
+        // 作用域是否活跃
         this._active = true;
+        /**
+         * @internal track `on` calls, allow `on` call multiple times
+         */
+        // on 调用计数器
+        this._on = 0;
         /**
          * @internal
          */
+        // 管理的副作用数组
         this.effects = [];
         /**
          * @internal
          */
+        // 清理函数数组
         this.cleanups = [];
+        // 是否暂停
         this._isPaused = false;
+        // 父作用域
         this.parent = activeEffectScope;
+        // 非独立作用域链接到父作用域
         if (!detached && activeEffectScope) {
             this.index = (activeEffectScope.scopes || (activeEffectScope.scopes = [])).push(
                 this
@@ -102,7 +114,7 @@ class EffectScope {
             } finally {
                 activeEffectScope = currentEffectScope;
             }
-        } else if (!!('wxx' !== 'wxx')) {
+        } else if (!!('production' !== 'production')) {
             warn(`cannot run an inactive effect scope.`);
         }
     }
@@ -112,7 +124,10 @@ class EffectScope {
      * @internal
      */
     on() {
-        activeEffectScope = this;
+        if (++this._on === 1) {
+            this.prevScope = activeEffectScope;
+            activeEffectScope = this;
+        }
     }
 
     /**
@@ -120,7 +135,10 @@ class EffectScope {
      * @internal
      */
     off() {
-        activeEffectScope = this.parent;
+        if (this._on > 0 && --this._on === 0) {
+            activeEffectScope = this.prevScope;
+            this.prevScope = void 0;
+        }
     }
 
     stop(fromParent) {
@@ -164,7 +182,7 @@ function getCurrentScope() {
 function onScopeDispose(fn, failSilently = false) {
     if (activeEffectScope) {
         activeEffectScope.cleanups.push(fn);
-    } else if (!!('wxx' !== 'wxx') && !failSilently) {
+    } else if (!!('production' !== 'production') && !failSilently) {
         warn(
             `onScopeDispose() is called when there is no active effect scope to be associated with.`
         );
@@ -186,7 +204,9 @@ const EffectFlags = {
     "ALLOW_RECURSE": 32,
     "32": "ALLOW_RECURSE",
     "PAUSED": 64,
-    "64": "PAUSED"
+    "64": "PAUSED",
+    "EVALUATED": 128,
+    "128": "EVALUATED"
 };
 const pausedQueueEffects = /* @__PURE__ */ new WeakSet();
 
@@ -225,7 +245,7 @@ class ReactiveEffect {
 
     resume() {
         if (this.flags & 64) {
-            this.flags &= ~64;
+            this.flags &= -65;
             if (pausedQueueEffects.has(this)) {
                 pausedQueueEffects.delete(this);
                 this.trigger();
@@ -259,7 +279,7 @@ class ReactiveEffect {
         try {
             return this.fn();
         } finally {
-            if (!!('wxx' !== 'wxx') && activeSub !== this) {
+            if (!!('production' !== 'production') && activeSub !== this) {
                 warn(
                     "Active effect was not restored correctly - this is likely a Vue internal bug."
                 );
@@ -267,7 +287,7 @@ class ReactiveEffect {
             cleanupDeps(this);
             activeSub = prevEffect;
             shouldTrack = prevShouldTrack;
-            this.flags &= ~2;
+            this.flags &= -3;
         }
     }
 
@@ -279,7 +299,7 @@ class ReactiveEffect {
             this.deps = this.depsTail = void 0;
             cleanupEffect(this);
             this.onStop && this.onStop();
-            this.flags &= ~1;
+            this.flags &= -2;
         }
     }
 
@@ -336,7 +356,7 @@ function endBatch() {
         while (e) {
             const next = e.next;
             e.next = void 0;
-            e.flags &= ~8;
+            e.flags &= -9;
             e = next;
         }
     }
@@ -347,7 +367,7 @@ function endBatch() {
         while (e) {
             const next = e.next;
             e.next = void 0;
-            e.flags &= ~8;
+            e.flags &= -9;
             if (e.flags & 1) {
                 try {
                     ;
@@ -407,17 +427,16 @@ function refreshComputed(computed) {
     if (computed.flags & 4 && !(computed.flags & 16)) {
         return;
     }
-    computed.flags &= ~16;
+    computed.flags &= -17;
     if (computed.globalVersion === globalVersion) {
         return;
     }
     computed.globalVersion = globalVersion;
-    const dep = computed.dep;
-    computed.flags |= 2;
-    if (dep.version > 0 && !computed.isSSR && computed.deps && !isDirty(computed)) {
-        computed.flags &= ~2;
+    if (!computed.isSSR && computed.flags & 128 && (!computed.deps && !computed._dirty || !isDirty(computed))) {
         return;
     }
+    computed.flags |= 2;
+    const dep = computed.dep;
     const prevSub = activeSub;
     const prevShouldTrack = shouldTrack;
     activeSub = computed;
@@ -426,6 +445,7 @@ function refreshComputed(computed) {
         prepareDeps(computed);
         const value = computed.fn(computed._value);
         if (dep.version === 0 || hasChanged(value, computed._value)) {
+            computed.flags |= 128;
             computed._value = value;
             dep.version++;
         }
@@ -436,7 +456,7 @@ function refreshComputed(computed) {
         activeSub = prevSub;
         shouldTrack = prevShouldTrack;
         cleanupDeps(computed);
-        computed.flags &= ~2;
+        computed.flags &= -3;
     }
 }
 
@@ -450,13 +470,13 @@ function removeSub(link, soft = false) {
         nextSub.prevSub = prevSub;
         link.nextSub = void 0;
     }
-    if (!!('wxx' !== 'wxx') && dep.subsHead === link) {
+    if (!!('production' !== 'production') && dep.subsHead === link) {
         dep.subsHead = nextSub;
     }
     if (dep.subs === link) {
         dep.subs = prevSub;
         if (!prevSub && dep.computed) {
-            dep.computed.flags &= ~4;
+            dep.computed.flags &= -5;
             for (let l = dep.computed.deps; l; l = l.nextDep) {
                 removeSub(l, true);
             }
@@ -523,7 +543,7 @@ function resetTracking() {
 function onEffectCleanup(fn, failSilently = false) {
     if (activeSub instanceof ReactiveEffect) {
         activeSub.cleanup = fn;
-    } else if (!!('wxx' !== 'wxx') && !failSilently) {
+    } else if (!!('production' !== 'production') && !failSilently) {
         warn(
             `onEffectCleanup() was called when there was no active effect to associate with.`
         );
@@ -556,6 +576,7 @@ class Link {
 }
 
 class Dep {
+    // TODO isolatedDeclarations "__v_skip"
     constructor(computed) {
         this.computed = computed;
         this.version = 0;
@@ -576,7 +597,11 @@ class Dep {
          * Subscriber counter
          */
         this.sc = 0;
-        if (!!('wxx' !== 'wxx')) {
+        /**
+         * @internal
+         */
+        this.__v_skip = true;
+        if (!!('production' !== 'production')) {
             this.subsHead = void 0;
         }
     }
@@ -613,7 +638,7 @@ class Dep {
                 }
             }
         }
-        if (!!('wxx' !== 'wxx') && activeSub.onTrack) {
+        if (!!('production' !== 'production') && activeSub.onTrack) {
             activeSub.onTrack(
                 extend(
                     {
@@ -635,7 +660,7 @@ class Dep {
     notify(debugInfo) {
         startBatch();
         try {
-            if (!!('wxx' !== 'wxx')) {
+            if (!!('production' !== 'production')) {
                 for (let head = this.subsHead; head; head = head.nextSub) {
                     if (head.sub.onTrigger && !(head.sub.flags & 8)) {
                         head.sub.onTrigger(
@@ -676,7 +701,7 @@ function addSub(link) {
             link.prevSub = currentTail;
             if (currentTail) currentTail.nextSub = link;
         }
-        if (!!('wxx' !== 'wxx') && link.dep.subsHead === void 0) {
+        if (!!('production' !== 'production') && link.dep.subsHead === void 0) {
             link.dep.subsHead = link;
         }
         link.dep.subs = link;
@@ -684,14 +709,14 @@ function addSub(link) {
 }
 
 const targetMap = /* @__PURE__ */ new WeakMap();
-const ITERATE_KEY = Symbol(
-    !!('wxx' !== 'wxx') ? "Object iterate" : ""
+const ITERATE_KEY = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? "Object iterate" : ""
 );
-const MAP_KEY_ITERATE_KEY = Symbol(
-    !!('wxx' !== 'wxx') ? "Map keys iterate" : ""
+const MAP_KEY_ITERATE_KEY = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? "Map keys iterate" : ""
 );
-const ARRAY_ITERATE_KEY = Symbol(
-    !!('wxx' !== 'wxx') ? "Array iterate" : ""
+const ARRAY_ITERATE_KEY = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? "Array iterate" : ""
 );
 
 function track(target, type, key) {
@@ -706,7 +731,7 @@ function track(target, type, key) {
             dep.map = depsMap;
             dep.key = key;
         }
-        if (!!('wxx' !== 'wxx')) {
+        if (!!('production' !== 'production')) {
             dep.track({
                 target,
                 type,
@@ -726,7 +751,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     }
     const run = (dep) => {
         if (dep) {
-            if (!!('wxx' !== 'wxx')) {
+            if (!!('production' !== 'production')) {
                 dep.trigger({
                     target,
                     type,
@@ -807,10 +832,17 @@ function shallowReadArray(arr) {
     return arr;
 }
 
+function toWrapped(target, item) {
+    if (isReadonly(target)) {
+        return isReactive(target) ? toReadonly(toReactive(item)) : toReadonly(item);
+    }
+    return toReactive(item);
+}
+
 const arrayInstrumentations = {
     __proto__: null,
     [Symbol.iterator]() {
-        return iterator(this, Symbol.iterator, toReactive);
+        return iterator(this, Symbol.iterator, (item) => toWrapped(this, item));
     },
     concat(...args) {
         return reactiveReadArray(this).concat(
@@ -819,7 +851,7 @@ const arrayInstrumentations = {
     },
     entries() {
         return iterator(this, "entries", (value) => {
-            value[1] = toReactive(value[1]);
+            value[1] = toWrapped(this, value[1]);
             return value;
         });
     },
@@ -827,16 +859,37 @@ const arrayInstrumentations = {
         return apply(this, "every", fn, thisArg, void 0, arguments);
     },
     filter(fn, thisArg) {
-        return apply(this, "filter", fn, thisArg, (v) => v.map(toReactive), arguments);
+        return apply(
+            this,
+            "filter",
+            fn,
+            thisArg,
+            (v) => v.map((item) => toWrapped(this, item)),
+            arguments
+        );
     },
     find(fn, thisArg) {
-        return apply(this, "find", fn, thisArg, toReactive, arguments);
+        return apply(
+            this,
+            "find",
+            fn,
+            thisArg,
+            (item) => toWrapped(this, item),
+            arguments
+        );
     },
     findIndex(fn, thisArg) {
         return apply(this, "findIndex", fn, thisArg, void 0, arguments);
     },
     findLast(fn, thisArg) {
-        return apply(this, "findLast", fn, thisArg, toReactive, arguments);
+        return apply(
+            this,
+            "findLast",
+            fn,
+            thisArg,
+            (item) => toWrapped(this, item),
+            arguments
+        );
     },
     findLastIndex(fn, thisArg) {
         return apply(this, "findLastIndex", fn, thisArg, void 0, arguments);
@@ -854,7 +907,7 @@ const arrayInstrumentations = {
     join(separator) {
         return reactiveReadArray(this).join(separator);
     },
-    // keys() iterator only reads `length`, no optimisation required
+    // keys() iterator only reads `length`, no optimization required
     lastIndexOf(...args) {
         return searchProxy(this, "lastIndexOf", args);
     },
@@ -896,7 +949,7 @@ const arrayInstrumentations = {
         return noTracking(this, "unshift", args);
     },
     values() {
-        return iterator(this, "values", toReactive);
+        return iterator(this, "values", (item) => toWrapped(this, item));
     }
 };
 
@@ -907,7 +960,7 @@ function iterator(self, method, wrapValue) {
         iter._next = iter.next;
         iter.next = () => {
             const result = iter._next();
-            if (result.value) {
+            if (!result.done) {
                 result.value = wrapValue(result.value);
             }
             return result;
@@ -930,7 +983,7 @@ function apply(self, method, fn, thisArg, wrappedRetFn, args) {
     if (arr !== self) {
         if (needsWrap) {
             wrappedFn = function (item, index) {
-                return fn.call(this, toReactive(item), index, self);
+                return fn.call(this, toWrapped(self, item), index, self);
             };
         } else if (fn.length > 2) {
             wrappedFn = function (item, index) {
@@ -948,7 +1001,7 @@ function reduce(self, method, fn, args) {
     if (arr !== self) {
         if (!isShallow(self)) {
             wrappedFn = function (acc, item, index) {
-                return fn.call(this, acc, toReactive(item), index, self);
+                return fn.call(this, acc, toWrapped(self, item), index, self);
             };
         } else if (fn.length > 3) {
             wrappedFn = function (acc, item, index) {
@@ -1042,7 +1095,8 @@ class BaseReactiveHandler {
             return res;
         }
         if (isRef(res)) {
-            return targetIsArray && isIntegerKey(key) ? res : res.value;
+            const value = targetIsArray && isIntegerKey(key) ? res : res.value;
+            return isReadonly2 && isObject(value) ? readonly(value) : value;
         }
         if (isObject(res)) {
             return isReadonly2 ? readonly(res) : reactive(res);
@@ -1058,22 +1112,29 @@ class MutableReactiveHandler extends BaseReactiveHandler {
 
     set(target, key, value, receiver) {
         let oldValue = target[key];
+        const isArrayWithIntegerKey = isArray(target) && isIntegerKey(key);
         if (!this._isShallow) {
             const isOldValueReadonly = isReadonly(oldValue);
             if (!isShallow(value) && !isReadonly(value)) {
                 oldValue = toRaw(oldValue);
                 value = toRaw(value);
             }
-            if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
+            if (!isArrayWithIntegerKey && isRef(oldValue) && !isRef(value)) {
                 if (isOldValueReadonly) {
-                    return false;
+                    if (!!('production' !== 'production')) {
+                        warn(
+                            `Set operation on key "${String(key)}" failed: target is readonly.`,
+                            target[key]
+                        );
+                    }
+                    return true;
                 } else {
                     oldValue.value = value;
                     return true;
                 }
             }
         }
-        const hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
+        const hadKey = isArrayWithIntegerKey ? Number(key) < target.length : hasOwn(target, key);
         const result = Reflect.set(
             target,
             key,
@@ -1124,7 +1185,7 @@ class ReadonlyReactiveHandler extends BaseReactiveHandler {
     }
 
     set(target, key) {
-        if (!!('wxx' !== 'wxx')) {
+        if (!!('production' !== 'production')) {
             warn(
                 `Set operation on key "${String(key)}" failed: target is readonly.`,
                 target
@@ -1134,7 +1195,7 @@ class ReadonlyReactiveHandler extends BaseReactiveHandler {
     }
 
     deleteProperty(target, key) {
-        if (!!('wxx' !== 'wxx')) {
+        if (!!('production' !== 'production')) {
             warn(
                 `Delete operation on key "${String(key)}" failed: target is readonly.`,
                 target
@@ -1185,7 +1246,7 @@ function createIterableMethod(method, isReadonly2, isShallow2) {
 
 function createReadonlyMethod(type) {
     return function (...args) {
-        if (!!('wxx' !== 'wxx')) {
+        if (!!('production' !== 'production')) {
             const key = args[0] ? `on key "${args[0]}" ` : ``;
             warn(
                 `${capitalize(type)} operation ${key}failed: target is readonly.`,
@@ -1221,7 +1282,7 @@ function createInstrumentations(readonly, shallow) {
         get size() {
             const target = this["__v_raw"];
             !readonly && track(toRaw(target), "iterate", ITERATE_KEY);
-            return Reflect.get(target, "size", target);
+            return target.size;
         },
         has(key) {
             const target = this["__v_raw"];
@@ -1277,7 +1338,7 @@ function createInstrumentations(readonly, shallow) {
                 if (!hadKey) {
                     key = toRaw(key);
                     hadKey = has.call(target, key);
-                } else if (!!('wxx' !== 'wxx')) {
+                } else if (!!('production' !== 'production')) {
                     checkIdentityKeys(target, has, key);
                 }
                 const oldValue = get.call(target, key);
@@ -1296,7 +1357,7 @@ function createInstrumentations(readonly, shallow) {
                 if (!hadKey) {
                     key = toRaw(key);
                     hadKey = has.call(target, key);
-                } else if (!!('wxx' !== 'wxx')) {
+                } else if (!!('production' !== 'production')) {
                     checkIdentityKeys(target, has, key);
                 }
                 const oldValue = get ? get.call(target, key) : void 0;
@@ -1309,7 +1370,7 @@ function createInstrumentations(readonly, shallow) {
             clear() {
                 const target = toRaw(this);
                 const hadItems = target.size !== 0;
-                const oldTarget = !!('wxx' !== 'wxx') ? isMap(target) ? new Map(target) : new Set(target) : void 0;
+                const oldTarget = !!('production' !== 'production') ? isMap(target) ? new Map(target) : new Set(target) : void 0;
                 const result = target.clear();
                 if (hadItems) {
                     trigger(
@@ -1446,7 +1507,7 @@ function shallowReadonly(target) {
 
 function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
     if (!isObject(target)) {
-        if (!!('wxx' !== 'wxx')) {
+        if (!!('production' !== 'production')) {
             warn(
                 `value cannot be made ${isReadonly2 ? "readonly" : "reactive"}: ${String(
                     target
@@ -1458,13 +1519,13 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
     if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
         return target;
     }
-    const existingProxy = proxyMap.get(target);
-    if (existingProxy) {
-        return existingProxy;
-    }
     const targetType = getTargetType(target);
     if (targetType === 0 /* INVALID */) {
         return target;
+    }
+    const existingProxy = proxyMap.get(target);
+    if (existingProxy) {
+        return existingProxy;
     }
     const proxy = new Proxy(
         target,
@@ -1538,7 +1599,7 @@ class RefImpl {
     }
 
     get value() {
-        if (!!('wxx' !== 'wxx')) {
+        if (!!('production' !== 'production')) {
             this.dep.track({
                 target: this,
                 type: "get",
@@ -1557,7 +1618,7 @@ class RefImpl {
         if (hasChanged(newValue, oldValue)) {
             this._rawValue = newValue;
             this._value = useDirectValue ? newValue : toReactive(newValue);
-            if (!!('wxx' !== 'wxx')) {
+            if (!!('production' !== 'production')) {
                 this.dep.trigger({
                     target: this,
                     type: "set",
@@ -1574,7 +1635,7 @@ class RefImpl {
 
 function triggerRef(ref2) {
     if (ref2.dep) {
-        if (!!('wxx' !== 'wxx')) {
+        if (!!('production' !== 'production')) {
             ref2.dep.trigger({
                 target: ref2,
                 type: "set",
@@ -1636,7 +1697,7 @@ function customRef(factory) {
 }
 
 function toRefs(object) {
-    if (!!('wxx' !== 'wxx') && !isProxy(object)) {
+    if (!!('production' !== 'production') && !isProxy(object)) {
         warn(`toRefs() expects a reactive object but received a plain one.`);
     }
     const ret = isArray(object) ? new Array(object.length) : {};
@@ -1653,19 +1714,38 @@ class ObjectRefImpl {
         this._defaultValue = _defaultValue;
         this["__v_isRef"] = true;
         this._value = void 0;
+        this._raw = toRaw(_object);
+        let shallow = true;
+        let obj = _object;
+        if (!isArray(_object) || !isIntegerKey(String(_key))) {
+            do {
+                shallow = !isProxy(obj) || isShallow(obj);
+            } while (shallow && (obj = obj["__v_raw"]));
+        }
+        this._shallow = shallow;
     }
 
     get value() {
-        const val = this._object[this._key];
+        let val = this._object[this._key];
+        if (this._shallow) {
+            val = unref(val);
+        }
         return this._value = val === void 0 ? this._defaultValue : val;
     }
 
     set value(newVal) {
+        if (this._shallow && isRef(this._raw[this._key])) {
+            const nestedRef = this._object[this._key];
+            if (isRef(nestedRef)) {
+                nestedRef.value = newVal;
+                return;
+            }
+        }
         this._object[this._key] = newVal;
     }
 
     get dep() {
-        return getDepFromReactive(toRaw(this._object), this._key);
+        return getDepFromReactive(this._raw, this._key);
     }
 }
 
@@ -1695,8 +1775,7 @@ function toRef(source, key, defaultValue) {
 }
 
 function propertyToRef(source, key, defaultValue) {
-    const val = source[key];
-    return isRef(val) ? val : new ObjectRefImpl(source, key, defaultValue);
+    return new ObjectRefImpl(source, key, defaultValue);
 }
 
 class ComputedRefImpl {
@@ -1752,11 +1831,11 @@ class ComputedRefImpl {
             activeSub !== this) {
             batch(this, true);
             return true;
-        } else if (!!('wxx' !== 'wxx')) ;
+        } else if (!!('production' !== 'production')) ;
     }
 
     get value() {
-        const link = !!('wxx' !== 'wxx') ? this.dep.track({
+        const link = !!('production' !== 'production') ? this.dep.track({
             target: this,
             type: "get",
             key: "value"
@@ -1771,7 +1850,7 @@ class ComputedRefImpl {
     set value(newValue) {
         if (this.setter) {
             this.setter(newValue);
-        } else if (!!('wxx' !== 'wxx')) {
+        } else if (!!('production' !== 'production')) {
             warn("Write operation failed: computed value is readonly");
         }
     }
@@ -1787,7 +1866,7 @@ function computed(getterOrOptions, debugOptions, isSSR = false) {
         setter = getterOrOptions.set;
     }
     const cRef = new ComputedRefImpl(getter, setter, isSSR);
-    if (!!('wxx' !== 'wxx') && debugOptions && !isSSR) {
+    if (!!('production' !== 'production') && debugOptions && !isSSR) {
         cRef.onTrack = debugOptions.onTrack;
         cRef.onTrigger = debugOptions.onTrigger;
     }
@@ -1835,7 +1914,7 @@ function onWatcherCleanup(cleanupFn, failSilently = false, owner = activeWatcher
         let cleanups = cleanupMap.get(owner);
         if (!cleanups) cleanupMap.set(owner, cleanups = []);
         cleanups.push(cleanupFn);
-    } else if (!!('wxx' !== 'wxx') && !failSilently) {
+    } else if (!!('production' !== 'production') && !failSilently) {
         warn(
             `onWatcherCleanup() was called when there was no active watcher to associate with.`
         );
@@ -1880,7 +1959,7 @@ function watch(source, cb, options = EMPTY_OBJ) {
             } else if (isFunction(s)) {
                 return call ? call(s, 2) : s();
             } else {
-                !!('wxx' !== 'wxx') && warnInvalidSource(s);
+                !!('production' !== 'production') && warnInvalidSource(s);
             }
         });
     } else if (isFunction(source)) {
@@ -1907,7 +1986,7 @@ function watch(source, cb, options = EMPTY_OBJ) {
         }
     } else {
         getter = NOOP;
-        !!('wxx' !== 'wxx') && warnInvalidSource(source);
+        !!('production' !== 'production') && warnInvalidSource(source);
     }
     if (cb && deep) {
         const baseGetter = getter;
@@ -1948,11 +2027,11 @@ function watch(source, cb, options = EMPTY_OBJ) {
                         oldValue === INITIAL_WATCHER_VALUE ? void 0 : isMultiSource && oldValue[0] === INITIAL_WATCHER_VALUE ? [] : oldValue,
                         boundCleanup
                     ];
+                    oldValue = newValue;
                     call ? call(cb, 3, args) : (
                         // @ts-expect-error
                         cb(...args)
                     );
-                    oldValue = newValue;
                 } finally {
                     activeWatcher = currentWatcher;
                 }
@@ -1978,7 +2057,7 @@ function watch(source, cb, options = EMPTY_OBJ) {
             cleanupMap.delete(effect);
         }
     };
-    if (!!('wxx' !== 'wxx')) {
+    if (!!('production' !== 'production')) {
         effect.onTrack = options.onTrack;
         effect.onTrigger = options.onTrigger;
     }
@@ -2003,11 +2082,11 @@ function traverse(value, depth = Infinity, seen) {
     if (depth <= 0 || !isObject(value) || value["__v_skip"]) {
         return value;
     }
-    seen = seen || /* @__PURE__ */ new Set();
-    if (seen.has(value)) {
+    seen = seen || /* @__PURE__ */ new Map();
+    if ((seen.get(value) || 0) >= depth) {
         return value;
     }
-    seen.add(value);
+    seen.set(value, depth);
     depth--;
     if (isRef(value)) {
         traverse(value.value, depth, seen);

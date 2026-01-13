@@ -17,7 +17,7 @@
             return {count}
         },
         template: `
-          <p>{{count}}</p>
+          <p>{{ count }}</p>
           <button @click="()=>{
               count++
           }">
@@ -25,6 +25,8 @@
           </button>
         `
     })
+
+    console.log(app)
 
     app.mount('#app')
 </script>

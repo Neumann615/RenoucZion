@@ -1,33 +1,55 @@
 /**
- * @vue/compiler-dom v3.5.13
+ * @vue/compiler-dom v3.5.26
  * (c) 2018-present Yuxi (Evan) You and Vue contributors
  * @license MIT
  **/
-import { registerRuntimeHelpers, createSimpleExpression, createCompilerError, createObjectProperty, getConstantType, createCallExpression, TO_DISPLAY_STRING, transformModel as transformModel$1, findProp, hasDynamicKeyVBind, findDir, isStaticArgOf, transformOn as transformOn$1, isStaticExp, createCompoundExpression, checkCompatEnabled, noopDirectiveTransform, baseCompile, baseParse } from './compiler-core.js';
-export * from './compiler-core.js';
-import { isVoidTag, isHTMLTag, isSVGTag, isMathMLTag, parseStringStyle, capitalize, makeMap, extend } from './shared.js';
+import {
+    registerRuntimeHelpers,
+    createSimpleExpression,
+    createCompilerError,
+    createObjectProperty,
+    createCallExpression,
+    getConstantType,
+    TO_DISPLAY_STRING,
+    transformModel as transformModel$1,
+    findProp,
+    hasDynamicKeyVBind,
+    findDir,
+    isStaticArgOf,
+    transformOn as transformOn$1,
+    isStaticExp,
+    createCompoundExpression,
+    checkCompatEnabled,
+    isCommentOrWhitespace,
+    noopDirectiveTransform,
+    baseCompile,
+    baseParse
+} from './compiler-core.js';
 
-const V_MODEL_RADIO = Symbol(!!('wxx' !== 'wxx') ? `vModelRadio` : ``);
-const V_MODEL_CHECKBOX = Symbol(
-    !!('wxx' !== 'wxx') ? `vModelCheckbox` : ``
+export * from './compiler-core.js';
+import {isHTMLTag, isSVGTag, isMathMLTag, isVoidTag, parseStringStyle, makeMap, capitalize, extend} from './shared.js';
+
+const V_MODEL_RADIO = /* @__PURE__ */ Symbol(!!('production' !== 'production') ? `vModelRadio` : ``);
+const V_MODEL_CHECKBOX = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? `vModelCheckbox` : ``
 );
-const V_MODEL_TEXT = Symbol(!!('wxx' !== 'wxx') ? `vModelText` : ``);
-const V_MODEL_SELECT = Symbol(
-    !!('wxx' !== 'wxx') ? `vModelSelect` : ``
+const V_MODEL_TEXT = /* @__PURE__ */ Symbol(!!('production' !== 'production') ? `vModelText` : ``);
+const V_MODEL_SELECT = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? `vModelSelect` : ``
 );
-const V_MODEL_DYNAMIC = Symbol(
-    !!('wxx' !== 'wxx') ? `vModelDynamic` : ``
+const V_MODEL_DYNAMIC = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? `vModelDynamic` : ``
 );
-const V_ON_WITH_MODIFIERS = Symbol(
-    !!('wxx' !== 'wxx') ? `vOnModifiersGuard` : ``
+const V_ON_WITH_MODIFIERS = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? `vOnModifiersGuard` : ``
 );
-const V_ON_WITH_KEYS = Symbol(
-    !!('wxx' !== 'wxx') ? `vOnKeysGuard` : ``
+const V_ON_WITH_KEYS = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? `vOnKeysGuard` : ``
 );
-const V_SHOW = Symbol(!!('wxx' !== 'wxx') ? `vShow` : ``);
-const TRANSITION = Symbol(!!('wxx' !== 'wxx') ? `Transition` : ``);
-const TRANSITION_GROUP = Symbol(
-    !!('wxx' !== 'wxx') ? `TransitionGroup` : ``
+const V_SHOW = /* @__PURE__ */ Symbol(!!('production' !== 'production') ? `vShow` : ``);
+const TRANSITION = /* @__PURE__ */ Symbol(!!('production' !== 'production') ? `Transition` : ``);
+const TRANSITION_GROUP = /* @__PURE__ */ Symbol(
+    !!('production' !== 'production') ? `TransitionGroup` : ``
 );
 registerRuntimeHelpers({
     [V_MODEL_RADIO]: `vModelRadio`,
@@ -43,6 +65,7 @@ registerRuntimeHelpers({
 });
 
 let decoder;
+
 function decodeHtmlBrowser(raw, asAttr = false) {
     if (!decoder) {
         decoder = document.createElement("div");
@@ -62,7 +85,7 @@ const parserOptions = {
     isNativeTag: (tag) => isHTMLTag(tag) || isSVGTag(tag) || isMathMLTag(tag),
     isPreTag: (tag) => tag === "pre",
     isIgnoreNewlineTag: (tag) => tag === "pre" || tag === "textarea",
-    decodeEntities: decodeHtmlBrowser ,
+    decodeEntities: decodeHtmlBrowser,
     isBuiltInComponent: (tag) => {
         if (tag === "Transition" || tag === "transition") {
             return TRANSITION;
@@ -133,59 +156,60 @@ function createDOMCompilerError(code, loc) {
     return createCompilerError(
         code,
         loc,
-        !!('wxx' !== 'wxx') || false ? DOMErrorMessages : void 0
+        !!('production' !== 'production') || false ? DOMErrorMessages : void 0
     );
 }
+
 const DOMErrorCodes = {
-    "X_V_HTML_NO_EXPRESSION": 53,
-    "53": "X_V_HTML_NO_EXPRESSION",
-    "X_V_HTML_WITH_CHILDREN": 54,
-    "54": "X_V_HTML_WITH_CHILDREN",
-    "X_V_TEXT_NO_EXPRESSION": 55,
-    "55": "X_V_TEXT_NO_EXPRESSION",
-    "X_V_TEXT_WITH_CHILDREN": 56,
-    "56": "X_V_TEXT_WITH_CHILDREN",
-    "X_V_MODEL_ON_INVALID_ELEMENT": 57,
-    "57": "X_V_MODEL_ON_INVALID_ELEMENT",
-    "X_V_MODEL_ARG_ON_ELEMENT": 58,
-    "58": "X_V_MODEL_ARG_ON_ELEMENT",
-    "X_V_MODEL_ON_FILE_INPUT_ELEMENT": 59,
-    "59": "X_V_MODEL_ON_FILE_INPUT_ELEMENT",
-    "X_V_MODEL_UNNECESSARY_VALUE": 60,
-    "60": "X_V_MODEL_UNNECESSARY_VALUE",
-    "X_V_SHOW_NO_EXPRESSION": 61,
-    "61": "X_V_SHOW_NO_EXPRESSION",
-    "X_TRANSITION_INVALID_CHILDREN": 62,
-    "62": "X_TRANSITION_INVALID_CHILDREN",
-    "X_IGNORED_SIDE_EFFECT_TAG": 63,
-    "63": "X_IGNORED_SIDE_EFFECT_TAG",
-    "__EXTEND_POINT__": 64,
-    "64": "__EXTEND_POINT__"
+    "X_V_HTML_NO_EXPRESSION": 54,
+    "54": "X_V_HTML_NO_EXPRESSION",
+    "X_V_HTML_WITH_CHILDREN": 55,
+    "55": "X_V_HTML_WITH_CHILDREN",
+    "X_V_TEXT_NO_EXPRESSION": 56,
+    "56": "X_V_TEXT_NO_EXPRESSION",
+    "X_V_TEXT_WITH_CHILDREN": 57,
+    "57": "X_V_TEXT_WITH_CHILDREN",
+    "X_V_MODEL_ON_INVALID_ELEMENT": 58,
+    "58": "X_V_MODEL_ON_INVALID_ELEMENT",
+    "X_V_MODEL_ARG_ON_ELEMENT": 59,
+    "59": "X_V_MODEL_ARG_ON_ELEMENT",
+    "X_V_MODEL_ON_FILE_INPUT_ELEMENT": 60,
+    "60": "X_V_MODEL_ON_FILE_INPUT_ELEMENT",
+    "X_V_MODEL_UNNECESSARY_VALUE": 61,
+    "61": "X_V_MODEL_UNNECESSARY_VALUE",
+    "X_V_SHOW_NO_EXPRESSION": 62,
+    "62": "X_V_SHOW_NO_EXPRESSION",
+    "X_TRANSITION_INVALID_CHILDREN": 63,
+    "63": "X_TRANSITION_INVALID_CHILDREN",
+    "X_IGNORED_SIDE_EFFECT_TAG": 64,
+    "64": "X_IGNORED_SIDE_EFFECT_TAG",
+    "__EXTEND_POINT__": 65,
+    "65": "__EXTEND_POINT__"
 };
 const DOMErrorMessages = {
-    [53]: `v-html is missing expression.`,
-    [54]: `v-html will override element children.`,
-    [55]: `v-text is missing expression.`,
-    [56]: `v-text will override element children.`,
-    [57]: `v-model can only be used on <input>, <textarea> and <select> elements.`,
-    [58]: `v-model argument is not supported on plain elements.`,
-    [59]: `v-model cannot be used on file inputs since they are read-only. Use a v-on:change listener instead.`,
-    [60]: `Unnecessary value binding used alongside v-model. It will interfere with v-model's behavior.`,
-    [61]: `v-show is missing expression.`,
-    [62]: `<Transition> expects exactly one child element or component.`,
-    [63]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`
+    [54]: `v-html is missing expression.`,
+    [55]: `v-html will override element children.`,
+    [56]: `v-text is missing expression.`,
+    [57]: `v-text will override element children.`,
+    [58]: `v-model can only be used on <input>, <textarea> and <select> elements.`,
+    [59]: `v-model argument is not supported on plain elements.`,
+    [60]: `v-model cannot be used on file inputs since they are read-only. Use a v-on:change listener instead.`,
+    [61]: `Unnecessary value binding used alongside v-model. It will interfere with v-model's behavior.`,
+    [62]: `v-show is missing expression.`,
+    [63]: `<Transition> expects exactly one child element or component.`,
+    [64]: `Tags with side effect (<script> and <style>) are ignored in client component templates.`
 };
 
 const transformVHtml = (dir, node, context) => {
-    const { exp, loc } = dir;
+    const {exp, loc} = dir;
     if (!exp) {
         context.onError(
-            createDOMCompilerError(53, loc)
+            createDOMCompilerError(54, loc)
         );
     }
     if (node.children.length) {
         context.onError(
-            createDOMCompilerError(54, loc)
+            createDOMCompilerError(55, loc)
         );
         node.children.length = 0;
     }
@@ -200,15 +224,15 @@ const transformVHtml = (dir, node, context) => {
 };
 
 const transformVText = (dir, node, context) => {
-    const { exp, loc } = dir;
+    const {exp, loc} = dir;
     if (!exp) {
         context.onError(
-            createDOMCompilerError(55, loc)
+            createDOMCompilerError(56, loc)
         );
     }
     if (node.children.length) {
         context.onError(
-            createDOMCompilerError(56, loc)
+            createDOMCompilerError(57, loc)
         );
         node.children.length = 0;
     }
@@ -234,23 +258,25 @@ const transformModel = (dir, node, context) => {
     if (dir.arg) {
         context.onError(
             createDOMCompilerError(
-                58,
+                59,
                 dir.arg.loc
             )
         );
     }
+
     function checkDuplicatedValue() {
         const value = findDir(node, "bind");
         if (value && isStaticArgOf(value.arg, "value")) {
             context.onError(
                 createDOMCompilerError(
-                    60,
+                    61,
                     value.loc
                 )
             );
         }
     }
-    const { tag } = node;
+
+    const {tag} = node;
     const isCustomElement = context.isCustomElement(tag);
     if (tag === "input" || tag === "textarea" || tag === "select" || isCustomElement) {
         let directiveToUse = V_MODEL_TEXT;
@@ -272,25 +298,25 @@ const transformModel = (dir, node, context) => {
                             isInvalidType = true;
                             context.onError(
                                 createDOMCompilerError(
-                                    59,
+                                    60,
                                     dir.loc
                                 )
                             );
                             break;
                         default:
-                            !!('wxx' !== 'wxx') && checkDuplicatedValue();
+                            !!('production' !== 'production') && checkDuplicatedValue();
                             break;
                     }
                 }
             } else if (hasDynamicKeyVBind(node)) {
                 directiveToUse = V_MODEL_DYNAMIC;
             } else {
-                !!('wxx' !== 'wxx') && checkDuplicatedValue();
+                !!('production' !== 'production') && checkDuplicatedValue();
             }
         } else if (tag === "select") {
             directiveToUse = V_MODEL_SELECT;
         } else {
-            !!('wxx' !== 'wxx') && checkDuplicatedValue();
+            !!('production' !== 'production') && checkDuplicatedValue();
         }
         if (!isInvalidType) {
             baseResult.needRuntime = context.helper(directiveToUse);
@@ -298,7 +324,7 @@ const transformModel = (dir, node, context) => {
     } else {
         context.onError(
             createDOMCompilerError(
-                57,
+                58,
                 dir.loc
             )
         );
@@ -369,10 +395,14 @@ const transformClick = (key, event) => {
 };
 const transformOn = (dir, node, context) => {
     return transformOn$1(dir, node, context, (baseResult) => {
-        const { modifiers } = dir;
+        const {modifiers} = dir;
         if (!modifiers.length) return baseResult;
-        let { key, value: handlerExp } = baseResult.props[0];
-        const { keyModifiers, nonKeyModifiers, eventOptionModifiers } = resolveModifiers(key, modifiers, context, dir.loc);
+        let {key, value: handlerExp} = baseResult.props[0];
+        const {
+            keyModifiers,
+            nonKeyModifiers,
+            eventOptionModifiers
+        } = resolveModifiers(key, modifiers, context, dir.loc);
         if (nonKeyModifiers.includes("right")) {
             key = transformClick(key, `onContextmenu`);
         }
@@ -403,10 +433,10 @@ const transformOn = (dir, node, context) => {
 };
 
 const transformShow = (dir, node, context) => {
-    const { exp, loc } = dir;
+    const {exp, loc} = dir;
     if (!exp) {
         context.onError(
-            createDOMCompilerError(61, loc)
+            createDOMCompilerError(62, loc)
         );
     }
     return {
@@ -426,7 +456,7 @@ const transformTransition = (node, context) => {
                 if (hasMultipleChildren(node)) {
                     context.onError(
                         createDOMCompilerError(
-                            62,
+                            63,
                             {
                                 start: node.children[0].loc.start,
                                 end: node.children[node.children.length - 1].loc.end,
@@ -453,9 +483,10 @@ const transformTransition = (node, context) => {
         }
     }
 };
+
 function hasMultipleChildren(node) {
     const children = node.children = node.children.filter(
-        (c) => c.type !== 3 && !(c.type === 2 && !c.content.trim())
+        (c) => !isCommentOrWhitespace(c)
     );
     const child = children[0];
     return children.length !== 1 || child.type === 11 || child.type === 9 && child.branches.some(hasMultipleChildren);
@@ -463,9 +494,9 @@ function hasMultipleChildren(node) {
 
 const ignoreSideEffectTags = (node, context) => {
     if (node.type === 1 && node.tagType === 0 && (node.tag === "script" || node.tag === "style")) {
-        !!('wxx' !== 'wxx') && context.onError(
+        !!('production' !== 'production') && context.onError(
             createDOMCompilerError(
-                63,
+                64,
                 node.loc
             )
         );
@@ -474,6 +505,9 @@ const ignoreSideEffectTags = (node, context) => {
 };
 
 function isValidHTMLNesting(parent, child) {
+    if (parent === "template") {
+        return true;
+    }
     if (parent in onlyValidChildren) {
         return onlyValidChildren[parent].has(child);
     }
@@ -488,6 +522,7 @@ function isValidHTMLNesting(parent, child) {
     }
     return true;
 }
+
 const headings = /* @__PURE__ */ new Set(["h1", "h2", "h3", "h4", "h5", "h6"]);
 const emptySet = /* @__PURE__ */ new Set([]);
 const onlyValidChildren = {
@@ -647,7 +682,7 @@ const validateHtmlNesting = (node, context) => {
 
 const DOMNodeTransforms = [
     transformStyle,
-    ...!!('wxx' !== 'wxx') ? [transformTransition, validateHtmlNesting] : []
+    ...!!('production' !== 'production') ? [transformTransition, validateHtmlNesting] : []
 ];
 const DOMDirectiveTransforms = {
     cloak: noopDirectiveTransform,
@@ -659,6 +694,7 @@ const DOMDirectiveTransforms = {
     // override compiler-core
     show: transformShow
 };
+
 function compile(src, options = {}) {
     return baseCompile(
         src,
@@ -680,8 +716,29 @@ function compile(src, options = {}) {
         })
     );
 }
+
 function parse(template, options = {}) {
     return baseParse(template, extend({}, parserOptions, options));
 }
 
-export { DOMDirectiveTransforms, DOMErrorCodes, DOMErrorMessages, DOMNodeTransforms, TRANSITION, TRANSITION_GROUP, V_MODEL_CHECKBOX, V_MODEL_DYNAMIC, V_MODEL_RADIO, V_MODEL_SELECT, V_MODEL_TEXT, V_ON_WITH_KEYS, V_ON_WITH_MODIFIERS, V_SHOW, compile, createDOMCompilerError, parse, parserOptions, transformStyle };
+export {
+    DOMDirectiveTransforms,
+    DOMErrorCodes,
+    DOMErrorMessages,
+    DOMNodeTransforms,
+    TRANSITION,
+    TRANSITION_GROUP,
+    V_MODEL_CHECKBOX,
+    V_MODEL_DYNAMIC,
+    V_MODEL_RADIO,
+    V_MODEL_SELECT,
+    V_MODEL_TEXT,
+    V_ON_WITH_KEYS,
+    V_ON_WITH_MODIFIERS,
+    V_SHOW,
+    compile,
+    createDOMCompilerError,
+    parse,
+    parserOptions,
+    transformStyle
+};
