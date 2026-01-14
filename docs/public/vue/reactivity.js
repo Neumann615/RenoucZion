@@ -27,7 +27,7 @@ import {
 function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
 }
-
+// Vue 3 响应式系统中副作用（Effect）的生命周期管理器。它的核心思想是为副作用创建一个可管理的作用域边界，使得副作用的创建、追踪、暂停、恢复和清理能够在一个可控的范围内进行
 let activeEffectScope;
 
 class EffectScope {
@@ -104,7 +104,7 @@ class EffectScope {
             }
         }
     }
-
+    // 上下文切换
     run(fn) {
         if (this._active) {
             const currentEffectScope = activeEffectScope;
@@ -119,10 +119,7 @@ class EffectScope {
         }
     }
 
-    /**
-     * This should only be called on non-detached scopes
-     * @internal
-     */
+    // 引用计数激活,这只应在非分离的作用域上调用
     on() {
         if (++this._on === 1) {
             this.prevScope = activeEffectScope;
@@ -130,17 +127,14 @@ class EffectScope {
         }
     }
 
-    /**
-     * This should only be called on non-detached scopes
-     * @internal
-     */
+    // 引用计数激活,这只应在非分离的作用域上调用
     off() {
         if (this._on > 0 && --this._on === 0) {
             activeEffectScope = this.prevScope;
             this.prevScope = void 0;
         }
     }
-
+    // 停止清理
     stop(fromParent) {
         if (this._active) {
             this._active = false;
@@ -170,15 +164,15 @@ class EffectScope {
         }
     }
 }
-
+// 简单的工厂函数，用于创建 EffectScope实例
 function effectScope(detached) {
     return new EffectScope(detached);
 }
-
+// 返回当前激活的 EffectScope 实例。它是 Vue 3 响应式系统中作用域栈管理的关键访问器
 function getCurrentScope() {
     return activeEffectScope;
 }
-
+// 注册清理函数的工具函数，它将清理函数注册到当前活跃的 EffectScope 中，在作用域停止时自动执行
 function onScopeDispose(fn, failSilently = false) {
     if (activeEffectScope) {
         activeEffectScope.cleanups.push(fn);
@@ -188,50 +182,45 @@ function onScopeDispose(fn, failSilently = false) {
         );
     }
 }
-
+// 在 Vue 3 的响应式系统中跟踪当前激活的订阅（Subscription）或副作用（Effect）。它是一个关键的内部状态变量，用于管理响应式依赖的收集和追踪
 let activeSub;
+// 管理副作用（Effect）的各种状态
 const EffectFlags = {
+    // 副作用是否处于活跃状态
     "ACTIVE": 1,
     "1": "ACTIVE",
+    // 副作用当前是否正在执行
     "RUNNING": 2,
     "2": "RUNNING",
+    // 副作用是否正在收集依赖
     "TRACKING": 4,
     "4": "TRACKING",
+    // 副作用已被通知需要重新执行
     "NOTIFIED": 8,
     "8": "NOTIFIED",
+    // 计算属性的值已过期，需要重新计算
     "DIRTY": 16,
     "16": "DIRTY",
+    // 允许副作用在执行过程中触发自身的重新执行
     "ALLOW_RECURSE": 32,
     "32": "ALLOW_RECURSE",
+    // 副作用被暂停，不执行更新
     "PAUSED": 64,
     "64": "PAUSED",
+    // 副作用已经被评估/计算过
     "EVALUATED": 128,
     "128": "EVALUATED"
 };
+// 为响应式效果、EffectScope 和 WatchHandle 提供暂停/恢复功能
 const pausedQueueEffects = /* @__PURE__ */ new WeakSet();
-
+// 响应式系统的基石，它实现了精确的依赖跟踪、高效的批处理更新和完整的生命周期管理。通过位运算优化状态管理，使用双向链表优化依赖清理，为 Vue 的响应式特性提供了坚实的基础
 class ReactiveEffect {
     constructor(fn) {
         this.fn = fn;
-        /**
-         * @internal
-         */
         this.deps = void 0;
-        /**
-         * @internal
-         */
         this.depsTail = void 0;
-        /**
-         * @internal
-         */
         this.flags = 1 | 4;
-        /**
-         * @internal
-         */
         this.next = void 0;
-        /**
-         * @internal
-         */
         this.cleanup = void 0;
         this.scheduler = void 0;
         if (activeEffectScope && activeEffectScope.active) {
@@ -253,9 +242,6 @@ class ReactiveEffect {
         }
     }
 
-    /**
-     * @internal
-     */
     notify() {
         if (this.flags & 2 && !(this.flags & 32)) {
             return;
@@ -313,9 +299,6 @@ class ReactiveEffect {
         }
     }
 
-    /**
-     * @internal
-     */
     runIfDirty() {
         if (isDirty(this)) {
             this.run();
@@ -327,10 +310,13 @@ class ReactiveEffect {
     }
 }
 
+// 控制批处理嵌套层级的关键变量
 let batchDepth = 0;
+// 存储待执行的普通响应式效果（非计算属性）的队列
 let batchedSub;
+// 存储待执行的计算属性效果的队列
 let batchedComputed;
-
+// 将响应式效果加入批处理队列的核心函数
 function batch(sub, isComputed = false) {
     sub.flags |= 8;
     if (isComputed) {
@@ -341,15 +327,17 @@ function batch(sub, isComputed = false) {
     sub.next = batchedSub;
     batchedSub = sub;
 }
-
+// 增加 batchDepth 计数器来标记一个批处理周期的开始，这确保在批处理期间触发的响应式更新不会立即执行，而是被排队等待批处理结束后统一处理
 function startBatch() {
     batchDepth++;
 }
-
+// 负责在批处理周期结束时执行所有排队的 effect。它首先检查 batchDepth，只有当计数器归零时才真正执行更新，这支持了嵌套批处理
 function endBatch() {
+    // 首先递减 batchDepth，如果仍大于 0 则直接返回，等待最外层的 endBatch() 调用
     if (--batchDepth > 0) {
         return;
     }
+    // 优先处理 batchedComputed 队列，确保计算属性在普通 effect 之前更新，这维护了计算属性的依赖关系正确性
     if (batchedComputed) {
         let e = batchedComputed;
         batchedComputed = void 0;
@@ -381,7 +369,7 @@ function endBatch() {
     }
     if (error) throw error;
 }
-
+// 在 effect 执行前被调用，用于标记所有现有依赖项为"可能未使用"状态，为后续的依赖清理做准备
 function prepareDeps(sub) {
     for (let link = sub.deps; link; link = link.nextDep) {
         link.version = -1;
@@ -389,7 +377,7 @@ function prepareDeps(sub) {
         link.dep.activeLink = link;
     }
 }
-
+// 在 effect 执行后被调用，用于移除在当前 effect 运行中未被访问的依赖项，实现自动的依赖管理
 function cleanupDeps(sub) {
     let head;
     let tail = sub.depsTail;
@@ -410,9 +398,10 @@ function cleanupDeps(sub) {
     sub.deps = head;
     sub.depsTail = tail;
 }
-
+// 判断订阅者（effect 或 computed）是否需要重新执行
 function isDirty(sub) {
     for (let link = sub.deps; link; link = link.nextDep) {
+        // 每个依赖（Dep）都有一个 version 属性，当依赖发生变化时会递增，链接（Link）保存了订阅者上次访问时的版本号。通过比较这两个版本号，可以高效地判断依赖是否发生了变化
         if (link.dep.version !== link.version || link.dep.computed && (refreshComputed(link.dep.computed) || link.dep.version !== link.version)) {
             return true;
         }
@@ -422,16 +411,20 @@ function isDirty(sub) {
     }
     return false;
 }
-
+// 刷新 computed 值的核心方法，它实现了 computed 的懒加载和缓存机制，确保了 computed 值只在真正需要时才重新计算，大大提升了性能
 function refreshComputed(computed) {
+    // 如果 computed 正在追踪依赖但不是脏状态，直接返回
     if (computed.flags & 4 && !(computed.flags & 16)) {
         return;
     }
+    // 清除脏标记
     computed.flags &= -17;
+    // 如果全局版本号未变化，说明没有响应式更新，直接返回。这是重要的性能优化
     if (computed.globalVersion === globalVersion) {
         return;
     }
     computed.globalVersion = globalVersion;
+    // 在非 SSR 环境下，如果 computed 已评估且依赖未变化，则不需要重新计算
     if (!computed.isSSR && computed.flags & 128 && (!computed.deps && !computed._dirty || !isDirty(computed))) {
         return;
     }
@@ -441,6 +434,7 @@ function refreshComputed(computed) {
     const prevShouldTrack = shouldTrack;
     activeSub = computed;
     shouldTrack = true;
+    // 设置 RUNNING 标志，准备依赖追踪，执行计算函数，并在值变化时更新缓存和版本号
     try {
         prepareDeps(computed);
         const value = computed.fn(computed._value);
@@ -453,14 +447,16 @@ function refreshComputed(computed) {
         dep.version++;
         throw err;
     } finally {
+        // 恢复追踪上下文，清理未使用的依赖，清除 RUNNING 标志
         activeSub = prevSub;
         shouldTrack = prevShouldTrack;
         cleanupDeps(computed);
         computed.flags &= -3;
     }
 }
-
+// 用于移除订阅者的核心方法，负责维护依赖和订阅者之间的双向链表关系
 function removeSub(link, soft = false) {
+    // 更新前驱和后继节点的指针，将当前链接从双向链表中移除
     const {dep, prevSub, nextSub} = link;
     if (prevSub) {
         prevSub.nextSub = nextSub;
@@ -470,9 +466,11 @@ function removeSub(link, soft = false) {
         nextSub.prevSub = prevSub;
         link.nextSub = void 0;
     }
+    // 如果移除的是链表头部，更新头指针
     if (!!('production' !== 'production') && dep.subsHead === link) {
         dep.subsHead = nextSub;
     }
+    // 如果移除的是链表尾部，更新尾指针。对于 computed 值，当失去所有订阅者时，停止追踪其依赖
     if (dep.subs === link) {
         dep.subs = prevSub;
         if (!prevSub && dep.computed) {
@@ -482,65 +480,76 @@ function removeSub(link, soft = false) {
             }
         }
     }
+    // 在非软移除模式下，如果依赖的订阅者计数归零，从依赖映射中删除该依赖
     if (!soft && !--dep.sc && dep.map) {
         dep.map.delete(dep.key);
     }
 }
-
+// 响应式系统中用于从订阅者的依赖链表中移除指定链接的工具函数
 function removeDep(link) {
+    // 从 Link 对象中提取前驱节点 prevDep 和后继节点 nextDep
     const {prevDep, nextDep} = link;
+    // 如果存在前驱节点，将其 nextDep 指向当前节点的后继节点，并清除当前节点的 prevDep 指针
     if (prevDep) {
         prevDep.nextDep = nextDep;
         link.prevDep = void 0;
     }
+    // 如果存在后继节点，将其 prevDep 指向当前节点的前驱节点，并清除当前节点的 nextDep 指针
     if (nextDep) {
         nextDep.prevDep = prevDep;
         link.nextDep = void 0;
     }
 }
-
+// 响应式系统的核心入口，用于创建响应式副作用。
 function effect(fn, options) {
+    // 检查传入的 fn 是否已经是一个 effect runner，如果是则提取其原始函数
     if (fn.effect instanceof ReactiveEffect) {
         fn = fn.effect.fn;
     }
+    // 创建 ReactiveEffect 实例并合并options选项
     const e = new ReactiveEffect(fn);
     if (options) {
         extend(e, options);
     }
+    // 立即执行 effect 以建立初始依赖关系。如果执行失败，会清理 effect 并重新抛出错误
     try {
         e.run();
     } catch (err) {
         e.stop();
         throw err;
     }
+    // 返回绑定的 runner 函数，并在其上挂载 effect 实例引用
     const runner = e.run.bind(e);
     runner.effect = e;
     return runner;
 }
-
+// 用于停止响应式副作用的工具函数，它通过调用 effect 实例的 stop() 方法来清理所有依赖关系。
 function stop(runner) {
     runner.effect.stop();
 }
-
+// 全局标志，在 track 函数中检查以决定是否建立依赖关系
 let shouldTrack = true;
+// 保存历史状态，支持嵌套调用
 const trackStack = [];
-
+// 保存当前状态后修改全局标志shouldTrack false
 function pauseTracking() {
     trackStack.push(shouldTrack);
     shouldTrack = false;
 }
-
+// 保存当前状态后修改全局标志shouldTrack true
 function enableTracking() {
     trackStack.push(shouldTrack);
     shouldTrack = true;
 }
-
+// 恢复上一个状态，栈为空时默认为 true
 function resetTracking() {
     const last = trackStack.pop();
     shouldTrack = last === void 0 ? true : last;
 }
 
+// 为当前活跃的响应式 effect 注册清理回调，该回调会在 effect 重新运行之前或 effect 停止时执行
 function onEffectCleanup(fn, failSilently = false) {
+    // 检查是否存在活跃的 ReactiveEffect 实例(activeSub)
     if (activeSub instanceof ReactiveEffect) {
         activeSub.cleanup = fn;
     } else if (!!('production' !== 'production') && !failSilently) {
@@ -549,13 +558,19 @@ function onEffectCleanup(fn, failSilently = false) {
         );
     }
 }
-
+// 负责执行响应式 effect 的清理回调，确保清理过程在没有活跃 effect 上下文的环境中执行
 function cleanupEffect(e) {
+    // 从 effect 对象中提取 cleanup 函数
     const {cleanup} = e;
+    // 立即将 e.cleanup 设为 undefined，防止重复执行
     e.cleanup = void 0;
+    // 如果存在清理函数，则在特殊的上下文中执行：
     if (cleanup) {
+        // 保存当前的 activeSub
         const prevSub = activeSub;
+        // 将 activeSub 设为 undefined，确保清理过程不建立新的依赖关系
         activeSub = void 0;
+        // 在 try/finally 块中执行清理函数，确保无论如何都会恢复 activeSub
         try {
             cleanup();
         } finally {
