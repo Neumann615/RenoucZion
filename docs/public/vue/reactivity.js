@@ -578,14 +578,20 @@ function cleanupEffect(e) {
         }
     }
 }
-
+// globalVersion 在每次响应式数据变化时递增，为计算属性提供快速路径判断是否需要重新计算。
 let globalVersion = 0;
-
+// Link 表示一个双向关系：一个订阅者依赖于一个响应式数据源。由于响应式系统是多对多的关系（一个订阅者可以依赖多个数据源，一个数据源也可以被多个订阅者依赖），每个连接都需要一个 Link 实例。
 class Link {
     constructor(sub, dep) {
+        // 订阅者（Effect 或 Computed 实例）
         this.sub = sub;
+        // 依赖（Dep 实例，代表一个响应式属性）
         this.dep = dep;
+        // 版本号，用于跟踪链接的使用状态
         this.version = dep.version;
+        // nextDep/prevDep: 在订阅者的依赖链表中的前后指针
+        // nextSub/prevSub: 在依赖的订阅者链表中的前后指针
+        // prevActiveLink: 保存之前的活跃链接状态
         this.nextDep = this.prevDep = this.nextSub = this.prevSub = this.prevActiveLink = void 0;
     }
 }
