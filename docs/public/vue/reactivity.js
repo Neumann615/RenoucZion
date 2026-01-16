@@ -212,7 +212,7 @@ const EffectFlags = {
     "128": "EVALUATED"
 };
 // 为响应式效果、EffectScope 和 WatchHandle 提供暂停/恢复功能
-const pausedQueueEffects = /* @__PURE__ */ new WeakSet();
+const pausedQueueEffects = new WeakSet();
 // 响应式系统的基石，它实现了精确的依赖跟踪、高效的批处理更新和完整的生命周期管理。通过位运算优化状态管理，使用双向链表优化依赖清理，为 Vue 的响应式特性提供了坚实的基础
 class ReactiveEffect {
     constructor(fn) {
@@ -457,7 +457,7 @@ function refreshComputed(computed) {
 // 用于移除订阅者的核心方法，负责维护依赖和订阅者之间的双向链表关系
 function removeSub(link, soft = false) {
     // 更新前驱和后继节点的指针，将当前链接从双向链表中移除
-    const {dep, prevSub, nextSub} = link;
+    const { dep, prevSub, nextSub } = link;
     if (prevSub) {
         prevSub.nextSub = nextSub;
         link.prevSub = void 0;
@@ -488,7 +488,7 @@ function removeSub(link, soft = false) {
 // 响应式系统中用于从订阅者的依赖链表中移除指定链接的工具函数
 function removeDep(link) {
     // 从 Link 对象中提取前驱节点 prevDep 和后继节点 nextDep
-    const {prevDep, nextDep} = link;
+    const { prevDep, nextDep } = link;
     // 如果存在前驱节点，将其 nextDep 指向当前节点的后继节点，并清除当前节点的 prevDep 指针
     if (prevDep) {
         prevDep.nextDep = nextDep;
@@ -561,7 +561,7 @@ function onEffectCleanup(fn, failSilently = false) {
 // 负责执行响应式 effect 的清理回调，确保清理过程在没有活跃 effect 上下文的环境中执行
 function cleanupEffect(e) {
     // 从 effect 对象中提取 cleanup 函数
-    const {cleanup} = e;
+    const { cleanup } = e;
     // 立即将 e.cleanup 设为 undefined，防止重复执行
     e.cleanup = void 0;
     // 如果存在清理函数，则在特殊的上下文中执行：
@@ -595,43 +595,39 @@ class Link {
         this.nextDep = this.prevDep = this.nextSub = this.prevSub = this.prevActiveLink = void 0;
     }
 }
-
+// 负责管理依赖关系和触发更新
 class Dep {
-    // TODO isolatedDeclarations "__v_skip"
+
     constructor(computed) {
+        // 关联的计算值实例
         this.computed = computed;
+        // 版本号，每次触发时递增
         this.version = 0;
-        /**
-         * Link between this dep and the current active effect
-         */
+        // 当前活跃 effect 的链接
         this.activeLink = void 0;
-        /**
-         * Doubly linked list representing the subscribing effects (tail)
-         */
+        // 订阅者双向链表（尾）
         this.subs = void 0;
-        /**
-         * For object property deps cleanup
-         */
+        // 用于对象属性依赖的清理
         this.map = void 0;
         this.key = void 0;
-        /**
-         * Subscriber counter
-         */
+        // 订阅者计数器 
         this.sc = 0;
-        /**
-         * @internal
-         */
+        //  标记用于跳过响应式处理 
         this.__v_skip = true;
         if (!!('production' !== 'production')) {
+            // 仅在开发模式下使用，用于按正确顺序触发调试钩子
             this.subsHead = void 0;
         }
     }
-
+    // 当响应式属性被访问时调用，建立当前活跃 effect 与此 dep 的连接
     track(debugInfo) {
+        // 检查是否应该追踪（有活跃 effect 且允许追踪）
         if (!activeSub || !shouldTrack || activeSub === this.computed) {
             return;
         }
         let link = this.activeLink;
+        // 创建或复用 Link 对象连接 effect 和 dep
+        // 将 link 添加到 effect 的依赖链表和 dep 的订阅链表
         if (link === void 0 || link.sub !== activeSub) {
             link = this.activeLink = new Link(activeSub, this);
             if (!activeSub.deps) {
@@ -659,6 +655,7 @@ class Dep {
                 }
             }
         }
+        // 在开发模式下触发 onTrack 钩子
         if (!!('production' !== 'production') && activeSub.onTrack) {
             activeSub.onTrack(
                 extend(
@@ -671,16 +668,20 @@ class Dep {
         }
         return link;
     }
-
+    // 当响应式属性值改变时调用
     trigger(debugInfo) {
+        // 递增 version 和 globalVersion
         this.version++;
         globalVersion++;
+        // 调用 notify() 通知所有订阅者
         this.notify(debugInfo);
     }
-
+    // 实际执行通知过程
     notify(debugInfo) {
+        // 启动批处理模式
         startBatch();
         try {
+            // 在开发模式下按正确顺序触发 onTrigger 钩子
             if (!!('production' !== 'production')) {
                 for (let head = this.subsHead; head; head = head.nextSub) {
                     if (head.sub.onTrigger && !(head.sub.flags & 8)) {
@@ -695,29 +696,39 @@ class Dep {
                     }
                 }
             }
+            // 遍历所有订阅者，调用其 notify() 方法
             for (let link = this.subs; link; link = link.prevSub) {
+                // 对于计算值，额外通知其自身的 dep
                 if (link.sub.notify()) {
                     ;
                     link.sub.dep.notify();
                 }
             }
         } finally {
+            // 结束批处理
             endBatch();
         }
     }
 }
-
+// 将订阅者（effect 或 computed）添加到依赖的订阅列表中。
 function addSub(link) {
+    // 递增依赖的订阅者计数器 sc，用于跟踪有多少个订阅者
     link.dep.sc++;
+    // 只有当订阅者设置了 TRACKING 标志（值为 4）时才进行处理
     if (link.sub.flags & 4) {
         const computed = link.dep.computed;
+        // 当依赖关联的是计算值且这是第一个订阅者时
+        // 当计算值获得第一个订阅者时，它会立即订阅自己的所有依赖，形成级联关系
         if (computed && !link.dep.subs) {
+            // 启用计算值的追踪和脏标记标志
             computed.flags |= 4 | 16;
+            // 递归订阅计算值的所有依赖
             for (let l = computed.deps; l; l = l.nextDep) {
                 addSub(l);
             }
         }
         const currentTail = link.dep.subs;
+        // 将新的订阅链接添加到依赖的订阅链表尾部
         if (currentTail !== link) {
             link.prevSub = currentTail;
             if (currentTail) currentTail.nextSub = link;
@@ -728,48 +739,68 @@ function addSub(link) {
         link.dep.subs = link;
     }
 }
-
-const targetMap = /* @__PURE__ */ new WeakMap();
-const ITERATE_KEY = /* @__PURE__ */ Symbol(
+// 响应式系统的核心存储结构，采用三层映射
+// 第一层：WeakMap<object, KeyToDepMap> - 目标对象到属性依赖映射
+// 第二层：Map<any, Dep> - 属性键到依赖实例的映射
+// 第三层：Dep - 管理订阅该属性的所有 effect
+// 该设计确保了：
+// 对象被垃圾回收时，相关依赖自动清理
+// 每个属性独立管理自己的订阅者
+// 支持动态属性的依赖追踪
+const targetMap = new WeakMap();
+// 用于追踪对象/Map/Set 的整体迭代操作
+const ITERATE_KEY = Symbol(
     !!('production' !== 'production') ? "Object iterate" : ""
 );
-const MAP_KEY_ITERATE_KEY = /* @__PURE__ */ Symbol(
+// 专门用于 Map 的键迭代追踪
+const MAP_KEY_ITERATE_KEY = Symbol(
     !!('production' !== 'production') ? "Map keys iterate" : ""
 );
-const ARRAY_ITERATE_KEY = /* @__PURE__ */ Symbol(
+// 用于数组迭代操作的依赖追踪
+const ARRAY_ITERATE_KEY = Symbol(
     !!('production' !== 'production') ? "Array iterate" : ""
 );
-
+// 响应式属性被访问时建立依赖关系
 function track(target, type, key) {
+    // 只有在允许追踪且有活跃订阅者时才执行依赖追踪
     if (shouldTrack && activeSub) {
+        // 第一层 - 目标对象映射：
         let depsMap = targetMap.get(target);
         if (!depsMap) {
-            targetMap.set(target, depsMap = /* @__PURE__ */ new Map());
+            // 获取或创建目标对象的依赖映射表
+            targetMap.set(target, depsMap = new Map());
         }
+        // 第二层 - 属性键映射：
         let dep = depsMap.get(key);
         if (!dep) {
+            // 获取或创建特定属性的 Dep 实例，并设置反向引用用于清理
             depsMap.set(key, dep = new Dep());
             dep.map = depsMap;
             dep.key = key;
         }
+        // 开发模式：传递调试信息 {target, type, key}
         if (!!('production' !== 'production')) {
             dep.track({
                 target,
                 type,
                 key
             });
-        } else {
+        }
+        // 生产模式：直接调用无参数版本
+        else {
             dep.track();
         }
     }
 }
-
+// 响应式数据变化时通知所有相关的订阅者重新执行
 function trigger(target, type, key, newValue, oldValue, oldTarget) {
+    // 获取依赖映射
     const depsMap = targetMap.get(target);
     if (!depsMap) {
         globalVersion++;
         return;
     }
+    // 封装了触发依赖的逻辑，开发模式下传递调试信息
     const run = (dep) => {
         if (dep) {
             if (!!('production' !== 'production')) {
@@ -787,11 +818,13 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         }
     };
     startBatch();
+    // 集合清空时触发所有依赖
     if (type === "clear") {
         depsMap.forEach(run);
     } else {
         const targetIsArray = isArray(target);
         const isArrayIndex = targetIsArray && isIntegerKey(key);
+        // 数组长度变化时触发：length 属性的依赖ARRAY_ITERATE_KEY（数组迭代）被删除索引的依赖（索引 ≥ 新长度）
         if (targetIsArray && key === "length") {
             const newLength = Number(newValue);
             depsMap.forEach((dep, key2) => {
@@ -800,24 +833,30 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
                 }
             });
         } else {
+            // 触发特定属性的依赖，数组索引变化时额外触发迭代依赖
             if (key !== void 0 || depsMap.has(void 0)) {
                 run(depsMap.get(key));
             }
             if (isArrayIndex) {
                 run(depsMap.get(ARRAY_ITERATE_KEY));
             }
+            // 操作类型特殊处理
             switch (type) {
                 case "add":
+                    // 非数组对象：触发 ITERATE_KEY，Map 对象额外触发 MAP_KEY_ITERATE_KEY
                     if (!targetIsArray) {
                         run(depsMap.get(ITERATE_KEY));
                         if (isMap(target)) {
                             run(depsMap.get(MAP_KEY_ITERATE_KEY));
                         }
-                    } else if (isArrayIndex) {
+                    }
+                    // 数组：触发 length 依赖 
+                    else if (isArrayIndex) {
                         run(depsMap.get("length"));
                     }
                     break;
                 case "delete":
+                    // 非数组对象：触发 ITERATE_KEY，Map 对象额外触发 MAP_KEY_ITERATE_KEY
                     if (!targetIsArray) {
                         run(depsMap.get(ITERATE_KEY));
                         if (isMap(target)) {
@@ -826,6 +865,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
                     }
                     break;
                 case "set":
+                    // Map 对象：触发 ITERATE_KEY
                     if (isMap(target)) {
                         run(depsMap.get(ITERATE_KEY));
                     }
@@ -835,31 +875,43 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     }
     endBatch();
 }
-
+// 从响应式对象中获取特定属性的依赖实例
 function getDepFromReactive(object, key) {
+    // 从 targetMap 获取对象的依赖映射表
     const depMap = targetMap.get(object);
+    // 从映射表中获取特定键的 Dep 实例
     return depMap && depMap.get(key);
 }
-
+// 用于数组方法的实现中，如 concat、join、toReversed、toSorted、toSpliced 等 
+// 追踪数组整体的变化（而不是单个元素）确保返回的数组元素保持响应式特性
 function reactiveReadArray(array) {
+    // 使用 toRaw(array) 获取数组的原始版本，绕过响应式代理
     const raw = toRaw(array);
+    // 如果输入数组已经是原始数组（非响应式），直接返回，避免不必要的处理
     if (raw === array) return raw;
+    // 调用 track(raw, "iterate", ARRAY_ITERATE_KEY) 建立数组迭代的依赖关系
     track(raw, "iterate", ARRAY_ITERATE_KEY);
+    // 对于浅层响应式数组（isShallow(array) 为 true），返回原始数组
+    // 对于深层响应式数组，使用 raw.map(toReactive) 将每个元素转换为响应式对象
     return isShallow(array) ? raw : raw.map(toReactive);
 }
-
+// 获取原始数组，依赖追踪，返回原始数组
 function shallowReadArray(arr) {
     track(arr = toRaw(arr), "iterate", ARRAY_ITERATE_KEY);
     return arr;
 }
-
+// 确保数组方法返回值保持正确响应式状态的工具函数
 function toWrapped(target, item) {
+    // 检查目标数组是否为只读状态
     if (isReadonly(target)) {
+        // 如果目标是只读且响应式：先转换为响应式，再标记为只读
+        // 如果目标是只读但非响应式：仅标记为只读
         return isReactive(target) ? toReadonly(toReactive(item)) : toReadonly(item);
     }
+    // 如果目标非只读：直接转换为响应式
     return toReactive(item);
 }
-
+// 拦截和增强数组方法的核心对象，它确保数组操作能够正确地进行依赖追踪和响应式处理
 const arrayInstrumentations = {
     __proto__: null,
     [Symbol.iterator]() {
@@ -973,12 +1025,17 @@ const arrayInstrumentations = {
         return iterator(this, "values", (item) => toWrapped(this, item));
     }
 };
-
+// 确保迭代过程中的依赖追踪和响应式包装的准确性
 function iterator(self, method, wrapValue) {
+    // 获取原始数组并追踪依赖
     const arr = shallowReadArray(self);
+    // 创建基础迭代器：调用原始数组的迭代方法创建迭代器
     const iter = arr[method]();
+    // 检查是否需要增强
     if (arr !== self && !isShallow(self)) {
+        // 保存原始 next 方法到 _next 属性 
         iter._next = iter.next;
+        // 重写 next 方法，在返回值时应用 wrapValue 包装
         iter.next = () => {
             const result = iter._next();
             if (!result.done) {
@@ -991,15 +1048,18 @@ function iterator(self, method, wrapValue) {
 }
 
 const arrayProto = Array.prototype;
-
+// 处理数组方法调用，确保数组遍历操作能正确的进行依赖追踪和响应式包装
 function apply(self, method, fn, thisArg, wrappedRetFn, args) {
+    // 获取原始数组并追踪依赖
     const arr = shallowReadArray(self);
+    // 判断是否需要包装：needsWrap 变量判断是否需要对返回值进行响应式包装
     const needsWrap = arr !== self && !isShallow(self);
     const methodFn = arr[method];
     if (methodFn !== arrayProto[method]) {
         const result2 = methodFn.apply(self, args);
         return needsWrap ? toReactive(result2) : result2;
     }
+    // 包装回调函数
     let wrappedFn = fn;
     if (arr !== self) {
         if (needsWrap) {
@@ -1012,59 +1072,93 @@ function apply(self, method, fn, thisArg, wrappedRetFn, args) {
             };
         }
     }
+    // 使用包装后的回调函数调用原始方法，并根据需要包装返回值
     const result = methodFn.call(arr, wrappedFn, thisArg);
     return needsWrap && wrappedRetFn ? wrappedRetFn(result) : result;
 }
-
+// 专门处理 reduce 和 reduceRight 数组方法的核心工具函数 
 function reduce(self, method, fn, args) {
+    // 获取原始数组并追踪依赖
     const arr = shallowReadArray(self);
     let wrappedFn = fn;
     if (arr !== self) {
         if (!isShallow(self)) {
+            // 对于深层响应式数组，使用 toWrapped 包装 item 参数，确保返回值保持响应式特性
             wrappedFn = function (acc, item, index) {
                 return fn.call(this, acc, toWrapped(self, item), index, self);
             };
         } else if (fn.length > 3) {
+            // 对于浅层响应式数组，如果回调函数需要第4个参数（数组本身），则传递原始数组 
             wrappedFn = function (acc, item, index) {
                 return fn.call(this, acc, item, index, self);
             };
         }
     }
+    // 调用原始数组的 reduce 方法，传入包装后的回调函数
     return arr[method](wrappedFn, ...args);
 }
-
+// 处理数组身份敏感方法（includes、indexOf、lastIndexOf）的核心工具函数 
 function searchProxy(self, method, args) {
+    // 获取原始数组并追踪依赖：使用 toRaw(self) 获取原始数组，并调用 track 建立迭代依赖
     const arr = toRaw(self);
     track(arr, "iterate", ARRAY_ITERATE_KEY);
+    // 使用原始参数调用数组方法
     const res = arr[method](...args);
+    // 检查搜索是否失败（返回 -1 或 false）
     if ((res === -1 || res === false) && isProxy(args[0])) {
+        // 如果失败且搜索参数是响应式代理，将其转换为原始值后重试
         args[0] = toRaw(args[0]);
         return arr[method](...args);
     }
     return res;
 }
-
+// 执行特定数组方法时避免依赖追踪
 function noTracking(self, method, args = []) {
+    // 调用 pauseTracking() 禁用依赖收集
     pauseTracking();
+    // 调用 startBatch() 进入批处理模式
     startBatch();
+    // 在原始对象上执行指定方法
     const res = toRaw(self)[method].apply(self, args);
+    // 调用 endBatch() 刷新批处理队列
     endBatch();
+    // 调用 resetTracking() 恢复之前的追踪状态 
     resetTracking();
     return res;
 }
-
-const isNonTrackableKeys = /* @__PURE__ */ makeMap(`__proto__,__v_isRef,__isVue`);
+// 标识不应该被依赖追踪的特殊属性键 
+const isNonTrackableKeys = makeMap(`__proto__,__v_isRef,__isVue`);
+// 标识不应被依赖追踪的内置 Symbol 的常量
 const builtInSymbols = new Set(
-    /* @__PURE__ */ Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(isSymbol)
+    Object.getOwnPropertyNames(Symbol).filter((key) => key !== "arguments" && key !== "caller").map((key) => Symbol[key]).filter(isSymbol)
 );
-
+/* Symbol.asyncIterator
+Symbol.hasInstance
+Symbol.isConcatSpreadable
+Symbol.iterator
+Symbol.match
+Symbol.matchAll
+Symbol.replace
+Symbol.search
+Symbol.species
+Symbol.split
+Symbol.toPrimitive
+Symbol.toStringTag
+Symbol.unscopables
+Symbol.dispose
+Symbol.asyncDispose */
+// 拦截 Object.prototype.hasOwnProperty 调用的自定义实现
 function hasOwnProperty(key) {
+    // 检查 key 是否为 Symbol，如果不是则转换为字符串
     if (!isSymbol(key)) key = String(key);
+    // 使用 toRaw(this) 获取响应式代理的原始对象
     const obj = toRaw(this);
+    // 调用 track(obj, TrackOpTypes.HAS, key) 建立依赖关系
     track(obj, "has", key);
+    // 在原始对象上调用真正的 hasOwnProperty
     return obj.hasOwnProperty(key);
 }
-
+// 实现了响应式代理的 get 陷阱处理器
 class BaseReactiveHandler {
     constructor(_isReadonly = false, _isShallow = false) {
         this._isReadonly = _isReadonly;
@@ -1081,8 +1175,7 @@ class BaseReactiveHandler {
         } else if (key === "__v_isShallow") {
             return isShallow2;
         } else if (key === "__v_raw") {
-            if (receiver === (isReadonly2 ? isShallow2 ? shallowReadonlyMap : readonlyMap : isShallow2 ? shallowReactiveMap : reactiveMap).get(target) || // receiver is not the reactive proxy, but has the same prototype
-                // this means the receiver is a user proxy of the reactive proxy
+            if (receiver === (isReadonly2 ? isShallow2 ? shallowReadonlyMap : readonlyMap : isShallow2 ? shallowReactiveMap : reactiveMap).get(target) ||
                 Object.getPrototypeOf(target) === Object.getPrototypeOf(receiver)) {
                 return target;
             }
@@ -1101,9 +1194,6 @@ class BaseReactiveHandler {
         const res = Reflect.get(
             target,
             key,
-            // if this is a proxy wrapping a ref, return methods using the raw ref
-            // as receiver so that we don't have to call `toRaw` on the ref in all
-            // its class methods
             isRef(target) ? target : receiver
         );
         if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
@@ -1125,7 +1215,7 @@ class BaseReactiveHandler {
         return res;
     }
 }
-
+// 负责处理可变响应式对象的属性操作。它继承自 BaseReactiveHandler 并实现了关键的代理方法
 class MutableReactiveHandler extends BaseReactiveHandler {
     constructor(isShallow2 = false) {
         super(false, isShallow2);
@@ -1134,12 +1224,14 @@ class MutableReactiveHandler extends BaseReactiveHandler {
     set(target, key, value, receiver) {
         let oldValue = target[key];
         const isArrayWithIntegerKey = isArray(target) && isIntegerKey(key);
+        // 在非浅层模式下，会对 oldValue 和 value 调用 toRaw() 获取原始值 
         if (!this._isShallow) {
             const isOldValueReadonly = isReadonly(oldValue);
             if (!isShallow(value) && !isReadonly(value)) {
                 oldValue = toRaw(oldValue);
                 value = toRaw(value);
             }
+            // 当旧值是 ref 而新值不是 ref 时，会直接更新 ref 的 .value 属性而不是替换整个 ref
             if (!isArrayWithIntegerKey && isRef(oldValue) && !isRef(value)) {
                 if (isOldValueReadonly) {
                     if (!!('production' !== 'production')) {
@@ -1171,7 +1263,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         }
         return result;
     }
-
+    // 处理属性删除操作，记录旧值并在成功删除后触发 "delete" 类型的更新
     deleteProperty(target, key) {
         const hadKey = hasOwn(target, key);
         const oldValue = target[key];
@@ -1181,7 +1273,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         }
         return result;
     }
-
+    // 在检查属性存在性时进行依赖追踪，但会跳过内置 Symbol 属性
     has(target, key) {
         const result = Reflect.has(target, key);
         if (!isSymbol(key) || !builtInSymbols.has(key)) {
@@ -1189,7 +1281,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         }
         return result;
     }
-
+    // 在获取对象所有键时追踪迭代依赖，对数组使用 "length" 作为键，其他对象使用 ITERATE_KEY
     ownKeys(target) {
         track(
             target,
@@ -1199,12 +1291,12 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         return Reflect.ownKeys(target);
     }
 }
-
+// 创建只读响应式对象的核心类，它继承自 BaseReactiveHandler 并阻止所有修改操作
 class ReadonlyReactiveHandler extends BaseReactiveHandler {
     constructor(isShallow2 = false) {
         super(true, isShallow2);
     }
-
+    // set方法在开发环境下会发出警告，提示设置操作失败，然后直接返回 true 而不执行实际的设置操作
     set(target, key) {
         if (!!('production' !== 'production')) {
             warn(
@@ -1214,7 +1306,7 @@ class ReadonlyReactiveHandler extends BaseReactiveHandler {
         }
         return true;
     }
-
+    // deleteProperty 方法同样在开发环境下发出警告，提示删除操作失败，然后返回 true 而不执行实际的删除操作
     deleteProperty(target, key) {
         if (!!('production' !== 'production')) {
             warn(
@@ -1225,47 +1317,57 @@ class ReadonlyReactiveHandler extends BaseReactiveHandler {
         return true;
     }
 }
-
-const mutableHandlers = /* @__PURE__ */ new MutableReactiveHandler();
-const readonlyHandlers = /* @__PURE__ */ new ReadonlyReactiveHandler();
-const shallowReactiveHandlers = /* @__PURE__ */ new MutableReactiveHandler(true);
-const shallowReadonlyHandlers = /* @__PURE__ */ new ReadonlyReactiveHandler(true);
-
+// 深度可变响应式 reactive
+const mutableHandlers = new MutableReactiveHandler();
+// 深度只读响应式 readonly
+const readonlyHandlers = new ReadonlyReactiveHandler();
+// 浅层可变响应式 shallowReactive
+const shallowReactiveHandlers = new MutableReactiveHandler(true);
+// 浅层只读响应式 shallowReadonly
+const shallowReadonlyHandlers = new ReadonlyReactiveHandler(true);
+// 一个恒等函数，直接返回传入的值而不进行任何转换,用作值包装器，避免将嵌套对象转换为响应式
 const toShallow = (value) => value;
+// 使用 Reflect.getPrototypeOf() 获取对象的原型,获取原型相关的has、get方法
 const getProto = (v) => Reflect.getPrototypeOf(v);
-
+// 为集合类型（Map、Set）创建迭代器方法
 function createIterableMethod(method, isReadonly2, isShallow2) {
     return function (...args) {
+        // 获取原始目标
         const target = this["__v_raw"];
         const rawTarget = toRaw(target);
         const targetIsMap = isMap(rawTarget);
+        // 根据方法名和集合类型判断迭代行为
         const isPair = method === "entries" || method === Symbol.iterator && targetIsMap;
         const isKeyOnly = method === "keys" && targetIsMap;
         const innerIterator = target[method](...args);
+        // 根据浅层和只读标志选择值包装器 
         const wrap = isShallow2 ? toShallow : isReadonly2 ? toReadonly : toReactive;
+        // 非只读模式下会追踪迭代依赖
         !isReadonly2 && track(
             rawTarget,
             "iterate",
             isKeyOnly ? MAP_KEY_ITERATE_KEY : ITERATE_KEY
         );
+        // 返回一个实现了迭代器协议的对象 
         return {
-            // iterator protocol
+            // 包装原始迭代器的返回值
             next() {
-                const {value, done} = innerIterator.next();
-                return done ? {value, done} : {
+                const { value, done } = innerIterator.next();
+                return done ? { value, done } : {
                     value: isPair ? [wrap(value[0]), wrap(value[1])] : wrap(value),
                     done
                 };
             },
-            // iterable protocol
+            // 返回自身以支持可迭代协议
             [Symbol.iterator]() {
                 return this;
             }
         };
     };
 }
-
+// 创建只读集合方法的高阶函数
 function createReadonlyMethod(type) {
+    // 函数接收一个 type 参数，表示操作的类型（如 "add"、"set"、"delete"、"clear"）
     return function (...args) {
         if (!!('production' !== 'production')) {
             const key = args[0] ? `on key "${args[0]}" ` : ``;
@@ -1274,23 +1376,30 @@ function createReadonlyMethod(type) {
                 toRaw(this)
             );
         }
+        // 根据操作类型返回不同的值
+        // "delete" 操作：返回 false 表示删除失败
+        // "clear" 操作：返回 undefined（与原生 Map.clear() 和 Set.clear() 一致）
+        // 其他操作：返回 this 以支持链式调用
         return type === "delete" ? false : type === "clear" ? void 0 : this;
     };
 }
-
+// 创建集合类型（Map、Set、WeakMap、WeakSet）响应式方法的核心函数
 function createInstrumentations(readonly, shallow) {
     const instrumentations = {
         get(key) {
+            // 通过 this["__v_raw"] 获取原始目标
             const target = this["__v_raw"];
             const rawTarget = toRaw(target);
             const rawKey = toRaw(key);
+            // 对响应式键和原始键都进行依赖追踪
             if (!readonly) {
                 if (hasChanged(key, rawKey)) {
                     track(rawTarget, "get", key);
                 }
                 track(rawTarget, "get", rawKey);
             }
-            const {has} = getProto(rawTarget);
+            const { has } = getProto(rawTarget);
+            // 使用 wrap 函数根据模式包装返回值
             const wrap = shallow ? toShallow : readonly ? toReadonly : toReactive;
             if (has.call(rawTarget, key)) {
                 return wrap(target.get(key));
@@ -1302,19 +1411,23 @@ function createInstrumentations(readonly, shallow) {
         },
         get size() {
             const target = this["__v_raw"];
+            // 追踪 ITERATE_KEY 依赖
             !readonly && track(toRaw(target), "iterate", ITERATE_KEY);
+            // 直接返回原始集合的 size
             return target.size;
         },
         has(key) {
             const target = this["__v_raw"];
             const rawTarget = toRaw(target);
             const rawKey = toRaw(key);
+            // 对响应式键和原始键都进行追踪
             if (!readonly) {
                 if (hasChanged(key, rawKey)) {
                     track(rawTarget, "has", key);
                 }
                 track(rawTarget, "has", rawKey);
             }
+            // 支持同时检查原始键和响应式键
             return key === rawKey ? target.has(key) : target.has(key) || target.has(rawKey);
         },
         forEach(callback, thisArg) {
@@ -1322,12 +1435,15 @@ function createInstrumentations(readonly, shallow) {
             const target = observed["__v_raw"];
             const rawTarget = toRaw(target);
             const wrap = shallow ? toShallow : readonly ? toReadonly : toReactive;
+            // 追踪迭代依赖
             !readonly && track(rawTarget, "iterate", ITERATE_KEY);
             return target.forEach((value, key) => {
+                // 使用 wrap 包装回调函数中的值和键
                 return callback.call(thisArg, wrap(value), wrap(key), observed);
             });
         }
     };
+    // 根据readonly合并配置项
     extend(
         instrumentations,
         readonly ? {
@@ -1354,7 +1470,7 @@ function createInstrumentations(readonly, shallow) {
                     value = toRaw(value);
                 }
                 const target = toRaw(this);
-                const {has, get} = getProto(target);
+                const { has, get } = getProto(target);
                 let hadKey = has.call(target, key);
                 if (!hadKey) {
                     key = toRaw(key);
@@ -1373,7 +1489,7 @@ function createInstrumentations(readonly, shallow) {
             },
             delete(key) {
                 const target = toRaw(this);
-                const {has, get} = getProto(target);
+                const { has, get } = getProto(target);
                 let hadKey = has.call(target, key);
                 if (!hadKey) {
                     key = toRaw(key);
@@ -1412,15 +1528,19 @@ function createInstrumentations(readonly, shallow) {
         "entries",
         Symbol.iterator
     ];
+    // 针对特定方法属性覆盖其IterableMethod
     iteratorMethods.forEach((method) => {
         instrumentations[method] = createIterableMethod(method, readonly, shallow);
     });
     return instrumentations;
 }
-
+// 为集合类型创建代理 getter 的核心函数
 function createInstrumentationGetter(isReadonly2, shallow) {
+    // 创建包含所有响应式方法的对象 instrumentations
     const instrumentations = createInstrumentations(isReadonly2, shallow);
+    console.log('wxx',instrumentations,isReadonly2,shallow)
     return (target, key, receiver) => {
+        // 特殊标志处理
         if (key === "__v_isReactive") {
             return !isReadonly2;
         } else if (key === "__v_isReadonly") {
@@ -1428,27 +1548,33 @@ function createInstrumentationGetter(isReadonly2, shallow) {
         } else if (key === "__v_raw") {
             return target;
         }
+        // 方法委托
         return Reflect.get(
+            // 如果属性在 instrumentations 中且在 target 中存在，从 instrumentations 获取
+            // 否则从原始 target 获取
             hasOwn(instrumentations, key) && key in target ? instrumentations : target,
             key,
             receiver
         );
     };
 }
-
+// 深度可变集合
 const mutableCollectionHandlers = {
-    get: /* @__PURE__ */ createInstrumentationGetter(false, false)
+    get: createInstrumentationGetter(false, false)
 };
+// 浅层可变集合
 const shallowCollectionHandlers = {
-    get: /* @__PURE__ */ createInstrumentationGetter(false, true)
+    get: createInstrumentationGetter(false, true)
 };
+// 深度只读集合
 const readonlyCollectionHandlers = {
-    get: /* @__PURE__ */ createInstrumentationGetter(true, false)
+    get: createInstrumentationGetter(true, false)
 };
+// 浅层只读集合
 const shallowReadonlyCollectionHandlers = {
-    get: /* @__PURE__ */ createInstrumentationGetter(true, true)
+    get: createInstrumentationGetter(true, true)
 };
-
+// 检测集合类型（Map、Set 等）中是否同时存在同一个对象的原始版本和响应式版本作为键值，这可能导致不一致的行为
 function checkIdentityKeys(target, has, key) {
     const rawKey = toRaw(key);
     if (rawKey !== key && has.call(target, rawKey)) {
@@ -1459,12 +1585,27 @@ function checkIdentityKeys(target, has, key) {
     }
 }
 
-const reactiveMap = /* @__PURE__ */ new WeakMap();
-const shallowReactiveMap = /* @__PURE__ */ new WeakMap();
-const readonlyMap = /* @__PURE__ */ new WeakMap();
-const shallowReadonlyMap = /* @__PURE__ */ new WeakMap();
+// 在 createReactiveObject 函数中，这些 WeakMap 用于：
+// 缓存检查: 首先检查目标对象是否已有对应的代理
+// 存储新代理: 创建新代理后存储到对应的 WeakMap 中
 
+// 优点
+// 自动垃圾回收: 当目标对象不再被引用时，WeakMap 中的条目会被自动清理，避免内存泄漏
+// 隐私性: WeakMap 的键不可枚举，提供了更好的封装性
+// 存储深度响应式代理
+const reactiveMap = new WeakMap();
+// 存储浅层响应式代理
+const shallowReactiveMap = new WeakMap();
+// 存储深度只读代理
+const readonlyMap = new WeakMap();
+// 存储浅层只读代理
+const shallowReadonlyMap = new WeakMap();
+
+// 将原始类型字符串分类为不同的目标类型，以便选择合适的代理处理器
 function targetTypeMap(rawType) {
+    // Object、Array 普通对象类型
+    // Map、Set、WeakMap、WeakSet 集合类型
+    // 其他 无效类型
     switch (rawType) {
         case "Object":
         case "Array":
@@ -1478,8 +1619,11 @@ function targetTypeMap(rawType) {
             return 0 /* INVALID */;
     }
 }
-
+// 判断一个对象是否可以被转换为响应式对象，以及应该使用哪种类型的处理器
+// 在 createReactiveObject 中被调用，用于决定是否创建响应式代理以及使用哪种处理器
 function getTargetType(value) {
+    // value["__v_skip"] - 检查对象是否被标记为跳过响应式处理
+    // !Object.isExtensible(value) - 检查对象是否不可扩展（被冻结、密封等）
     return value["__v_skip"] || !Object.isExtensible(value) ? 0 /* INVALID */ : targetTypeMap(toRawType(value));
 }
 
@@ -1699,7 +1843,7 @@ class CustomRefImpl {
         this["__v_isRef"] = true;
         this._value = void 0;
         const dep = this.dep = new Dep();
-        const {get, set} = factory(dep.track.bind(dep), dep.trigger.bind(dep));
+        const { get, set } = factory(dep.track.bind(dep), dep.trigger.bind(dep));
         this._get = get;
         this._set = set;
     }
@@ -1852,7 +1996,7 @@ class ComputedRefImpl {
             activeSub !== this) {
             batch(this, true);
             return true;
-        } else if (!!('production' !== 'production')) ;
+        } else if (!!('production' !== 'production'));
     }
 
     get value() {
@@ -1923,7 +2067,7 @@ const WatchErrorCodes = {
     "4": "WATCH_CLEANUP"
 };
 const INITIAL_WATCHER_VALUE = {};
-const cleanupMap = /* @__PURE__ */ new WeakMap();
+const cleanupMap = new WeakMap();
 let activeWatcher = void 0;
 
 function getCurrentWatcher() {
@@ -1943,7 +2087,7 @@ function onWatcherCleanup(cleanupFn, failSilently = false, owner = activeWatcher
 }
 
 function watch(source, cb, options = EMPTY_OBJ) {
-    const {immediate, deep, once, scheduler, augmentJob, call} = options;
+    const { immediate, deep, once, scheduler, augmentJob, call } = options;
     const warnInvalidSource = (s) => {
         (options.onWarn || warn)(
             `Invalid watch source: `,
@@ -2103,7 +2247,7 @@ function traverse(value, depth = Infinity, seen) {
     if (depth <= 0 || !isObject(value) || value["__v_skip"]) {
         return value;
     }
-    seen = seen || /* @__PURE__ */ new Map();
+    seen = seen || new Map();
     if ((seen.get(value) || 0) >= depth) {
         return value;
     }

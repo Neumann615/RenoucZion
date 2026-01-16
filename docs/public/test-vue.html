@@ -15,7 +15,10 @@
         setup() {
             const count = ref(0)
             const list = reactive(new Array(5).fill(2))
-            return {count,list}
+            let a = {name:'wxx'}
+            const list2 = reactive(a)
+            const list3 = reactive(a)
+            return {count,list,list2}
         },
         template: `
           <div v-for="(item,index) in list">

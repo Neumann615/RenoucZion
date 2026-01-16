@@ -39,14 +39,14 @@ export function saveErrorLog(
     moduleName: string,
     errorInfo: {
         type: string,
-        content: string
+        content: any
     },
     options?: {
         maxCacheCount?: number,
         storageSuffix?: string
     }
 ) {
-    let storageSuffix = '-error-log-list'
+    let storageSuffix = '-ERROR-LOG-LIST'
     let maxCacheCount = 10
     const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     
