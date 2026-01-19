@@ -1,26 +1,28 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+
 <body>
-<div id="app"></div>
-<script type="module">
-    import {createApp, ref, reactive} from './vue/vue.js'
-    const app = createApp({
-        setup() {
-            const count = ref(0)
-            const list = reactive(new Array(5).fill(2))
-            let a = {name:'wxx'}
-            const list2 = reactive(a)
-            const list3 = reactive(a)
-            return {count,list,list2}
-        },
-        template: `
+    <div id="app"></div>
+    <script type="module">
+        import { createApp, ref, reactive, readonly, isReadonly} from './vue/vue.js'
+        const app = createApp({
+            setup() {
+                const count = ref(0)
+                const list = reactive(new Array(5).fill(2))
+                let a = { name: 'wxx' }
+                const list2 = reactive(a)
+                const list3 = reactive(a)
+                return { count, list, list2 }
+            },
+            template: `
           <div v-for="(item,index) in list">
             {{item}}
           </div>
@@ -31,11 +33,12 @@
             点击次数: {{ count }}
           </button>
         `
-    })
+        })
 
-    console.log(app)
+        console.log(app)
 
-    app.mount('#app')
-</script>
+        app.mount('#app')
+    </script>
 </body>
+
 </html>

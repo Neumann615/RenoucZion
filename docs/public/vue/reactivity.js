@@ -1538,7 +1538,7 @@ function createInstrumentations(readonly, shallow) {
 function createInstrumentationGetter(isReadonly2, shallow) {
     // 创建包含所有响应式方法的对象 instrumentations
     const instrumentations = createInstrumentations(isReadonly2, shallow);
-    console.log('wxx',instrumentations,isReadonly2,shallow)
+    console.log('wxx', instrumentations, isReadonly2, shallow)
     return (target, key, receiver) => {
         // 特殊标志处理
         if (key === "__v_isReactive") {
@@ -1626,11 +1626,13 @@ function getTargetType(value) {
     // !Object.isExtensible(value) - 检查对象是否不可扩展（被冻结、密封等）
     return value["__v_skip"] || !Object.isExtensible(value) ? 0 /* INVALID */ : targetTypeMap(toRawType(value));
 }
-
+// 将普通对象转换为响应式代理
 function reactive(target) {
+    // 如果传入的 target 已经是只读代理，函数直接返回原对象，避免重复包装。
     if (isReadonly(target)) {
         return target;
     }
+    // 调用 createReactiveObject 创建响应式代理
     return createReactiveObject(
         target,
         false,
@@ -1639,7 +1641,7 @@ function reactive(target) {
         reactiveMap
     );
 }
-
+// 创建浅层响应式代理 
 function shallowReactive(target) {
     return createReactiveObject(
         target,
@@ -1649,7 +1651,7 @@ function shallowReactive(target) {
         shallowReactiveMap
     );
 }
-
+// 创建深度只读代理，阻止对对象及其嵌套属性的所有修改操作
 function readonly(target) {
     return createReactiveObject(
         target,
@@ -1659,7 +1661,7 @@ function readonly(target) {
         readonlyMap
     );
 }
-
+// 创建浅层只读代理，只有根级属性是只读的，嵌套对象保持可变。
 function shallowReadonly(target) {
     return createReactiveObject(
         target,
@@ -1669,8 +1671,9 @@ function shallowReadonly(target) {
         shallowReadonlyMap
     );
 }
-
+// 核心工厂函数 创建所有类型的响应式代理
 function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
+    // 如果 target 不是对象，发出警告并直接返回原值
     if (!isObject(target)) {
         if (!!('production' !== 'production')) {
             warn(
@@ -1681,17 +1684,22 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
         }
         return target;
     }
+    // 如果目标已经是代理且不是特殊情况（对响应式对象调用 readonly），直接返回
     if (target["__v_raw"] && !(isReadonly2 && target["__v_isReactive"])) {
         return target;
     }
+    // 通过 getTargetType 判断对象是否可以被观察
     const targetType = getTargetType(target);
+    // 无效类型 不能被观察
     if (targetType === 0 /* INVALID */) {
         return target;
     }
+    // 从缓存中查找已存在的代理，确保同一对象返回相同代理
     const existingProxy = proxyMap.get(target);
     if (existingProxy) {
         return existingProxy;
     }
+    // 根据目标类型选择合适的处理器创建代理，并缓存结果
     const proxy = new Proxy(
         target,
         targetType === 2 /* COLLECTION */ ? collectionHandlers : baseHandlers
@@ -1699,70 +1707,82 @@ function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandl
     proxyMap.set(target, proxy);
     return proxy;
 }
-
+// 检查对象是否为响应式对象。如果对象是 readonly 的，会递归检查其原始对象是否为响应式
 function isReactive(value) {
     if (isReadonly(value)) {
         return isReactive(value["__v_raw"]);
     }
     return !!(value && value["__v_isReactive"]);
 }
-
+// 检查对象是否为只读对象，通过检测 __v_isReadonly 标志
 function isReadonly(value) {
     return !!(value && value["__v_isReadonly"]);
 }
-
+// 检查对象是否为浅层响应式对象，通过检测 __v_isShallow 标志
 function isShallow(value) {
     return !!(value && value["__v_isShallow"]);
 }
-
+// 检查对象是否为任何类型的响应式代理，通过检测 __v_raw 标志 
 function isProxy(value) {
     return value ? !!value["__v_raw"] : false;
 }
-
+// 从创建的响应式代理中获取原始对象
 function toRaw(observed) {
+    // 检查对象是否有 __v_raw 属性（对应 ReactiveFlags.RAW）
+    // 如果有，递归调用 toRaw 直到找到原始对象
+    // 如果没有，返回对象本身
     const raw = observed && observed["__v_raw"];
     return raw ? toRaw(raw) : observed;
 }
-
+// 用于标记对象，使其永远不会被转换为响应式代理
 function markRaw(value) {
+    // 检查对象是否已有 __v_skip 属性且可扩展
     if (!hasOwn(value, "__v_skip") && Object.isExtensible(value)) {
+        // 如果没有，添加 __v_skip 属性并设为 true
         def(value, "__v_skip", true);
     }
+    // 返回原对象
     return value;
 }
-
+// 有条件地将值转换为深度响应式代理。它只转换对象，而保持原始值不变
 const toReactive = (value) => isObject(value) ? reactive(value) : value;
+// 有条件地将值转换为深度只读代理。它只转换对象，而保持原始值不变
 const toReadonly = (value) => isObject(value) ? readonly(value) : value;
-
+// 检查一个值是否为 ref 对象。通过检查对象上的 ReactiveFlags.IS_REF 标识符（实际值为 __v_isRef）是否为 true 来判断
 function isRef(r) {
     return r ? r["__v_isRef"] === true : false;
 }
-
+// 创建一个标准的响应式 ref，内部调用 createRef(value, false)
 function ref(value) {
     return createRef(value, false);
 }
-
+// 创建一个浅层响应式 ref，内部调用 createRef(value, true)
 function shallowRef(value) {
     return createRef(value, true);
 }
-
+// 内部工厂函数，负责创建 ref 实例：
 function createRef(rawValue, shallow) {
     if (isRef(rawValue)) {
         return rawValue;
     }
     return new RefImpl(rawValue, shallow);
 }
-
+// ref 的核心实现类，负责包装单个值并提供响应式访问
 class RefImpl {
     constructor(value, isShallow2) {
+        // 创建新的 Dep 实例用于依赖管理
         this.dep = new Dep();
+        // 标识这是一个 ref 对象
         this["__v_isRef"] = true;
         this["__v_isShallow"] = false;
+        // 存储原始值，浅层 ref 直接存储，深层 ref 通过 toRaw() 获取
         this._rawValue = isShallow2 ? value : toRaw(value);
+        // 存储响应式值，浅层 ref 直接存储，深层 ref 通过 toReactive() 转换
         this._value = isShallow2 ? value : toReactive(value);
+        // 标记是否为浅层 ref
         this["__v_isShallow"] = isShallow2;
     }
-
+    // 依赖追踪
     get value() {
         if (!!('production' !== 'production')) {
             this.dep.track({
@@ -1775,12 +1795,15 @@ class RefImpl {
         }
         return this._value;
     }
-
+    // 变更检测与触发
     set value(newValue) {
         const oldValue = this._rawValue;
+        // 根据 __v_isShallow、isShallow(newValue) 或 isReadonly(newValue) 决定是否直接使用值
         const useDirectValue = this["__v_isShallow"] || isShallow(newValue) || isReadonly(newValue);
         newValue = useDirectValue ? newValue : toRaw(newValue);
+        // 通过 hasChanged(newValue, oldValue) 比较新旧值
         if (hasChanged(newValue, oldValue)) {
+            // 同时更新 _rawValue 和 _value
             this._rawValue = newValue;
             this._value = useDirectValue ? newValue : toReactive(newValue);
             if (!!('production' !== 'production')) {
@@ -1792,12 +1815,13 @@ class RefImpl {
                     oldValue
                 });
             } else {
+                // 调用 dep.trigger() 通知所有依赖的 effect
                 this.dep.trigger();
             }
         }
     }
 }
-
+// 强制触发依赖于某个 ref 的副作用函数
 function triggerRef(ref2) {
     if (ref2.dep) {
         if (!!('production' !== 'production')) {
@@ -1812,32 +1836,38 @@ function triggerRef(ref2) {
         }
     }
 }
-
+// 获取 ref 的内部值或返回原始值本身
+// 语法糖，简化了 val = isRef(val) ? val.value : val 的操作。当你不确定一个值是否是 ref 时，可以使用 unref 来统一获取其实际值
 function unref(ref2) {
     return isRef(ref2) ? ref2.value : ref2;
 }
-
+// 将值、引用和 getter 函数统一规范化为实际值。它会执行 getter 函数或解包 ref 对象
 function toValue(source) {
     return isFunction(source) ? source() : unref(source);
 }
-
+// 代理处理器，用于浅层解包 ref 对象，让包含 ref 的对象可以直接访问属性而不需要 .value
 const shallowUnwrapHandlers = {
+    // 当访问 ReactiveFlags.RAW（即 __v_raw）时，直接返回原始 target 对象
+    // 对于其他属性，使用 Reflect.get() 获取值后，调用 unref() 解包 ref 对象
     get: (target, key, receiver) => key === "__v_raw" ? target : unref(Reflect.get(target, key, receiver)),
     set: (target, key, value, receiver) => {
+        // 获取旧值 oldValue，检查是否为 ref 对象 
         const oldValue = target[key];
+        // 如果旧值是 ref 且新值不是 ref，则更新 ref 的 .value 属性
         if (isRef(oldValue) && !isRef(value)) {
             oldValue.value = value;
             return true;
         } else {
+            // 否则使用 Reflect.set() 进行常规设置
             return Reflect.set(target, key, value, receiver);
         }
     }
 };
-
+// 创建一个代理对象，实现 ref 属性的浅层自动解包，让开发者可以直接访问 ref 包装的值而无需使用 .value
 function proxyRefs(objectWithRefs) {
     return isReactive(objectWithRefs) ? objectWithRefs : new Proxy(objectWithRefs, shallowUnwrapHandlers);
 }
-
+// 实现自定义 ref 的核心类，允许用户完全控制依赖追踪和触发更新的时机
 class CustomRefImpl {
     constructor(factory) {
         this["__v_isRef"] = true;
@@ -1856,11 +1886,11 @@ class CustomRefImpl {
         this._set(newVal);
     }
 }
-
+// 实例化CustomRefImpl
 function customRef(factory) {
     return new CustomRefImpl(factory);
 }
-
+// 将响应式对象转换为普通对象，其中每个属性都是指向原始对象对应属性的 ref
 function toRefs(object) {
     if (!!('production' !== 'production') && !isProxy(object)) {
         warn(`toRefs() expects a reactive object but received a plain one.`);
@@ -1871,7 +1901,7 @@ function toRefs(object) {
     }
     return ret;
 }
-
+// 将响应式对象的属性转换为 ref 的实现
 class ObjectRefImpl {
     constructor(_object, _key, _defaultValue) {
         this._object = _object;
@@ -1879,9 +1909,11 @@ class ObjectRefImpl {
         this._defaultValue = _defaultValue;
         this["__v_isRef"] = true;
         this._value = void 0;
+        // 通过 toRaw() 获取原始对象用于依赖跟踪
         this._raw = toRaw(_object);
         let shallow = true;
         let obj = _object;
+        // 判断是否为浅层响应式：遍历代理层，直到找到非浅层或非代理对象
         if (!isArray(_object) || !isIntegerKey(String(_key))) {
             do {
                 shallow = !isProxy(obj) || isShallow(obj);
@@ -1892,6 +1924,7 @@ class ObjectRefImpl {
 
     get value() {
         let val = this._object[this._key];
+        // 获取对象属性值，如果是浅层则使用 unref() 解包嵌套的 ref 
         if (this._shallow) {
             val = unref(val);
         }
@@ -1899,6 +1932,7 @@ class ObjectRefImpl {
     }
 
     set value(newVal) {
+        // 特殊处理浅层模式下的嵌套 ref：直接设置嵌套 ref 的 value 而不是替换整个 ref
         if (this._shallow && isRef(this._raw[this._key])) {
             const nestedRef = this._object[this._key];
             if (isRef(nestedRef)) {
@@ -1906,6 +1940,7 @@ class ObjectRefImpl {
                 return;
             }
         }
+        // 否则直接设置对象属性
         this._object[this._key] = newVal;
     }
 
@@ -1913,36 +1948,45 @@ class ObjectRefImpl {
         return getDepFromReactive(this._raw, this._key);
     }
 }
-
+// 基于getter函数实现只读的ref
 class GetterRefImpl {
     constructor(_getter) {
         this._getter = _getter;
         this["__v_isRef"] = true;
+        // 标记只读
         this["__v_isReadonly"] = true;
         this._value = void 0;
     }
 
     get value() {
+        // 每次访问 value 时都会调用 getter 函数重新计算
         return this._value = this._getter();
     }
 }
-
+// 工厂函数，用于将不同类型的输入标准化为 ref
 function toRef(source, key, defaultValue) {
+    // 如果输入已经是 ref，直接返回
     if (isRef(source)) {
         return source;
-    } else if (isFunction(source)) {
+    }
+    // 如果是函数，创建 GetterRefImpl
+    else if (isFunction(source)) {
         return new GetterRefImpl(source);
-    } else if (isObject(source) && arguments.length > 1) {
+    }
+    // 如果是对象且提供了 key，调用 propertyToRef 创建 ObjectRefImpl
+    else if (isObject(source) && arguments.length > 1) {
         return propertyToRef(source, key, defaultValue);
-    } else {
+    }
+    // 创建普通 ref
+    else {
         return ref(source);
     }
 }
-
+// 创建 ObjectRefImpl 实例的辅助函数
 function propertyToRef(source, key, defaultValue) {
     return new ObjectRefImpl(source, key, defaultValue);
 }
-
+// 计算属性的核心实现，具有双重身份：既是响应式数据源，又是依赖订阅者
 class ComputedRefImpl {
     constructor(fn, setter, isSSR) {
         this.fn = fn;
@@ -1987,32 +2031,35 @@ class ComputedRefImpl {
         this.isSSR = isSSR;
     }
 
-    /**
-     * @internal
-     */
+    // 当依赖变化时被调用，设置 DIRTY 标志并通过批处理机制通知订阅者
     notify() {
         this.flags |= 16;
-        if (!(this.flags & 8) && // avoid infinite self recursion
+        // 避免无限递归的检查确保了系统稳定性。
+        if (!(this.flags & 8) &&
             activeSub !== this) {
             batch(this, true);
             return true;
         } else if (!!('production' !== 'production'));
     }
-
+    // 实现懒加载和缓存机制
     get value() {
+        // 调用 dep.track() 建立与当前活跃订阅者的连接
         const link = !!('production' !== 'production') ? this.dep.track({
             target: this,
             type: "get",
             key: "value"
         }) : this.dep.track();
+        // 调用 refreshComputed() 在需要时重新计算
         refreshComputed(this);
         if (link) {
+            // 同步版本号以支持依赖跟踪
             link.version = this.dep.version;
         }
         return this._value;
     }
 
     set value(newValue) {
+        // 支持可写计算属性，如果提供了 setter 则调用
         if (this.setter) {
             this.setter(newValue);
         } else if (!!('production' !== 'production')) {
@@ -2020,10 +2067,11 @@ class ComputedRefImpl {
         }
     }
 }
-
+// 创建计算属性的入口点
 function computed(getterOrOptions, debugOptions, isSSR = false) {
     let getter;
     let setter;
+    // 支持函数形式或对象形式
     if (isFunction(getterOrOptions)) {
         getter = getterOrOptions;
     } else {
@@ -2031,49 +2079,58 @@ function computed(getterOrOptions, debugOptions, isSSR = false) {
         setter = getterOrOptions.set;
     }
     const cRef = new ComputedRefImpl(getter, setter, isSSR);
+    // 支持配置调试属性
     if (!!('production' !== 'production') && debugOptions && !isSSR) {
         cRef.onTrack = debugOptions.onTrack;
         cRef.onTrigger = debugOptions.onTrigger;
     }
     return cRef;
 }
-
+// 定义了三种依赖跟踪操作
 const TrackOpTypes = {
-    "GET": "get",
-    "HAS": "has",
-    "ITERATE": "iterate"
+    "GET": "get",// 属性读取操作
+    "HAS": "has",// 属性存在性检查
+    "ITERATE": "iterate"// 迭代操作
 };
+// 定义了四种会触发响应式更新的操作
 const TriggerOpTypes = {
-    "SET": "set",
-    "ADD": "add",
-    "DELETE": "delete",
-    "CLEAR": "clear"
+    "SET": "set",// 属性设置操作，最常见的更新触发
+    "ADD": "add",// 新增属性操作，触发迭代依赖更新
+    "DELETE": "delete",// 删除属性操作
+    "CLEAR": "clear"// 清空集合操作，触发所有依赖
 };
+// 定义了用于内部识别和控制的标志
 const ReactiveFlags = {
-    "SKIP": "__v_skip",
-    "IS_REACTIVE": "__v_isReactive",
-    "IS_READONLY": "__v_isReadonly",
-    "IS_SHALLOW": "__v_isShallow",
-    "RAW": "__v_raw",
-    "IS_REF": "__v_isRef"
+    "SKIP": "__v_skip",// 跳过响应式处理的标记
+    "IS_REACTIVE": "__v_isReactive",// 检查对象是否为响应式代理
+    "IS_READONLY": "__v_isReadonly",// 检查对象是否为只读代理
+    "IS_SHALLOW": "__v_isShallow",// 检查对象是否为浅层响应式
+    "RAW": "__v_raw",// 获取原始对象的访问
+    "IS_REF": "__v_isRef"// 标识 ref 对象
 };
-
+// 定义了 watch 系统的错误类型码
 const WatchErrorCodes = {
-    "WATCH_GETTER": 2,
+    "WATCH_GETTER": 2,// watch getter 执行错误
     "2": "WATCH_GETTER",
-    "WATCH_CALLBACK": 3,
+    "WATCH_CALLBACK": 3,// watch 回调执行错误
     "3": "WATCH_CALLBACK",
-    "WATCH_CLEANUP": 4,
+    "WATCH_CLEANUP": 4,// watch cleanup 函数执行错误
     "4": "WATCH_CLEANUP"
 };
+// 用作 watcher 初始值的哨兵对象 用于区分首次运行和后续更新的 oldValue
 const INITIAL_WATCHER_VALUE = {};
+// 使用 WeakMap 存储每个 watcher 的清理函数数组
 const cleanupMap = new WeakMap();
+// 全局变量跟踪当前正在执行的 watcher 在 watcher 执行期间设置，用于关联清理函数
 let activeWatcher = void 0;
-
+// 返回当前活跃的 watcher 实例 
 function getCurrentWatcher() {
     return activeWatcher;
 }
-
+// 注册清理函数到当前活跃的 watcher 
+// cleanupFn: 要执行的清理函数
+// failSilently: 是否在没有活跃 watcher 时静默失败
+// owner: 指定清理函数所属的 watcher（默认为当前活跃 watcher）
 function onWatcherCleanup(cleanupFn, failSilently = false, owner = activeWatcher) {
     if (owner) {
         let cleanups = cleanupMap.get(owner);
@@ -2085,7 +2142,10 @@ function onWatcherCleanup(cleanupFn, failSilently = false, owner = activeWatcher
         );
     }
 }
-
+// 监听响应式数据的变化并执行副作用
+// source（数据源）
+// cb(回调函数)
+// options(配置选项) immediate、deep、once、scheduler、augmentJob 和 call 配置 
 function watch(source, cb, options = EMPTY_OBJ) {
     const { immediate, deep, once, scheduler, augmentJob, call } = options;
     const warnInvalidSource = (s) => {
@@ -2096,9 +2156,12 @@ function watch(source, cb, options = EMPTY_OBJ) {
         );
     };
     const reactiveGetter = (source2) => {
+        // 如果 deep 为 true，直接返回源对象
         if (deep) return source2;
+        // 如果是浅层响应式或 deep 为 false/0，只遍历一层
         if (isShallow(source2) || deep === false || deep === 0)
             return traverse(source2, 1);
+        // 否则深度遍历所有属性
         return traverse(source2);
     };
     let effect;
@@ -2107,13 +2170,19 @@ function watch(source, cb, options = EMPTY_OBJ) {
     let boundCleanup;
     let forceTrigger = false;
     let isMultiSource = false;
+    // 根据不同的数据源类型，函数会创建不同的 getter
+    // Ref 类型：返回 source.value
     if (isRef(source)) {
         getter = () => source.value;
         forceTrigger = isShallow(source);
-    } else if (isReactive(source)) {
+    } 
+    // Reactive 对象：使用 reactiveGetter 处理 
+    else if (isReactive(source)) {
         getter = () => reactiveGetter(source);
         forceTrigger = true;
-    } else if (isArray(source)) {
+    } 
+    // 数组类型：标记为多数据源，遍历数组处理每个元素 
+    else if (isArray(source)) {
         isMultiSource = true;
         forceTrigger = source.some((s) => isReactive(s) || isShallow(s));
         getter = () => source.map((s) => {
@@ -2127,7 +2196,9 @@ function watch(source, cb, options = EMPTY_OBJ) {
                 !!('production' !== 'production') && warnInvalidSource(s);
             }
         });
-    } else if (isFunction(source)) {
+    }
+    // 函数类型：根据是否有回调函数分别处理
+    else if (isFunction(source)) {
         if (cb) {
             getter = call ? () => call(source, 2) : source;
         } else {
@@ -2208,8 +2279,10 @@ function watch(source, cb, options = EMPTY_OBJ) {
     if (augmentJob) {
         augmentJob(job);
     }
+    // 创建 ReactiveEffect 实例，并设置调度器。job 函数负责执行实际的监听逻辑：
     effect = new ReactiveEffect(getter);
     effect.scheduler = scheduler ? () => scheduler(job, false) : job;
+    // 通过 onWatcherCleanup 注册清理函数。当 effect 停止时，会执行所有注册的清理函数
     boundCleanup = (fn) => onWatcherCleanup(fn, false, effect);
     cleanup = effect.onStop = () => {
         const cleanups = cleanupMap.get(effect);
@@ -2227,32 +2300,46 @@ function watch(source, cb, options = EMPTY_OBJ) {
         effect.onTrigger = options.onTrigger;
     }
     if (cb) {
+        // 如果有回调且设置了 immediate，立即执行 job
         if (immediate) {
             job(true);
-        } else {
+        } 
+        // 如果有回调但未设置 immediate，运行 effect 获取初始值
+        else {
             oldValue = effect.run();
         }
-    } else if (scheduler) {
+    }
+    // 如果没有回调但有调度器，使用调度器执行
+    else if (scheduler) {
         scheduler(job.bind(null, true), true);
-    } else {
+    } 
+    // 否则直接运行 effect
+    else {
         effect.run();
     }
+    // 返回一个 WatchHandle 对象，包含 stop、pause 和 resume 方法
     watchHandle.pause = effect.pause.bind(effect);
     watchHandle.resume = effect.resume.bind(effect);
     watchHandle.stop = watchHandle;
     return watchHandle;
 }
-
+// 深度遍历对象的核心工具，主要用于 watch 的 deep 选项和指令的深度监听
+// value: 要遍历的值
+// depth: 遍历深度，默认为 Infinity（无限深度）
+// seen: 用于循环引用检测的 Map，存储已访问对象及其深度
 function traverse(value, depth = Infinity, seen) {
+    // 深度耗尽时退出 非对象值直接返回 标记为 __v_skip 的对象跳过遍历
     if (depth <= 0 || !isObject(value) || value["__v_skip"]) {
         return value;
     }
+    // 使用 Map 记录已访问对象，避免无限循环
     seen = seen || new Map();
     if ((seen.get(value) || 0) >= depth) {
         return value;
     }
     seen.set(value, depth);
     depth--;
+    // 针对特定数据类型进行遍历
     if (isRef(value)) {
         traverse(value.value, depth, seen);
     } else if (isArray(value)) {
