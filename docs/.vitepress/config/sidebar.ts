@@ -1058,5 +1058,11 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
             text: "Rollup",
             link: "/前端工程化/rollup"
         }
+    ],
+    Git:[
+        {
+            text:'提交类型',
+            link:"/Git/提交类型"
+        }
     ]
 }

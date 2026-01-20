@@ -50,24 +50,24 @@ export const nav: DefaultTheme.Config['nav'] = [
             {
                 text: '常用工具方法',
                 link: "工具方法/index"
+            },
+            {
+                text: 'Git',
+                link: "Git/提交类型"
             }
         ]
     },
-    {
-        text:'关于',
-        items:[
-            {
-                text:"Z",
-                link:'https://me.zzzpupu.xin/'
-            },
-            {
-                text:'Renouc',
-                link:'https://github.com/Renouc'
-            }
-        ]
-    }
     // {
-    //     text: '工作日志',
-    //     link: '/工作日志/深圳华云信息系统有限公司(招商证券)'
+    //     text:'关于',
+    //     items:[
+    //         {
+    //             text:"Z",
+    //             link:'https://me.zzzpupu.xin/'
+    //         },
+    //         {
+    //             text:'Renouc',
+    //             link:'https://github.com/Renouc'
+    //         }
+    //     ]
     // }
 ]
