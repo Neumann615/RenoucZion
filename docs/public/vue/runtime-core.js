@@ -115,61 +115,66 @@ export {
 } from './shared.js';
 
 const stack = [];
-
+// 将当前虚拟节点推入栈顶，记录当前正在处理的组件
 function pushWarningContext(vnode) {
     stack.push(vnode);
 }
-
+// 从栈顶移除虚拟节点，表示组件处理完成
 function popWarningContext() {
     stack.pop();
 }
-
+// 用于防止警告处理过程中触发新的警告，避免无限递归
 let isWarning = false;
 
 function warn$1(msg, ...args) {
+    // 警告中直接返回
     if (isWarning) return;
     isWarning = true;
     pauseTracking();
+    // 获取当前组件实例
     const instance = stack.length ? stack[stack.length - 1].component : null;
+    // 检查appWarnHandler
     const appWarnHandler = instance && instance.appContext.config.warnHandler;
     const trace = getComponentTrace();
+    // 调用自定义处理器
     if (appWarnHandler) {
         callWithErrorHandling(
             appWarnHandler,
             instance,
             11,
             [
-                // eslint-disable-next-line no-restricted-syntax
                 msg + args.map((a) => {
                     var _a, _b;
                     return (_b = (_a = a.toString) == null ? void 0 : _a.call(a)) != null ? _b : JSON.stringify(a);
                 }).join(""),
                 instance && instance.proxy,
                 trace.map(
-                    ({vnode}) => `at <${formatComponentName(instance, vnode.type)}>`
+                    ({ vnode }) => `at <${formatComponentName(instance, vnode.type)}>`
                 ).join("\n"),
                 trace
             ]
         );
-    } else {
+    }
+    // 默认控制台输出
+    else {
         const warnArgs = [`[Vue warn]: ${msg}`, ...args];
-        if (trace.length && // avoid spamming console during tests
-            true) {
-            warnArgs.push(`
-`, ...formatTrace(trace));
+        if (trace.length && true) {
+            warnArgs.push(``, ...formatTrace(trace));
         }
         console.warn(...warnArgs);
     }
     resetTracking();
     isWarning = false;
 }
-
+// 构建完整的组件调用链追踪信息
 function getComponentTrace() {
+    // 获取当前vnode
     let currentVNode = stack[stack.length - 1];
     if (!currentVNode) {
         return [];
     }
     const normalizedStack = [];
+    // 遍历组件链
     while (currentVNode) {
         const last = normalizedStack[0];
         if (last && last.vnode === currentVNode) {
@@ -180,23 +185,27 @@ function getComponentTrace() {
                 recurseCount: 0
             });
         }
+        // 获取父组件
         const parentInstance = currentVNode.component && currentVNode.component.parent;
+        // 父组件存在则设置currentVNode为父组件vnode并继续遍历
         currentVNode = parentInstance && parentInstance.vnode;
     }
     return normalizedStack;
 }
-
+// 入口函数，负责格式化整个追踪堆栈
 function formatTrace(trace) {
     const logs = [];
+    // 遍历每个追踪条目，除了第一个条目外，其他条目前都添加换行符 \n
     trace.forEach((entry, i) => {
-        logs.push(...i === 0 ? [] : [`
-`], ...formatTraceEntry(entry));
+        logs.push(...i === 0 ? [] : [``], ...formatTraceEntry(entry));
     });
     return logs;
 }
-
-function formatTraceEntry({vnode, recurseCount}) {
+// 格式化单个追踪条目
+function formatTraceEntry({ vnode, recurseCount }) {
+    // 如果存在递归调用（recurseCount > 0），会在末尾添加说明文字
     const postfix = recurseCount > 0 ? `... (${recurseCount} recursive calls)` : ``;
+    // 通过检查 vnode.component.parent 是否为 null 来判断是否为根组件
     const isRoot = vnode.component ? vnode.component.parent == null : false;
     const open = ` at <${formatComponentName(
         vnode.component,
@@ -204,13 +213,17 @@ function formatTraceEntry({vnode, recurseCount}) {
         isRoot
     )}`;
     const close = `>` + postfix;
+    // 输出格式为 at <ComponentName prop1="value1" prop2="value2">
+    // 如果组件有 props，会调用 formatProps 显示属性；否则直接返回组件名
     return vnode.props ? [open, ...formatProps(vnode.props), close] : [open + close];
 }
-
+// 格式化组件的 props 对象：
 function formatProps(props) {
     const res = [];
     const keys = Object.keys(props);
+    //  只显示前 3 个 props，避免输出过多信息
     keys.slice(0, 3).forEach((key) => {
+        // 对每个 prop 调用 formatProp 进行详细格式化
         res.push(...formatProp(key, props[key]));
     });
     if (keys.length > 3) {
@@ -218,19 +231,28 @@ function formatProps(props) {
     }
     return res;
 }
-
+// 根据 prop 值的类型进行不同的格式化处理：
 function formatProp(key, value, raw) {
+    // 字符串: 使用 JSON.stringify 转换，格式为 key="value"
     if (isString(value)) {
         value = JSON.stringify(value);
         return raw ? value : [`${key}=${value}`];
-    } else if (typeof value === "number" || typeof value === "boolean" || value == null) {
+    }
+    // 数字、布尔值、null: 直接显示原值，格式为 key=value
+    else if (typeof value === "number" || typeof value === "boolean" || value == null) {
         return raw ? value : [`${key}=${value}`];
-    } else if (isRef(value)) {
+    }
+    // Ref 对象: 显示为 key=Ref<actualValue>，并递归格式化 ref 的实际值
+    else if (isRef(value)) {
         value = formatProp(key, toRaw(value.value), true);
         return raw ? value : [`${key}=Ref<`, value, `>`];
-    } else if (isFunction(value)) {
+    }
+    // 函数: 显示为 key=fn<functionName>（如果函数有名称）或 key=fn
+    else if (isFunction(value)) {
         return [`${key}=fn${value.name ? `<${value.name}>` : ``}`];
-    } else {
+    }
+    // 其他对象: 使用 toRaw 获取原始对象，格式为 key= 后跟对象本身
+    else {
         value = toRaw(value);
         return raw ? value : [`${key}=`, value];
     }
@@ -344,7 +366,7 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
 
 function handleError(err, instance, type, throwInDev = true) {
     const contextVNode = instance ? instance.vnode : null;
-    const {errorHandler, throwUnhandledErrorInProduction} = instance && instance.appContext.config || EMPTY_OBJ;
+    const { errorHandler, throwUnhandledErrorInProduction } = instance && instance.appContext.config || EMPTY_OBJ;
     if (instance) {
         let cur = instance.parent;
         const exposedInstance = instance.proxy;
@@ -718,7 +740,7 @@ function emit$1(event, ...args) {
     if (devtools$1) {
         devtools$1.emit(event, ...args);
     } else if (!devtoolsNotInstalled) {
-        buffer.push({event, args});
+        buffer.push({ event, args });
     }
 }
 
@@ -727,7 +749,7 @@ function setDevtoolsHook$1(hook, target) {
     devtools$1 = hook;
     if (devtools$1) {
         devtools$1.enabled = true;
-        buffer.forEach(({event, args}) => devtools$1.emit(event, ...args));
+        buffer.forEach(({ event, args }) => devtools$1.emit(event, ...args));
         buffer = [];
     } else if (
         // handle late devtools injection - only do this if we are in an actual
@@ -979,7 +1001,7 @@ function watchPostEffect(effect, options) {
     return doWatch(
         effect,
         null,
-        !!('production' !== 'production') ? extend({}, options, {flush: "post"}) : {flush: "post"}
+        !!('production' !== 'production') ? extend({}, options, { flush: "post" }) : { flush: "post" }
     );
 }
 
@@ -987,7 +1009,7 @@ function watchSyncEffect(effect, options) {
     return doWatch(
         effect,
         null,
-        !!('production' !== 'production') ? extend({}, options, {flush: "sync"}) : {flush: "sync"}
+        !!('production' !== 'production') ? extend({}, options, { flush: "sync" }) : { flush: "sync" }
     );
 }
 
@@ -1001,7 +1023,7 @@ function watch(source, cb, options) {
 }
 
 function doWatch(source, cb, options = EMPTY_OBJ) {
-    const {immediate, deep, flush, once} = options;
+    const { immediate, deep, flush, once } = options;
     if (!!('production' !== 'production') && !cb) {
         if (immediate !== void 0) {
             warn$1(
@@ -1141,10 +1163,10 @@ const TeleportImpl = {
             mc: mountChildren,
             pc: patchChildren,
             pbc: patchBlockChildren,
-            o: {insert, querySelector, createText, createComment}
+            o: { insert, querySelector, createText, createComment }
         } = internals;
         const disabled = isTeleportDisabled(n2.props);
-        let {shapeFlag, children, dynamicChildren} = n2;
+        let { shapeFlag, children, dynamicChildren } = n2;
         if (!!('production' !== 'production') && isHmrUpdating) {
             optimized = false;
             dynamicChildren = null;
@@ -1308,7 +1330,7 @@ const TeleportImpl = {
             updateCssVars(n2, disabled);
         }
     },
-    remove(vnode, parentComponent, parentSuspense, {um: unmount, o: {remove: hostRemove}}, doRemove) {
+    remove(vnode, parentComponent, parentSuspense, { um: unmount, o: { remove: hostRemove } }, doRemove) {
         const {
             shapeFlag,
             children,
@@ -1341,11 +1363,11 @@ const TeleportImpl = {
     hydrate: hydrateTeleport
 };
 
-function moveTeleport(vnode, container, parentAnchor, {o: {insert}, m: move}, moveType = 2) {
+function moveTeleport(vnode, container, parentAnchor, { o: { insert }, m: move }, moveType = 2) {
     if (moveType === 0) {
         insert(vnode.targetAnchor, container, parentAnchor);
     }
-    const {el, anchor, shapeFlag, children, props} = vnode;
+    const { el, anchor, shapeFlag, children, props } = vnode;
     const isReorder = moveType === 2;
     if (isReorder) {
         insert(el, container, parentAnchor);
@@ -1368,7 +1390,7 @@ function moveTeleport(vnode, container, parentAnchor, {o: {insert}, m: move}, mo
 }
 
 function hydrateTeleport(node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized, {
-    o: {nextSibling, parentNode, querySelector, insert, createText}
+    o: { nextSibling, parentNode, querySelector, insert, createText }
 }, hydrateChildren) {
     function hydrateDisabledTeleport(node2, vnode2, targetStart, targetAnchor) {
         vnode2.anchor = hydrateChildren(
@@ -1516,7 +1538,7 @@ const recursiveGetSubtree = (instance) => {
 const BaseTransitionImpl = {
     name: `BaseTransition`,
     props: BaseTransitionPropsValidators,
-    setup(props, {slots}) {
+    setup(props, { slots }) {
         const instance = getCurrentInstance();
         const state = useTransitionState();
         return () => {
@@ -1526,7 +1548,7 @@ const BaseTransitionImpl = {
             }
             const child = findNonCommentChild(children);
             const rawProps = toRaw(props);
-            const {mode} = rawProps;
+            const { mode } = rawProps;
             if (!!('production' !== 'production') && mode && mode !== "in-out" && mode !== "out-in" && mode !== "default") {
                 warn$1(`invalid <transition> mode: ${mode}`);
             }
@@ -1622,7 +1644,7 @@ function findNonCommentChild(children) {
 const BaseTransition = BaseTransitionImpl;
 
 function getLeavingNodesForType(state, vnode) {
-    const {leavingVNodes} = state;
+    const { leavingVNodes } = state;
     let leavingVNodesCache = leavingVNodes.get(vnode.type);
     if (!leavingVNodesCache) {
         leavingVNodesCache = /* @__PURE__ */ Object.create(null);
@@ -1792,7 +1814,7 @@ function getInnerChild$1(vnode) {
     if (vnode.component) {
         return vnode.component.subTree;
     }
-    const {shapeFlag, children} = vnode;
+    const { shapeFlag, children } = vnode;
     if (children) {
         if (shapeFlag & 16) {
             return children[0];
@@ -1827,7 +1849,7 @@ function getTransitionRawChildren(children, keepComment = false, parentKey) {
                 getTransitionRawChildren(child.children, keepComment, key)
             );
         } else if (keepComment || child.type !== Comment) {
-            ret.push(key != null ? cloneVNode(child, {key}) : child);
+            ret.push(key != null ? cloneVNode(child, { key }) : child);
         }
     }
     if (keyedFragmentCount > 1) {
@@ -1843,7 +1865,7 @@ function defineComponent(options, extraOptions) {
     return isFunction(options) ? (
         // #8236: extend call and options.name access are considered side-effects
         // by Rollup, so we have to wrap it in a pure-annotated IIFE.
-        /* @__PURE__ */ (() => extend({name: options.name}, extraOptions, {setup: options}))()
+        /* @__PURE__ */ (() => extend({ name: options.name }, extraOptions, { setup: options }))()
     ) : options;
 }
 
@@ -1915,7 +1937,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
     }
     const refValue = vnode.shapeFlag & 4 ? getComponentPublicInstance(vnode.component) : vnode.el;
     const value = isUnmount ? null : refValue;
-    const {i: owner, r: ref} = rawRef;
+    const { i: owner, r: ref } = rawRef;
     if (!!('production' !== 'production') && !owner) {
         warn$1(
             `Missing ref owner context. ref cannot be used on hoisted vnodes. A vnode with ref must be created inside the render function.`
@@ -2083,7 +2105,7 @@ function createHydrationFunctions(rendererInternals) {
             slotScopeIds,
             isFragmentStart
         );
-        const {type, ref, shapeFlag, patchFlag} = vnode;
+        const { type, ref, shapeFlag, patchFlag } = vnode;
         let domType = node.nodeType;
         vnode.el = node;
         if (!!('production' !== 'production') || __VUE_PROD_DEVTOOLS__) {
@@ -2252,7 +2274,7 @@ function createHydrationFunctions(rendererInternals) {
     };
     const hydrateElement = (el, vnode, parentComponent, parentSuspense, slotScopeIds, optimized) => {
         optimized = optimized || !!vnode.dynamicChildren;
-        const {type, props, patchFlag, shapeFlag, dirs, transition} = vnode;
+        const { type, props, patchFlag, shapeFlag, dirs, transition } = vnode;
         const forcePatch = type === "input" || type === "option";
         if (!!('production' !== 'production') || forcePatch || patchFlag !== -1) {
             if (dirs) {
@@ -2308,7 +2330,7 @@ Server rendered element contains more child nodes than client vdom.`
                 if (clientText[0] === "\n" && (el.tagName === "PRE" || el.tagName === "TEXTAREA")) {
                     clientText = clientText.slice(1);
                 }
-                const {textContent} = el;
+                const { textContent } = el;
                 if (textContent !== clientText && // innerHTML normalize \r\n or \r into a single \n in the DOM
                     textContent !== clientText.replace(/\r\n|\r/g, "\n")) {
                     if (!isMismatchAllowed(el, 0 /* TEXT */)) {
@@ -2427,7 +2449,7 @@ Server rendered element contains fewer child nodes than client vdom.`
         return node;
     };
     const hydrateFragment = (node, vnode, parentComponent, parentSuspense, slotScopeIds, optimized) => {
-        const {slotScopeIds: fragmentSlotScopeIds} = vnode;
+        const { slotScopeIds: fragmentSlotScopeIds } = vnode;
         if (fragmentSlotScopeIds) {
             slotScopeIds = slotScopeIds ? slotScopeIds.concat(fragmentSlotScopeIds) : fragmentSlotScopeIds;
         }
@@ -2552,7 +2574,7 @@ function propHasMismatch(el, key, clientValue, vnode, instance) {
         const actualMap = toStyleMap(actual);
         const expectedMap = toStyleMap(expected);
         if (vnode.dirs) {
-            for (const {dir, value} of vnode.dirs) {
+            for (const { dir, value } of vnode.dirs) {
                 if (dir.name === "show" && !value) {
                     expectedMap.set("display", "none");
                 }
@@ -2690,13 +2712,13 @@ function isMismatchAllowed(el, allowedType) {
 const requestIdleCallback = getGlobalThis().requestIdleCallback || ((cb) => setTimeout(cb, 1));
 const cancelIdleCallback = getGlobalThis().cancelIdleCallback || ((id) => clearTimeout(id));
 const hydrateOnIdle = (timeout = 1e4) => (hydrate) => {
-    const id = requestIdleCallback(hydrate, {timeout});
+    const id = requestIdleCallback(hydrate, { timeout });
     return () => cancelIdleCallback(id);
 };
 
 function elementIsVisibleInViewport(el) {
-    const {top, left, bottom, right} = el.getBoundingClientRect();
-    const {innerHeight, innerWidth} = window;
+    const { top, left, bottom, right } = el.getBoundingClientRect();
+    const { innerHeight, innerWidth } = window;
     return (top > 0 && top < innerHeight || bottom > 0 && bottom < innerHeight) && (left > 0 && left < innerWidth || right > 0 && right < innerWidth);
 }
 
@@ -2726,7 +2748,7 @@ const hydrateOnMediaQuery = (query) => (hydrate) => {
         if (mql.matches) {
             hydrate();
         } else {
-            mql.addEventListener("change", hydrate, {once: true});
+            mql.addEventListener("change", hydrate, { once: true });
             return () => mql.removeEventListener("change", hydrate);
         }
     }
@@ -2751,7 +2773,7 @@ const hydrateOnInteraction = (interactions = []) => (hydrate, forEach) => {
     };
     forEach((el) => {
         for (const i of interactions) {
-            el.addEventListener(i, doHydrate, {once: true});
+            el.addEventListener(i, doHydrate, { once: true });
         }
     });
     return teardown;
@@ -2786,7 +2808,7 @@ const isAsyncWrapper = (i) => !!i.type.__asyncLoader;
 // @__NO_SIDE_EFFECTS__
 function defineAsyncComponent(source) {
     if (isFunction(source)) {
-        source = {loader: source};
+        source = { loader: source };
     }
     const {
         loader,
@@ -2946,7 +2968,7 @@ function defineAsyncComponent(source) {
 }
 
 function createInnerComp(comp, parent) {
-    const {ref: ref2, props, children, ce} = parent.vnode;
+    const { ref: ref2, props, children, ce } = parent.vnode;
     const vnode = createVNode(comp, props, children);
     vnode.ref = ref2;
     vnode.ce = ce;
@@ -2966,7 +2988,7 @@ const KeepAliveImpl = {
         exclude: [String, RegExp, Array],
         max: [String, Number]
     },
-    setup(props, {slots}) {
+    setup(props, { slots }) {
         const instance = getCurrentInstance();
         const sharedContext = instance.ctx;
         if (!sharedContext.renderer) {
@@ -2987,7 +3009,7 @@ const KeepAliveImpl = {
                 p: patch,
                 m: move,
                 um: _unmount,
-                o: {createElement}
+                o: { createElement }
             }
         } = sharedContext;
         const storageContainer = createElement("div");
@@ -3076,7 +3098,7 @@ const KeepAliveImpl = {
                 exclude && pruneCache((name) => !matches(exclude, name));
             },
             // prune post-render after `current` has been updated
-            {flush: "post", deep: true}
+            { flush: "post", deep: true }
         );
         let pendingCacheKey = null;
         const cacheSubtree = () => {
@@ -3094,7 +3116,7 @@ const KeepAliveImpl = {
         onUpdated(cacheSubtree);
         onBeforeUnmount(() => {
             cache.forEach((cached) => {
-                const {subTree, suspense} = instance;
+                const { subTree, suspense } = instance;
                 const vnode = getInnerChild(subTree);
                 if (cached.type === vnode.type && cached.key === vnode.key) {
                     resetShapeFlag(vnode);
@@ -3131,7 +3153,7 @@ const KeepAliveImpl = {
             const name = getComponentName(
                 isAsyncWrapper(vnode) ? vnode.type.__asyncResolved || {} : comp
             );
-            const {include, exclude, max} = props;
+            const { include, exclude, max } = props;
             if (include && (!name || !matches(include, name)) || exclude && name && matches(exclude, name)) {
                 vnode.shapeFlag &= -257;
                 current = vnode;
@@ -3490,33 +3512,33 @@ const publicPropertiesMap = (
     // Move PURE marker to new line to workaround compiler discarding it
     // due to type annotation
     /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
-        $: (i) => i,
-        $el: (i) => i.vnode.el,
-        $data: (i) => i.data,
-        $props: (i) => !!('production' !== 'production') ? shallowReadonly(i.props) : i.props,
-        $attrs: (i) => !!('production' !== 'production') ? shallowReadonly(i.attrs) : i.attrs,
-        $slots: (i) => !!('production' !== 'production') ? shallowReadonly(i.slots) : i.slots,
-        $refs: (i) => !!('production' !== 'production') ? shallowReadonly(i.refs) : i.refs,
-        $parent: (i) => getPublicInstance(i.parent),
-        $root: (i) => getPublicInstance(i.root),
-        $host: (i) => i.ce,
-        $emit: (i) => i.emit,
-        $options: (i) => __VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type,
-        $forceUpdate: (i) => i.f || (i.f = () => {
-            queueJob(i.update);
-        }),
-        $nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
-        $watch: (i) => __VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP
-    })
+    $: (i) => i,
+    $el: (i) => i.vnode.el,
+    $data: (i) => i.data,
+    $props: (i) => !!('production' !== 'production') ? shallowReadonly(i.props) : i.props,
+    $attrs: (i) => !!('production' !== 'production') ? shallowReadonly(i.attrs) : i.attrs,
+    $slots: (i) => !!('production' !== 'production') ? shallowReadonly(i.slots) : i.slots,
+    $refs: (i) => !!('production' !== 'production') ? shallowReadonly(i.refs) : i.refs,
+    $parent: (i) => getPublicInstance(i.parent),
+    $root: (i) => getPublicInstance(i.root),
+    $host: (i) => i.ce,
+    $emit: (i) => i.emit,
+    $options: (i) => __VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type,
+    $forceUpdate: (i) => i.f || (i.f = () => {
+        queueJob(i.update);
+    }),
+    $nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
+    $watch: (i) => __VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP
+})
 );
 const isReservedPrefix = (key) => key === "_" || key === "$";
 const hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 const PublicInstanceProxyHandlers = {
-    get({_: instance}, key) {
+    get({ _: instance }, key) {
         if (key === "__v_skip") {
             return true;
         }
-        const {ctx, setupState, data, props, accessCache, type, appContext} = instance;
+        const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
         if (!!('production' !== 'production') && key === "__isVue") {
             return true;
         }
@@ -3525,16 +3547,16 @@ const PublicInstanceProxyHandlers = {
             if (n !== void 0) {
                 switch (n) {
                     case 1 /* SETUP */
-                    :
+                        :
                         return setupState[key];
                     case 2 /* DATA */
-                    :
+                        :
                         return data[key];
                     case 4 /* CONTEXT */
-                    :
+                        :
                         return ctx[key];
                     case 3 /* PROPS */
-                    :
+                        :
                         return props[key];
                 }
             } else if (hasSetupBinding(setupState, key)) {
@@ -3594,8 +3616,8 @@ const PublicInstanceProxyHandlers = {
             }
         }
     },
-    set({_: instance}, key, value) {
-        const {data, setupState, ctx} = instance;
+    set({ _: instance }, key, value) {
+        const { data, setupState, ctx } = instance;
         if (hasSetupBinding(setupState, key)) {
             setupState[key] = value;
             return true;
@@ -3628,8 +3650,8 @@ const PublicInstanceProxyHandlers = {
         return true;
     },
     has({
-            _: {data, setupState, accessCache, ctx, appContext, props, type}
-        }, key) {
+        _: { data, setupState, accessCache, ctx, appContext, props, type }
+    }, key) {
         let cssModules;
         return !!(accessCache[key] || __VUE_OPTIONS_API__ && data !== EMPTY_OBJ && key[0] !== "$" && hasOwn(data, key) || hasSetupBinding(setupState, key) || hasOwn(props, key) || hasOwn(ctx, key) || hasOwn(publicPropertiesMap, key) || hasOwn(appContext.config.globalProperties, key) || (cssModules = type.__cssModules) && cssModules[key]);
     },
@@ -3708,7 +3730,7 @@ function exposePropsOnRenderContext(instance) {
 }
 
 function exposeSetupStateOnRenderContext(instance) {
-    const {ctx, setupState} = instance;
+    const { ctx, setupState } = instance;
     Object.keys(toRaw(setupState)).forEach((key) => {
         if (!setupState.__isScriptSetup) {
             if (isReservedPrefix(key[0])) {
@@ -3809,12 +3831,12 @@ function mergeDefaults(raw, defaults) {
         let opt = props[key];
         if (opt) {
             if (isArray(opt) || isFunction(opt)) {
-                opt = props[key] = {type: opt, default: defaults[key]};
+                opt = props[key] = { type: opt, default: defaults[key] };
             } else {
                 opt.default = defaults[key];
             }
         } else if (opt === null) {
-            opt = props[key] = {default: defaults[key]};
+            opt = props[key] = { default: defaults[key] };
         } else if (!!('production' !== 'production')) {
             warn$1(`props default key "${key}" has no corresponding declaration.`);
         }
@@ -4150,11 +4172,11 @@ function createWatcher(raw, ctx, publicThis, key) {
 
 function resolveMergedOptions(instance) {
     const base = instance.type;
-    const {mixins, extends: extendsOptions} = base;
+    const { mixins, extends: extendsOptions } = base;
     const {
         mixins: globalMixins,
         optionsCache: cache,
-        config: {optionMergeStrategies}
+        config: { optionMergeStrategies }
     } = instance.appContext;
     const cached = cache.get(base);
     let resolved;
@@ -4180,7 +4202,7 @@ function resolveMergedOptions(instance) {
 }
 
 function mergeOptions(to, from, strats, asMixin = false) {
-    const {mixins, extends: extendsOptions} = from;
+    const { mixins, extends: extendsOptions } = from;
     if (extendsOptions) {
         mergeOptions(to, extendsOptions, strats, true);
     }
@@ -4560,9 +4582,9 @@ function useModel(props, name, options = EMPTY_OBJ) {
         return {
             next() {
                 if (i2 < 2) {
-                    return {value: i2++ ? modifiers || EMPTY_OBJ : res, done: false};
+                    return { value: i2++ ? modifiers || EMPTY_OBJ : res, done: false };
                 } else {
-                    return {done: true};
+                    return { done: true };
                 }
             }
         };
@@ -4784,7 +4806,7 @@ function renderComponentRoot(instance) {
                         },
                         slots,
                         emit
-                    } : {attrs, slots, emit}
+                    } : { attrs, slots, emit }
                 ) : render2(
                     !!('production' !== 'production') ? shallowReadonly(props) : props,
                     null
@@ -4804,7 +4826,7 @@ function renderComponentRoot(instance) {
     }
     if (fallthroughAttrs && inheritAttrs !== false) {
         const keys = Object.keys(fallthroughAttrs);
-        const {shapeFlag} = root;
+        const { shapeFlag } = root;
         if (keys.length) {
             if (shapeFlag & (1 | 6)) {
                 if (propsOptions && keys.some(isModelListener)) {
@@ -4936,8 +4958,8 @@ const isElementRoot = (vnode) => {
 };
 
 function shouldUpdateComponent(prevVNode, nextVNode, optimized) {
-    const {props: prevProps, children: prevChildren, component} = prevVNode;
-    const {props: nextProps, children: nextChildren, patchFlag} = nextVNode;
+    const { props: prevProps, children: prevChildren, component } = prevVNode;
+    const { props: nextProps, children: nextChildren, patchFlag } = nextVNode;
     const emits = component.emitsOptions;
     if (!!('production' !== 'production') && (prevChildren || nextChildren) && isHmrUpdating) {
         return true;
@@ -4997,7 +5019,7 @@ function hasPropsChanged(prevProps, nextProps, emitsOptions) {
     return false;
 }
 
-function updateHOCHostEl({vnode, parent}, el) {
+function updateHOCHostEl({ vnode, parent }, el) {
     while (parent) {
         const root = parent.subTree;
         if (root.suspense && root.suspense.activeBranch === vnode) {
@@ -5052,7 +5074,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
     const {
         props,
         attrs,
-        vnode: {patchFlag}
+        vnode: { patchFlag }
     } = instance;
     const rawCurrentProps = toRaw(props);
     const [options] = instance.propsOptions;
@@ -5191,7 +5213,7 @@ function resolvePropValue(options, props, key, value, instance, isAbsent) {
         if (hasDefault && value === void 0) {
             const defaultValue = opt.default;
             if (opt.type !== Function && !opt.skipFactory && isFunction(defaultValue)) {
-                const {propsDefaults} = instance;
+                const { propsDefaults } = instance;
                 if (key in propsDefaults) {
                     value = propsDefaults[key];
                 } else {
@@ -5273,7 +5295,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
             const normalizedKey = camelize(key);
             if (validatePropName(normalizedKey)) {
                 const opt = raw[key];
-                const prop = normalized[normalizedKey] = isArray(opt) || isFunction(opt) ? {type: opt} : extend({}, opt);
+                const prop = normalized[normalizedKey] = isArray(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
                 const propType = prop.type;
                 let shouldCast = false;
                 let shouldCastTrue = true;
@@ -5346,7 +5368,7 @@ function validateProps(rawProps, props, instance) {
 }
 
 function validateProp(name, value, prop, props, isAbsent) {
-    const {type, required, validator, skipCheck} = prop;
+    const { type, required, validator, skipCheck } = prop;
     if (required && isAbsent) {
         warn$1('Missing required prop: "' + name + '"');
         return;
@@ -5359,7 +5381,7 @@ function validateProp(name, value, prop, props, isAbsent) {
         const types = isArray(type) ? type : [type];
         const expectedTypes = [];
         for (let i = 0; i < types.length && !isValid; i++) {
-            const {valid, expectedType} = assertType(value, types[i]);
+            const { valid, expectedType } = assertType(value, types[i]);
             expectedTypes.push(expectedType || "");
             isValid = valid;
         }
@@ -5507,7 +5529,7 @@ const initSlots = (instance, children, optimized) => {
     }
 };
 const updateSlots = (instance, children, optimized) => {
-    const {vnode, slots} = instance;
+    const { vnode, slots } = instance;
     let needDeletionCheck = true;
     let deletionComparisonTarget = EMPTY_OBJ;
     if (vnode.shapeFlag & 32) {
@@ -5528,7 +5550,7 @@ const updateSlots = (instance, children, optimized) => {
         deletionComparisonTarget = children;
     } else if (children) {
         normalizeVNodeSlots(instance, children);
-        deletionComparisonTarget = {default: 1};
+        deletionComparisonTarget = { default: 1 };
     }
     if (needDeletionCheck) {
         for (const key in slots) {
@@ -5650,7 +5672,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             optimized = false;
             n2.dynamicChildren = null;
         }
-        const {type, ref, shapeFlag} = n2;
+        const { type, ref, shapeFlag } = n2;
         switch (type) {
             case Text:
                 processText(n1, n2, container, anchor);
@@ -5797,7 +5819,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             n2.anchor = n1.anchor;
         }
     };
-    const moveStaticNode = ({el, anchor}, container, nextSibling) => {
+    const moveStaticNode = ({ el, anchor }, container, nextSibling) => {
         let next;
         while (el && el !== anchor) {
             next = hostNextSibling(el);
@@ -5806,7 +5828,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
         hostInsert(anchor, container, nextSibling);
     };
-    const removeStaticNode = ({el, anchor}) => {
+    const removeStaticNode = ({ el, anchor }) => {
         let next;
         while (el && el !== anchor) {
             next = hostNextSibling(el);
@@ -5857,7 +5879,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     const mountElement = (vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
         let el;
         let vnodeHook;
-        const {props, shapeFlag, transition, dirs} = vnode;
+        const { props, shapeFlag, transition, dirs } = vnode;
         el = vnode.el = hostCreateElement(
             vnode.type,
             namespace,
@@ -5962,7 +5984,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         if (!!('production' !== 'production') || __VUE_PROD_DEVTOOLS__) {
             el.__vnode = n2;
         }
-        let {patchFlag, dynamicChildren, dirs} = n2;
+        let { patchFlag, dynamicChildren, dirs } = n2;
         patchFlag |= n1.patchFlag & 16;
         const oldProps = n1.props || EMPTY_OBJ;
         const newProps = n2.props || EMPTY_OBJ;
@@ -6056,11 +6078,11 @@ function baseCreateRenderer(options, createHydrationFns) {
                 // oldVNode may be an errored async setup() component inside Suspense
                 // which will not have a mounted element
                 oldVNode.el && // - In the case of a Fragment, we need to provide the actual parent
-                // of the Fragment itself so it can move its children.
-                (oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
-                    // which also requires the correct parent container
-                    !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
-                    oldVNode.shapeFlag & (6 | 64 | 128)) ? hostParentNode(oldVNode.el) : (
+                    // of the Fragment itself so it can move its children.
+                    (oldVNode.type === Fragment || // - In the case of different nodes, there is going to be a replacement
+                        // which also requires the correct parent container
+                        !isSameVNodeType(oldVNode, newVNode) || // - In the case of a component, it could contain anything.
+                        oldVNode.shapeFlag & (6 | 64 | 128)) ? hostParentNode(oldVNode.el) : (
                     // In other cases, the parent container is not actually used so we
                     // just pass the block element here to avoid a DOM parentNode call.
                     fallbackContainer
@@ -6111,7 +6133,7 @@ function baseCreateRenderer(options, createHydrationFns) {
     const processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
         const fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("");
         const fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("");
-        let {patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds} = n2;
+        let { patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds } = n2;
         if (!!('production' !== 'production') && // #5523 dev root fragment may inherit directives
             (isHmrUpdating || patchFlag & 2048)) {
             patchFlag = 0;
@@ -6282,8 +6304,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         const componentUpdateFn = () => {
             if (!instance.isMounted) {
                 let vnodeHook;
-                const {el, props} = initialVNode;
-                const {bm, m, parent, root, type} = instance;
+                const { el, props } = initialVNode;
+                const { bm, m, parent, root, type } = instance;
                 const isAsyncWrapperVNode = isAsyncWrapper(initialVNode);
                 toggleRecurse(instance, false);
                 if (bm) {
@@ -6373,7 +6395,7 @@ function baseCreateRenderer(options, createHydrationFns) {
                 }
                 initialVNode = container = anchor = null;
             } else {
-                let {next, bu, u, parent, vnode} = instance;
+                let { next, bu, u, parent, vnode } = instance;
                 {
                     const nonHydratedAsyncRoot = locateNonHydratedAsyncRoot(instance);
                     if (nonHydratedAsyncRoot) {
@@ -6485,7 +6507,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         const c1 = n1 && n1.children;
         const prevShapeFlag = n1 ? n1.shapeFlag : 0;
         const c2 = n2.children;
-        const {patchFlag, shapeFlag} = n2;
+        const { patchFlag, shapeFlag } = n2;
         if (patchFlag > 0) {
             if (patchFlag & 128) {
                 patchKeyedChildren(
@@ -6769,7 +6791,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
     };
     const move = (vnode, container, anchor, moveType, parentSuspense = null) => {
-        const {el, type, transition, children, shapeFlag} = vnode;
+        const { el, type, transition, children, shapeFlag } = vnode;
         if (shapeFlag & 6) {
             move(vnode.component.subTree, container, anchor, moveType);
             return;
@@ -6801,7 +6823,7 @@ function baseCreateRenderer(options, createHydrationFns) {
                 hostInsert(el, container, anchor);
                 queuePostRenderEffect(() => transition.enter(el), parentSuspense);
             } else {
-                const {leave, delayLeave, afterLeave} = transition;
+                const { leave, delayLeave, afterLeave } = transition;
                 const remove2 = () => {
                     if (vnode.ctx.isUnmounted) {
                         hostRemove(el);
@@ -6911,7 +6933,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         }
     };
     const remove = (vnode) => {
-        const {type, el, anchor, transition} = vnode;
+        const { type, el, anchor, transition } = vnode;
         if (type === Fragment) {
             if (!!('production' !== 'production') && vnode.patchFlag > 0 && vnode.patchFlag & 2048 && transition && !transition.persisted) {
                 vnode.children.forEach((child) => {
@@ -6937,7 +6959,7 @@ function baseCreateRenderer(options, createHydrationFns) {
             }
         };
         if (vnode.shapeFlag & 1 && transition && !transition.persisted) {
-            const {leave, delayLeave} = transition;
+            const { leave, delayLeave } = transition;
             const performLeave = () => leave(el, performRemove);
             if (delayLeave) {
                 delayLeave(vnode.el, performRemove, performLeave);
@@ -6961,7 +6983,7 @@ function baseCreateRenderer(options, createHydrationFns) {
         if (!!('production' !== 'production') && instance.type.__hmrId) {
             unregisterHMR(instance);
         }
-        const {bum, scope, job, subTree, um, m, a} = instance;
+        const { bum, scope, job, subTree, um, m, a } = instance;
         invalidateMount(m);
         invalidateMount(a);
         if (bum) {
@@ -7051,11 +7073,11 @@ function baseCreateRenderer(options, createHydrationFns) {
     };
 }
 
-function resolveChildrenNamespace({type, props}, currentNamespace) {
+function resolveChildrenNamespace({ type, props }, currentNamespace) {
     return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
 }
 
-function toggleRecurse({effect, job}, allowed) {
+function toggleRecurse({ effect, job }, allowed) {
     if (allowed) {
         effect.flags |= 32;
         job.flags |= 4;
@@ -7229,7 +7251,7 @@ function triggerEvent(vnode, name) {
 function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized, rendererInternals) {
     const {
         p: patch,
-        o: {createElement}
+        o: { createElement }
     } = rendererInternals;
     const hiddenContainer = createElement("div");
     const suspense = vnode.suspense = createSuspenseBoundary(
@@ -7277,14 +7299,14 @@ function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense
 function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, slotScopeIds, optimized, {
     p: patch,
     um: unmount,
-    o: {createElement}
+    o: { createElement }
 }) {
     const suspense = n2.suspense = n1.suspense;
     suspense.vnode = n2;
     n2.el = n1.el;
     const newBranch = n2.ssContent;
     const newFallback = n2.ssFallback;
-    const {activeBranch, pendingBranch, isInFallback, isHydrating} = suspense;
+    const { activeBranch, pendingBranch, isInFallback, isHydrating } = suspense;
     if (pendingBranch) {
         suspense.pendingBranch = newBranch;
         if (isSameVNodeType(pendingBranch, newBranch)) {
@@ -7424,7 +7446,7 @@ function patchSuspense(n1, n2, container, anchor, parentComponent, namespace, sl
             if (suspense.deps <= 0) {
                 suspense.resolve();
             } else {
-                const {timeout, pendingId} = suspense;
+                const { timeout, pendingId } = suspense;
                 if (timeout > 0) {
                     setTimeout(() => {
                         if (suspense.pendingId === pendingId) {
@@ -7453,7 +7475,7 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
         m: move,
         um: unmount,
         n: next,
-        o: {parentNode, remove}
+        o: { parentNode, remove }
     } = rendererInternals;
     let parentSuspenseId;
     const isSuspensible = isVNodeSuspensible(vnode);
@@ -7636,7 +7658,7 @@ function createSuspenseBoundary(vnode, parentSuspense, parentComponent, containe
                     return;
                 }
                 instance.asyncResolved = true;
-                const {vnode: vnode2} = instance;
+                const { vnode: vnode2 } = instance;
                 if (!!('production' !== 'production')) {
                     pushWarningContext(vnode2);
                 }
@@ -7725,7 +7747,7 @@ function hydrateSuspense(node, vnode, parentComponent, parentSuspense, namespace
 }
 
 function normalizeSuspenseChildren(vnode) {
-    const {shapeFlag, children} = vnode;
+    const { shapeFlag, children } = vnode;
     const isSlotChildren = shapeFlag & 32;
     vnode.ssContent = normalizeSuspenseSlot(
         isSlotChildren ? children.default : children
@@ -7776,7 +7798,7 @@ function queueEffectWithSuspense(fn, suspense) {
 
 function setActiveBranch(suspense, branch) {
     suspense.activeBranch = branch;
-    const {vnode, parentComponent} = suspense;
+    const { vnode, parentComponent } = suspense;
     let el = branch.el;
     while (!el && branch.component) {
         branch = branch.component.subTree;
@@ -7882,12 +7904,12 @@ const createVNodeWithArgsTransform = (...args) => {
         ...vnodeArgsTransformer ? vnodeArgsTransformer(args, currentRenderingInstance) : args
     );
 };
-const normalizeKey = ({key}) => key != null ? key : null;
+const normalizeKey = ({ key }) => key != null ? key : null;
 const normalizeRef = ({
-                          ref,
-                          ref_key,
-                          ref_for
-                      }) => {
+    ref,
+    ref_key,
+    ref_for
+}) => {
     if (typeof ref === "number") {
         ref = "" + ref;
     }
@@ -7988,7 +8010,7 @@ function _createVNode(type, props = null, children = null, patchFlag = 0, dynami
     }
     if (props) {
         props = guardReactiveProps(props);
-        let {class: klass, style} = props;
+        let { class: klass, style } = props;
         if (klass && !isString(klass)) {
             props.class = normalizeClass(klass);
         }
@@ -8027,7 +8049,7 @@ function guardReactiveProps(props) {
 }
 
 function cloneVNode(vnode, extraProps, mergeRef = false, cloneTransition = false) {
-    const {props, ref, patchFlag, children, transition} = vnode;
+    const { props, ref, patchFlag, children, transition } = vnode;
     const mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
     const cloned = {
         __v_isVNode: true,
@@ -8127,7 +8149,7 @@ function cloneIfMounted(child) {
 
 function normalizeChildren(vnode, children) {
     let type = 0;
-    const {shapeFlag} = vnode;
+    const { shapeFlag } = vnode;
     if (children == null) {
         children = null;
     } else if (isArray(children)) {
@@ -8156,7 +8178,7 @@ function normalizeChildren(vnode, children) {
             }
         }
     } else if (isFunction(children)) {
-        children = {default: children, _ctx: currentRenderingInstance};
+        children = { default: children, _ctx: currentRenderingInstance };
         type = 32;
     } else {
         children = String(children);
@@ -8288,7 +8310,7 @@ function createComponentInstance(vnode, parent, suspense) {
     if (!!('production' !== 'production')) {
         instance.ctx = createDevRenderContext(instance);
     } else {
-        instance.ctx = {_: instance};
+        instance.ctx = { _: instance };
     }
     instance.root = parent ? parent.root : instance;
     instance.emit = emit.bind(null, instance);
@@ -8337,7 +8359,7 @@ const unsetCurrentInstance = () => {
 };
 const isBuiltInTag = /* @__PURE__ */ makeMap("slot,component");
 
-function validateComponentName(name, {isNativeTag}) {
+function validateComponentName(name, { isNativeTag }) {
     if (isBuiltInTag(name) || isNativeTag(name)) {
         warn$1(
             "Do not use built-in or reserved HTML elements as component id: " + name
@@ -8353,7 +8375,7 @@ let isInSSRComponentSetup = false;
 
 function setupComponent(instance, isSSR = false, optimized = false) {
     isSSR && setInSSRSetupState(isSSR);
-    const {props, children} = instance.vnode;
+    const { props, children } = instance.vnode;
     const isStateful = isStatefulComponent(instance);
     initProps(instance, props, isStateful, isSSR);
     initSlots(instance, children, optimized || isSSR);
@@ -8391,7 +8413,7 @@ function setupStatefulComponent(instance, isSSR) {
     if (!!('production' !== 'production')) {
         exposePropsOnRenderContext(instance);
     }
-    const {setup} = Component;
+    const { setup } = Component;
     if (setup) {
         pauseTracking();
         const setupContext = instance.setupContext = setup.length > 1 ? createSetupContext(instance) : null;
@@ -8487,8 +8509,8 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
                 if (!!('production' !== 'production')) {
                     startMeasure(instance, `compile`);
                 }
-                const {isCustomElement, compilerOptions} = instance.appContext.config;
-                const {delimiters, compilerOptions: componentCompilerOptions} = Component;
+                const { isCustomElement, compilerOptions } = instance.appContext.config;
+                const { delimiters, compilerOptions: componentCompilerOptions } = Component;
                 const finalCompilerOptions = extend(
                     extend(
                         {
@@ -8704,10 +8726,10 @@ function initCustomFormatter() {
     if (!!!('production' !== 'production') || typeof window === "undefined") {
         return;
     }
-    const vueStyle = {style: "color:#3ba776"};
-    const numberStyle = {style: "color:#1677ff"};
-    const stringStyle = {style: "color:#f5222d"};
-    const keywordStyle = {style: "color:#eb2f96"};
+    const vueStyle = { style: "color:#3ba776" };
+    const numberStyle = { style: "color:#1677ff" };
+    const stringStyle = { style: "color:#f5222d" };
+    const keywordStyle = { style: "color:#eb2f96" };
     const formatter = {
         __vue_custom_formatter: true,
         header(obj) {
@@ -8792,7 +8814,7 @@ function initCustomFormatter() {
                 },
                 "$ (internal): "
             ],
-            ["object", {object: instance}]
+            ["object", { object: instance }]
         ]);
         return blocks;
     }
@@ -8804,7 +8826,7 @@ function initCustomFormatter() {
         }
         return [
             "div",
-            {style: "line-height:1.25em;margin-bottom:0.6em"},
+            { style: "line-height:1.25em;margin-bottom:0.6em" },
             [
                 "div",
                 {
@@ -8837,7 +8859,7 @@ function initCustomFormatter() {
         } else if (typeof v === "boolean") {
             return ["span", keywordStyle, v];
         } else if (isObject(v)) {
-            return ["object", {object: asRaw ? toRaw(v) : v}];
+            return ["object", { object: asRaw ? toRaw(v) : v }];
         } else {
             return ["span", stringStyle, String(v)];
         }
