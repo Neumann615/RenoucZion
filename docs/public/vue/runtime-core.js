@@ -257,7 +257,7 @@ function formatProp(key, value, raw) {
         return raw ? value : [`${key}=`, value];
     }
 }
-
+// 开发时验证工具，确保传入的值是有效的数字，特别用于验证 Vue 过渡系统中的持续时间参数 
 function assertNumber(val, type) {
     if (!!!('production' !== 'production')) return;
     if (val === void 0) {
@@ -268,16 +268,19 @@ function assertNumber(val, type) {
         warn$1(`${type} is NaN - the duration expression might be incorrect.`);
     }
 }
-
+// 定义了运行时错误的数字代码标识，采用双向映射设计
 const ErrorCodes = {
+    // 核心函数
     "SETUP_FUNCTION": 0,
     "0": "SETUP_FUNCTION",
     "RENDER_FUNCTION": 1,
     "1": "RENDER_FUNCTION",
+    // 事件处理
     "NATIVE_EVENT_HANDLER": 5,
     "5": "NATIVE_EVENT_HANDLER",
     "COMPONENT_EVENT_HANDLER": 6,
     "6": "COMPONENT_EVENT_HANDLER",
+    // 钩子函数
     "VNODE_HOOK": 7,
     "7": "VNODE_HOOK",
     "DIRECTIVE_HOOK": 8,
@@ -292,6 +295,7 @@ const ErrorCodes = {
     "12": "FUNCTION_REF",
     "ASYNC_COMPONENT_LOADER": 13,
     "13": "ASYNC_COMPONENT_LOADER",
+    // 系统级错误
     "SCHEDULER": 14,
     "14": "SCHEDULER",
     "COMPONENT_UPDATE": 15,
@@ -299,6 +303,7 @@ const ErrorCodes = {
     "APP_UNMOUNT_CLEANUP": 16,
     "16": "APP_UNMOUNT_CLEANUP"
 };
+// 提供错误代码到人类可读描述的映射
 const ErrorTypeStrings$1 = {
     ["sp"]: "serverPrefetch hook",
     ["bc"]: "beforeCreate hook",
@@ -332,7 +337,11 @@ const ErrorTypeStrings$1 = {
     [15]: "component update",
     [16]: "app unmount cleanup function"
 };
-
+// 运行时错误处理函数，安全的执行可能抛出错误的用户函数
+// fn: 要执行的函数，可能是用户定义的组件函数、生命周期钩子等
+// instance: 组件实例，用于错误上下文和向上传播
+// type: 错误类型标识，使用 ErrorCodes 或 LifecycleHooks 中的值
+// args: 可选参数数组，传递给目标函数
 function callWithErrorHandling(fn, instance, type, args) {
     try {
         return args ? fn(...args) : fn();
@@ -340,8 +349,9 @@ function callWithErrorHandling(fn, instance, type, args) {
         handleError(err, instance, type);
     }
 }
-
+// 安全地执行用户提供的函数（如生命周期钩子、事件处理器等），特别是处理异步操作的错误
 function callWithAsyncErrorHandling(fn, instance, type, args) {
+    // 单函数处理，如果 fn 是函数，调用 callWithErrorHandling 执行它，并检查返回值是否为 Promise
     if (isFunction(fn)) {
         const res = callWithErrorHandling(fn, instance, type, args);
         if (res && isPromise(res)) {
@@ -351,6 +361,7 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
         }
         return res;
     }
+    // 如果 fn 是数组，递归处理每个元素
     if (isArray(fn)) {
         const values = [];
         for (let i = 0; i < fn.length; i++) {
@@ -363,11 +374,12 @@ function callWithAsyncErrorHandling(fn, instance, type, args) {
         );
     }
 }
-
+// 负责统一处理组件生命周期中抛出的错误
 function handleError(err, instance, type, throwInDev = true) {
     const contextVNode = instance ? instance.vnode : null;
     const { errorHandler, throwUnhandledErrorInProduction } = instance && instance.appContext.config || EMPTY_OBJ;
     if (instance) {
+        // 从当前组件开始向上遍历父组件链
         let cur = instance.parent;
         const exposedInstance = instance.proxy;
         const errorInfo = !!('production' !== 'production') ? ErrorTypeStrings$1[type] : `https://vuejs.org/error-reference/#runtime-${type}`;
@@ -375,14 +387,18 @@ function handleError(err, instance, type, throwInDev = true) {
             const errorCapturedHooks = cur.ec;
             if (errorCapturedHooks) {
                 for (let i = 0; i < errorCapturedHooks.length; i++) {
+                    // 调用每个父组件的errorCaptured钩子
                     if (errorCapturedHooks[i](err, exposedInstance, errorInfo) === false) {
+                        // 如果返回false则停止传播
                         return;
                     }
                 }
             }
             cur = cur.parent;
         }
+        // 如果组件级别错误处理失败则调用应用级的errorHandler
         if (errorHandler) {
+            // 暂停响应式追踪
             pauseTracking();
             callWithErrorHandling(errorHandler, null, 10, [
                 err,
@@ -395,10 +411,12 @@ function handleError(err, instance, type, throwInDev = true) {
     }
     logError(err, type, contextVNode, throwInDev, throwUnhandledErrorInProduction);
 }
-
+// 错误处理机制的最后一道防线，负责处理未被任何错误处理器捕获的最终错误
 function logError(err, type, contextVNode, throwInDev = true, throwInProd = false) {
     if (!!('production' !== 'production')) {
+        // 获取错误类型描述信息
         const info = ErrorTypeStrings$1[type];
+        // 如果存在contextVNode,添加上下文
         if (contextVNode) {
             pushWarningContext(contextVNode);
         }
@@ -406,6 +424,7 @@ function logError(err, type, contextVNode, throwInDev = true, throwInProd = fals
         if (contextVNode) {
             popWarningContext();
         }
+        // 根据thorwInDev决定是否抛出错误
         if (throwInDev) {
             throw err;
         } else {
@@ -417,28 +436,41 @@ function logError(err, type, contextVNode, throwInDev = true, throwInProd = fals
         console.error(err);
     }
 }
-
+// 存储待执行的调度任务
 const queue = [];
+// 标记当前正在执行的任务在队列中的位置
 let flushIndex = -1;
+// 等待执行的后置回调队列
 const pendingPostFlushCbs = [];
+// 当前正在执行的后置回调数组
 let activePostFlushCbs = null;
+// 后置回调执行位置索引
 let postFlushIndex = 0;
+// 用于 nextTick 的已解析 Promise，确保异步执行
 const resolvedPromise = /* @__PURE__ */ Promise.resolve();
+// 当前刷新操作的 Promise，用于防止重复刷新
 let currentFlushPromise = null;
+// 递归执行限制（100次），防止无限循环
 const RECURSION_LIMIT = 100;
-
+// 用于延迟执行的核心工具函数，它确保回调在下一个 DOM 更新周期后执行
 function nextTick(fn) {
+    // 首先获取 currentFlushPromise（当前正在执行的刷新操作）或 resolvedPromise（已解析的 Promise）
     const p = currentFlushPromise || resolvedPromise;
+    // 如果提供了回调函数 fn，会根据 this 上下文决定是否绑定 this，然后将其附加到 Promise 链上
     return fn ? p.then(this ? fn.bind(this) : fn) : p;
 }
-
+// 维护任务队列顺序的核心函数，它使用二分查找算法确定新任务在队列中的插入位置
 function findInsertionIndex(id) {
+    // 从 flushIndex + 1 开始，确保只在未执行的任务中查找插入位置
     let start = flushIndex + 1;
     let end = queue.length;
     while (start < end) {
+        // 使用无符号右移 >>> 1 计算中点，避免浮点运算
         const middle = start + end >>> 1;
         const middleJob = queue[middle];
         const middleJobId = getId(middleJob);
+        // 按 ID 升序排列
+        // 相同 ID 时，PRE 标志的任务排在前面
         if (middleJobId < id || middleJobId === id && middleJob.flags & 2) {
             start = middle + 1;
         } else {
@@ -452,7 +484,7 @@ function queueJob(job) {
     if (!(job.flags & 1)) {
         const jobId = getId(job);
         const lastJob = queue[queue.length - 1];
-        if (!lastJob || // fast path when the job id is larger than the tail
+        if (!lastJob ||
             !(job.flags & 2) && jobId >= getId(lastJob)) {
             queue.push(job);
         } else {
