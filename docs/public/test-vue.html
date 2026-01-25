@@ -12,7 +12,18 @@
 <body>
 <div id="app"></div>
 <script type="module">
-    import {createApp, ref, reactive, readonly, isReadonly, defineComponent, h, Fragment} from './vue/vue.js'
+    import {
+        createApp,
+        ref,
+        reactive,
+        readonly,
+        isReadonly,
+        defineComponent,
+        h,
+        Fragment,
+        computed,
+        watch
+    } from './vue/vue.js'
 
     const Com1 = defineComponent(
         (props) => {
@@ -73,8 +84,13 @@
         setup() {
             const count = ref(0)
             const list = reactive(new Array(5).fill(2))
-            const testa = reactive({name:'我没有被使用'})
-            return {count, list,testa}
+            const testComputed = computed(() => count.value + 1)
+
+            watch(count, (prev, next) => {
+                console.log('count变化了', prev, next)
+            })
+
+            return {count, list, testComputed}
         },
         components: {Com1, Com2, Com3},
         template: `
@@ -83,7 +99,7 @@
           <Com3></Com3>
           <div @click="()=>{
               count++
-          }">我是根组件的内容：点击次数: {{ count }},{{testa.name}}
+          }">我是根组件的内容：点击次数: {{ count }},{{ testComputed }}
           </div>
           <div v-for="item in list" style="border:1px solid red">{{ item }}</div>
         `

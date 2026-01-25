@@ -480,6 +480,8 @@ react合成事件是模拟原生DOM的行为
 React Fiber的工作机制主要针对React 16及以后版本中对渲染和更新流程的改进，它引入了一种全新的任务调度和执行模型，旨在解决几个关键问题，提升用户体验和应用程序性能。以下是React
 Fiber解决的主要问题及其工作机制的概述：
 
+在线地址:https://claudiopro.github.io/react-fiber-vs-stack-demo/
+
 ### 解决的问题
 
 - **长时间运行任务导致的卡顿**：在React
