@@ -595,7 +595,7 @@ class Link {
         this.nextDep = this.prevDep = this.nextSub = this.prevSub = this.prevActiveLink = void 0;
     }
 }
-// 负责管理依赖关系和触发更新
+// 存储某个响应式数据的所有依赖,负责管理依赖关系和触发更新
 class Dep {
 
     constructor(computed) {
@@ -748,6 +748,7 @@ function addSub(link) {
 // 每个属性独立管理自己的订阅者
 // 支持动态属性的依赖追踪
 const targetMap = new WeakMap();
+console.log('相关依赖关系',targetMap)
 // 用于追踪对象/Map/Set 的整体迭代操作
 const ITERATE_KEY = Symbol(
     !!('production' !== 'production') ? "Object iterate" : ""
@@ -762,6 +763,7 @@ const ARRAY_ITERATE_KEY = Symbol(
 );
 // 响应式属性被访问时建立依赖关系
 function track(target, type, key) {
+    console.log('响应式属性建立依赖关系',target,type,key)
     // 只有在允许追踪且有活跃订阅者时才执行依赖追踪
     if (shouldTrack && activeSub) {
         // 第一层 - 目标对象映射：
@@ -1538,7 +1540,6 @@ function createInstrumentations(readonly, shallow) {
 function createInstrumentationGetter(isReadonly2, shallow) {
     // 创建包含所有响应式方法的对象 instrumentations
     const instrumentations = createInstrumentations(isReadonly2, shallow);
-    console.log('wxx', instrumentations, isReadonly2, shallow)
     return (target, key, receiver) => {
         // 特殊标志处理
         if (key === "__v_isReactive") {
@@ -1594,12 +1595,16 @@ function checkIdentityKeys(target, has, key) {
 // 隐私性: WeakMap 的键不可枚举，提供了更好的封装性
 // 存储深度响应式代理
 const reactiveMap = new WeakMap();
+console.log('深度响应式代理',reactiveMap)
 // 存储浅层响应式代理
 const shallowReactiveMap = new WeakMap();
+console.log('浅层响应式代理',shallowReactiveMap)
 // 存储深度只读代理
 const readonlyMap = new WeakMap();
+console.log('深度只读代理',readonlyMap)
 // 存储浅层只读代理
 const shallowReadonlyMap = new WeakMap();
+console.log('浅层只读代理',shallowReadonlyMap)
 
 // 将原始类型字符串分类为不同的目标类型，以便选择合适的代理处理器
 function targetTypeMap(rawType) {

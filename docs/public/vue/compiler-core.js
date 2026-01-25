@@ -3615,6 +3615,12 @@ function generate(ast, options = {}) {
     }
     deindent();
     push(`}`);
+    console.log('编译后的代码',{
+        ast,
+        code: context.code,
+        preamble: ``,
+        map: context.map ? context.map.toJSON() : void 0
+    })
     return {
         ast,
         code: context.code,

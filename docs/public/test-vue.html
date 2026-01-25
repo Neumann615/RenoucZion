@@ -4,41 +4,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
 
 <body>
-    <div id="app"></div>
-    <script type="module">
-        import { createApp, ref, reactive, readonly, isReadonly} from './vue/vue.js'
-        const app = createApp({
-            setup() {
-                const count = ref(0)
-                const list = reactive(new Array(5).fill(2))
-                let a = { name: 'wxx' }
-                const list2 = reactive(a)
-                const list3 = reactive(a)
-                return { count, list, list2 }
-            },
-            template: `
-          <div v-for="(item,index) in list">
-            {{item}}
-          </div>
-          <p>{{ count }}</p>
-          <button @click="()=>{
+<div id="app"></div>
+<script type="module">
+    import {createApp, ref, reactive, readonly, isReadonly, defineComponent, h, Fragment} from './vue/vue.js'
+
+    const Com1 = defineComponent(
+        (props) => {
+            const count1 = ref(0)
+            return () => {
+                // 渲染函数或 JSX
+                return h('div', '我是1组件,我用到的变量是' + count1.value)
+            }
+        },
+        // 其他选项，例如声明 props 和 emits。
+        {
+            props: {}
+        }
+    )
+    const Com2 = defineComponent(
+        (props) => {
+            const count2 = ref(0)
+            return () => {
+                // 渲染函数或 JSX
+                return h('div', '我是2组件,我用到的变量是' + count2.value)
+            }
+        },
+        // 其他选项，例如声明 props 和 emits。
+        {
+            props: {}
+        }
+    )
+    const Com3 = defineComponent(
+        (props) => {
+            const count3 = ref(0)
+            return () => {
+                // 渲染函数或 JSX
+                return h(Fragment, [h('div', '我是3组件,我用到的变量是' + count3.value), h(Com4)])
+            }
+        },
+        // 其他选项，例如声明 props 和 emits。
+        {
+            props: {}
+        }
+    )
+
+    const Com4 = defineComponent(
+        (props) => {
+            const count4 = ref(0)
+            const test = reactive({name: 'wxx'})
+            return () => {
+                // 渲染函数或 JSX
+                return h('div', '我是组件4，我是组件3的子组件，用到的变量是' + count4.value + test.name)
+            }
+        },
+        // 其他选项，例如声明 props 和 emits。
+        {
+            props: {}
+        }
+    )
+
+    const app = createApp({
+        setup() {
+            const count = ref(0)
+            const list = reactive(new Array(5).fill(2))
+            const testa = reactive({name:'我没有被使用'})
+            return {count, list,testa}
+        },
+        components: {Com1, Com2, Com3},
+        template: `
+          <Com1></Com1>
+          <Com2></Com2>
+          <Com3></Com3>
+          <div @click="()=>{
               count++
-          }">
-            点击次数: {{ count }}
-          </button>
+          }">我是根组件的内容：点击次数: {{ count }},{{testa.name}}
+          </div>
+          <div v-for="item in list" style="border:1px solid red">{{ item }}</div>
         `
-        })
-
-        console.log(app)
-
-        app.mount('#app')
-    </script>
+    })
+    app.mount('#app')
+</script>
 </body>
 
 </html>
