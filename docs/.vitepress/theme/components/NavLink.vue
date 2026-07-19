@@ -14,7 +14,7 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  (event: "nav-click", data: Partial<NavLink>): void;
+  (event: "nav-click", data: NavLink): void;
 }>();
 
 const formatTitle = computed(() => {
@@ -37,6 +37,11 @@ const formatBadge = computed(() => {
 });
 
 const handleClick = () => emits("nav-click", props);
+
+const imgError = (e: Event) => {
+  const el = (e.target as HTMLElement).parentElement;
+  if (el) el.style.display = 'none';
+};
 </script>
 
 <template>
@@ -45,7 +50,7 @@ const handleClick = () => emits("nav-click", props);
     class="m-nav-link"
     :href="link"
     target="_blank"
-    rel="noreferrer"
+    rel="noreferrer noopener"
     @click="handleClick"
   >
     <article class="box" :class="{ 'has-badge': formatBadge }">
@@ -57,7 +62,7 @@ const handleClick = () => emits("nav-click", props);
               :src="withBase(icon)"
               :alt="title"
               loading="lazy"
-              onerror="this.parentElement.style.display='none'"
+              @error="imgError"
             />
           </div>
         </template>

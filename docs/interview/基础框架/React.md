@@ -125,7 +125,7 @@ React Hooks 的实现原理主要围绕着几个核心概念，包括函数组�
 
 ## React中常用的hooks的用法
 
-1. **useState**：用来解决函数组件中不能定义自己状态的问题,和useState一样是异步执行的，不是立马生效的，若想每次拿到最新的数据使用useEffect
+1. **useState**：用来解决函数组件中不能定义自己状态的问题，useState的更新是异步批处理的，状态不会立刻生效，若想每次拿到最新的数据使用useEffect
 2. **useEffect**：
    若一个函数中定义了多个useEffect，他们的执行顺序是按照代码中的先后顺序来的
 
@@ -138,8 +138,14 @@ useEffect(() => {
 ```
 
 3. **useLayoutEffect**:
+<<<<<<< Updated upstream
    传递的参数和useEffect完全相同，唯一的区别在于使用useEffect时页面会出现闪烁，应为useEffect是在页面渲染完成之后再去更新数据的，useLayoutEffect没有闪烁，是在页面还没有渲染时就把数据更新了，useLayoutEffect可能会阻塞渲染
 4. **useMemo**:是为了减少组件重新渲染时不必要的函数计算，用作性能优化传入两个参数，第一个参数为函数，用来进行一些计算，第二个参数是依赖关系，只有在第一个参数发生变化时，才会重新执行计算函数进行计 算，如果不穿依赖项，每次组件渲染都会重新进行计算
+=======
+   传递的参数和useEffect完全相同，唯一区别在于使用useEffect时页面可能会出现闪烁，因为useEffect是在页面渲染完成之后再去更新数据的，useLayoutEffect没有闪烁，是在页面还没有渲染时就把数据更新了，useLayoutEffect可能会阻塞渲染
+4. **useMemo**:是为了减少组件重新渲染时不必要的函数计算，用作性能优化
+   传入两个参数，第一个参数为函数，用来进行一些计算，第二个参数是依赖关系，只有在第一个参数发生变化时，才会重新执行计算函数进行计算，如果不穿依赖项，每次组件渲染都会重新进行计算
+>>>>>>> Stashed changes
 
 ```js
 const memoizedValue = useMemo(() => {

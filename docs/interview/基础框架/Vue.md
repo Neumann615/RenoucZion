@@ -51,8 +51,7 @@ enum shapeFlags
 vnode.shapeFlag = ShapeFlags.ELEMENT | ShapeFlags.ARRAY_CHILDREN;
 ```
 
-判断某个 vnode 的类型时可以使用 vnode.shapeFlag & ShapeFlags.ELEMENT 的方式进行判断，或判断 vnode 是否同时是多种类型 vnode.shapeFlag &
-ShapeFlags.ELEMENT | ShapeFlags.ARRAY_CHILDREN
+判断某个 vnode 的类型时可以使用 vnode.shapeFlag & ShapeFlags.ELEMENT 的方式进行判断，或判断 vnode 是否同时是多种类型 vnode.shapeFlag & (ShapeFlags.ELEMENT | ShapeFlags.ARRAY_CHILDREN)
 
 ### patchFlag
 

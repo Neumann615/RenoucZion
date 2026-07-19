@@ -54,9 +54,17 @@ export const nav: DefaultTheme.Config['nav'] = [
             {
                 text: 'Git',
                 link: "Git/提交类型"
+            },
+            {
+                text: 'AI',
+                link: "AI/ai-concepts-guide"
             }
         ]
     },
+    {
+        text: '懒猫微服',
+        link: '/懒猫微服/公司介绍'
+    }
     // {
     //     text:'关于',
     //     items:[

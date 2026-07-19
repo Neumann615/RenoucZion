@@ -1,9 +1,8 @@
-import { EnhanceAppContext, useData } from 'vitepress'
+import { EnhanceAppContext } from 'vitepress'
 import Theme from 'vitepress/theme'
 import { h } from "vue"
 import DefaultTheme from 'vitepress/theme'
 import HomePage from './components/HomePage.vue'
-// import Layout from './components/Layout.vue'
 import NavLinks from './components/NavLinks.vue'
 import './styles/layout.scss'
 import './styles/vars.css'
@@ -24,15 +23,6 @@ import {
 export default {
     ...Theme,
     Layout: () => {
-        const props: Record<string, any> = {}
-        // 获取 frontmatter
-        // const { frontmatter } = useData()
-
-        // /* 添加自定义 class */
-        // if (frontmatter.value?.layoutClass) {
-        //     props.class = frontmatter.value.layoutClass
-        // }
-
         return  h(DefaultTheme.Layout, null, {
             // 为较宽的屏幕的导航栏添加阅读增强菜单
             'nav-bar-content-after': () => h(NolebaseEnhancedReadabilitiesMenu), 

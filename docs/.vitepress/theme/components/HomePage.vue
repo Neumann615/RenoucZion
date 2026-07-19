@@ -4,12 +4,24 @@ import { creators, siteName } from "../../config/data";
 </script>
 
 <template>
-  <div style="padding-top: 60px">
+  <div class="home-page">
     <div class="vp-doc">
-      <h2 style="text-align: center">贡献者</h2>
-      <div style="padding-top: 12px">
+      <h2>贡献者</h2>
+      <div class="creators-wrapper">
         <VPTeamMembers size="small" :members="creators" />
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.home-page {
+  padding-top: 60px;
+}
+.home-page h2 {
+  text-align: center;
+}
+.creators-wrapper {
+  padding-top: 12px;
+}
+</style>

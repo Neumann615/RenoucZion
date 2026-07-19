@@ -1064,5 +1064,11 @@ export const sidebar: DefaultTheme.Config['sidebar'] = {
             text:'提交类型',
             link:"/Git/提交类型"
         }
+    ],
+    AI: [
+        {
+            text: "AI 核心术语通俗指南",
+            link: "/AI/ai-concepts-guide"
+        }
     ]
 }

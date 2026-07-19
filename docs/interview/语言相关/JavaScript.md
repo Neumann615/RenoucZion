@@ -43,7 +43,7 @@ JavaScript 的运行阶段分为预编译阶段和执行阶段，今天要讨论
 函数内部的同名变量或参数其优先级高于全局同名变量
 
 函数提升优于变量提升，函数提升会把整个函数挪到作用域顶部，变量提升只会把声明挪到顶部
-var存在提升，我们在声明前可以使用，let和const由于暂时性死区的原因不能再声明前使用
+var存在提升，我们在声明前可以使用，let和const由于暂时性死区的原因不能在声明前使用
 var在全局作用下会被挂载到window上，let和const不会
 
 ### 变量声明提升
@@ -192,7 +192,7 @@ null。垃圾回收方面，栈内存变量基本上用完就回收了，而堆�
 ### 引用计数
 
 思路是对每个值都记录它被引用的次数。声明变量并给它赋一个引用值时，这个值的引用数为 1。如果同一个值又被赋给另一个变量，那么引用数加 1。类似地，如果保存对该值引用的变量被其他 值给覆盖了，那么引用数减 1。当一个值的引用数为 0
-时，就说明没办 法再访问到这个值了，因此可以安全地收回其内存了。垃圾回收程序 下次运行的时候就会释放引用数为 0 的值的内存。该方法无法解决循环引用问题。如：A 引用 B，同时 B 引用 A，相互应用。会导致内存泄漏。
+时，就说明没办法再访问到这个值了，因此可以安全地收回其内存了。垃圾回收程序 下次运行的时候就会释放引用数为 0 的值的内存。该方法无法解决循环引用问题。如：A 引用 B，同时 B 引用 A，相互引用。会导致内存泄漏。
 
 ### 总结
 
@@ -235,10 +235,10 @@ null。垃圾回收方面，栈内存变量基本上用完就回收了，而堆�
 ```js
 // 防抖：连续触发事件但是在设定的一段时间内只执行最后一次
 function debounce(func, delay) {
-    let timeoutid
+    let timeoutId
     return function (...args) {
-        if (timeoutid) {
-            clearTimeout(timeoutid)
+        if (timeoutId) {
+            clearTimeout(timeoutId)
         }
         timeoutId = setTimeout(() => {
             func.apply(this, args)
@@ -288,7 +288,7 @@ function test(fn) {
     fn()
 }
 
-test(ibj.bar)  //window
+test(obj.bar)  //window
 ```
 
 ### 对象的构造函数
@@ -477,7 +477,7 @@ document.getElementById("list").addEventListener("click", function (e) {
     var event = e || window.event;
     var target = event.target || event.srcElement;
     // 判断是否匹配⽬标元素
-    if (target.nodeName.toLocaleLowerCase === "li") {
+    if (target.nodeName.toLowerCase() === "li") {
         console.log("the content is: ", target.innerHTML);
     }
 });
@@ -667,18 +667,18 @@ push()、pop()方法实现栈。
 
 - 原型是什么？原型链是什么？
 
-  原型：函数都有protptype属性，称之为原型，也称之为原型对象，原型可以放一些属性和方法共享给实例对象使用，原型可以做继承
-  原型链：对象都有————proto————这个属性，这个属性指向它的原型对象，原型对象也是对象他也有__proto属性指向原型对象的原型对象，这样一层层形成的链式结构称为原型链，一直到最顶层找不到则返回null
+  原型：函数都有prototype属性，称之为原型，也称之为原型对象，原型可以放一些属性和方法共享给实例对象使用，原型可以做继承
+  原型链：对象都有__proto__这个属性，这个属性指向它的原型对象，原型对象也是对象它也有__proto__属性指向原型对象的原型对象，这样一层层形成的链式结构称为原型链，一直到最顶层找不到则返回null
 
 - 谁拥有原型？
 
   函数拥有：prototype
 
-  对象拥有：**proto**
+  对象拥有：__proto__
 
 - 对象查找属性或方法的顺序
 
-  现在对象本身查找 --> 到构造函数上查找 --> 构造函数的原型中查找 --> 当前原型的原型中查找
+  先在对象本身查找 --> 到构造函数上查找 --> 构造函数的原型中查找 --> 当前原型的原型中查找
 
   ```js
   class Student {
@@ -691,10 +691,10 @@ push()、pop()方法实现栈。
   }
 
   const student = new Student();
-  console.log(student.__proto === Student.prototype); //指向同一个对象，对象的隐试原型等于构造这个类的显示原型
+  console.log(student.__proto === Student.prototype); //指向同一个对象，对象的隐式原型等于构造这个类的显示原型
   ```
 
-## js 中的几种集成方法
+## js 中的几种继承方法
 
 - 原型链继承
 
@@ -847,7 +847,7 @@ console.log(stu2.eat); // ['苹果']
 
 1. let和const是块级作用域 var声明的变量其作用域是全局作用域或函数作用域
 2. var变量可以重新声明和更新 let可以重新更新但不能重新声明 const既不能重新声明也不能重新更新
-3. 变量提升，他们都会被提升到作用域的顶部，但是var变量会被初始称undeiend let和const不会被初始化
+3. 变量提升，他们都会被提升到作用域的顶部，但是var变量会被初始化为undefined let和const不会被初始化
 
  ```js
 
@@ -957,5 +957,5 @@ js是一门单线程的语言，这是应为他运行在浏览器的渲染主线
 ## js中的作用域和作用域链
 
 - 作用域就是变量的可使用范围
-- 分为全局作用域：就是标量定义再window再任何地方都可以使用 函数作用域：只能在函数内部使用 块级作用域：在{}内部使用
+- 分为全局作用域：就是变量定义在window在任何地方都可以使用 函数作用域：只能在函数内部使用 块级作用域：在{}内部使用
 - 作用域链：在作用域嵌套下，由内向外层层访问变量形成的链式规则
